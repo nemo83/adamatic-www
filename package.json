@@ -1,0 +1,34 @@
+{
+  "name": "signin-next-ts-template",
+  "description": "A Mesh sign in template",
+  "version": "0.1.0",
+  "private": true,
+  "author": "MeshJS",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@meshsdk/core": "^1.7.6",
+    "@meshsdk/react": "^1.7.6",
+    "@mui/material": "^6.1.1",
+    "bootstrap": "^5.3.3",
+    "next": "12.3.1",
+    "react": "18.2.0",
+    "react-code-blocks": "^0.1.6",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.11.0",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "eslint": "8.25.0",
+    "eslint-config-next": "12.3.1",
+    "typescript": "4.8.4"
+  }
+}
