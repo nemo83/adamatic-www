@@ -15,15 +15,15 @@ export default class TransactionUtil {
                 paymentCredentialHash,
                 mConStr(0,[stakeCredentialHash]),
                 [
-                    mConStr(0,[datumDTO.assetAmount.policyId, datumDTO.assetAmount.assetName, datumDTO.assetAmount.amount])
+                    mConStr(0,[datumDTO.assetAmount.policyId, datumDTO.assetAmount.assetName, BigInt(datumDTO.assetAmount.amount)])
                 ],
                 payeeCredentialHash,
                 mConStr1([]),
                 datumDTO.timingDTO.startTime,
                 datumDTO.timingDTO.endTime !== undefined ? mConStr0([datumDTO.timingDTO.endTime]) : mConStr1([]),
-                datumDTO.timingDTO.paymentIntervalHours !== undefined ? mConStr0([datumDTO.timingDTO.paymentIntervalHours]) : mConStr1([]),
+                datumDTO.timingDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.timingDTO.paymentIntervalHours)]) : mConStr1([]),
                 datumDTO.timingDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.timingDTO.maxPaymentDelayHours]) : mConStr1([]),
-                datumDTO.maxFeesLovelace
+                BigInt(datumDTO.maxFeesLovelace)
             ]);
     }
 
