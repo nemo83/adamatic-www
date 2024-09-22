@@ -1,6 +1,16 @@
-import {BrowserWallet, Data, mConStr, mConStr0, mConStr1, PlutusScript, serializePlutusScript} from "@meshsdk/core";
+import {
+    BrowserWallet,
+    Data,
+    mConStr,
+    mConStr0,
+    mConStr1,
+    PlutusScript,
+    resolvePlutusScriptAddress,
+    serializePlutusScript
+} from "@meshsdk/core";
 import DatumDTO from "../interfaces/DatumDTO";
 import {Address} from "@meshsdk/core-cst";
+import {applyCborEncoding} from "@meshsdk/core-csl";
 
 
 export default class TransactionUtil {
@@ -31,6 +41,7 @@ export default class TransactionUtil {
         const address = (await wallet.getUsedAddress()).asBase();
         const stakeCredentialHash = address!.getStakeCredential().hash.toString();
         const networkID = await wallet.getNetworkId();
+        
         return serializePlutusScript(script, stakeCredentialHash, networkID, false).address;
     }
 }
