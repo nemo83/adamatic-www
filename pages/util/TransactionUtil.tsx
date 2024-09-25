@@ -1,47 +1,117 @@
 import {
     BrowserWallet,
-    Data,
+    Data, deserializeDatum, hexToString,
     mConStr,
     mConStr0,
     mConStr1,
     PlutusScript,
     resolvePlutusScriptAddress,
-    serializePlutusScript
+    serializePlutusScript, Transaction, UTxO
 } from "@meshsdk/core";
 import DatumDTO from "../interfaces/DatumDTO";
 import {Address} from "@meshsdk/core-cst";
 import {applyCborEncoding} from "@meshsdk/core-csl";
+import RecurringPaymentDTO from "../interfaces/RecurringPaymentDTO";
+import AssetAmount from "../interfaces/AssetAmount";
+import {bytesToString} from "@scure/base";
+import {string} from "prop-types";
+import {hexToNumber} from "@harmoniclabs/crypto/dist/noble/abstract/utils";
+import GetScriptTransactionsResponse from "../interfaces/GetScriptTransactionsResponse";
+import {SCRIPT} from "./Constants";
 
 
 export default class TransactionUtil {
 
     public static async createDatum(wallet : BrowserWallet, datumDTO : DatumDTO) : Promise<Data> {
+        console.log(wallet)
         const address = (await wallet.getUsedAddress()).asBase();
         const paymentCredentialHash = address!.getPaymentCredential().hash.toString();
         const stakeCredentialHash = address!.getStakeCredential().hash.toString();
-        const payeeCredentialHash = Address.fromString(datumDTO.payAddress)!.asBase()!.getPaymentCredential().hash.toString();
+        let payeeCredentialHash;
+        try {
+            payeeCredentialHash = datumDTO.payAddress ? Address.fromString(datumDTO.payAddress)!.asBase()!.getPaymentCredential().hash.toString() : "";
+        } catch (TypeError) {
+            payeeCredentialHash = "ERROR: Wrong Payee Address!";
+        }
+
         return mConStr0(
             [
-                paymentCredentialHash,
-                mConStr(0,[stakeCredentialHash]),
+                paymentCredentialHash, // 0
+                mConStr(0,[stakeCredentialHash]), // 1
                 [
-                    mConStr(0,[datumDTO.assetAmount.policyId, datumDTO.assetAmount.assetName, BigInt(datumDTO.assetAmount.amount)])
+                    mConStr(0,[datumDTO.assetAmount.policyId, datumDTO.assetAmount.assetName, BigInt(datumDTO.assetAmount.amount)]) // 2
                 ],
-                payeeCredentialHash,
-                mConStr1([]),
-                datumDTO.timingDTO.startTime,
-                datumDTO.timingDTO.endTime !== undefined ? mConStr0([datumDTO.timingDTO.endTime]) : mConStr1([]),
-                datumDTO.timingDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.timingDTO.paymentIntervalHours)]) : mConStr1([]),
-                datumDTO.timingDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.timingDTO.maxPaymentDelayHours]) : mConStr1([]),
-                BigInt(datumDTO.maxFeesLovelace)
+                payeeCredentialHash, // 3
+                mConStr1([]), // 4
+                BigInt(datumDTO.timingDTO.startTime), // 5
+                datumDTO.timingDTO.endTime !== undefined ? mConStr0([datumDTO.timingDTO.endTime]) : mConStr1([]), //6
+                datumDTO.timingDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.timingDTO.paymentIntervalHours)]) : mConStr1([]), // 7
+                datumDTO.timingDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.timingDTO.maxPaymentDelayHours]) : mConStr1([]), // 8
+                BigInt(datumDTO.maxFeesLovelace) // 9
             ]);
+    }
+
+    public static deserializeDatum(utxo : GetScriptTransactionsResponse) : RecurringPaymentDTO {
+        const datum = deserializeDatum(utxo.tx_datum);
+        let amountToSend : AssetAmount[] = [];
+        for (let i = 0; i < datum.fields[2].length; i++) {
+            amountToSend.push({
+                policyId: datum.fields[2][i].fields[0],
+                assetName: datum.fields[2][i].fields[1],
+                amount: datum.fields[2][i].fields[2]
+            } as AssetAmount);
+        }
+        return {
+            txHash: utxo.tx_hash,
+            output_index: utxo.output_index,
+            amounts: utxo.amount,
+            ownerPaymentPkh: datum.fields[0].bytes,
+            ownerStakePkh: datum.fields[1].constructor === 0 ? datum.fields[1].fields[0].bytes : undefined,
+            amountToSend: amountToSend,
+            payeePaymentPkh: datum.fields[3].bytes,
+            payeeStakePkh: datum.fields[4].constructor === 0 ? datum.fields[4].fields[0].bytes : undefined,
+            startTime: new Date(datum.fields[5].int),
+            endTime: datum.fields[6].constructor === 0 ? datum.fields[6].fields[0] : undefined,
+            paymentIntervalHours: datum.fields[7].constructor === 0 ? datum.fields[7].fields[0] : undefined,
+            maxPaymentDelayHours: datum.fields[8].constructor === 0 ? datum.fields[8].fields[0] : undefined,
+            maxFeesLovelace: datum.fields[9].int
+        }
+
+    }
+
+    public static async getUnsignedCancelTx(recurringPaymentDTO : RecurringPaymentDTO, scriptAddress : string, wallet : BrowserWallet) : Promise<Transaction> {
+        const utxo : UTxO =
+            {
+                input: {
+                    txHash: recurringPaymentDTO.txHash,
+                    outputIndex: recurringPaymentDTO.output_index
+                },
+                output: {
+                    address: scriptAddress,
+                    amount: recurringPaymentDTO.amounts
+                }
+            }
+        const response = await fetch('api/GetCurrentSlot');
+        const slot : number = (await response.json()).slot;
+        return new Transaction({initiator: wallet})
+            .setRequiredSigners([(await wallet.getUsedAddress()).toBech32().toString()])
+            .setTimeToStart('' + slot)
+            .setTimeToExpire('' + (slot + 200))
+            .redeemValue({
+                value: utxo
+                ,
+                script: SCRIPT,
+                redeemer: {
+                    data: mConStr0([])
+                }
+            });
     }
 
     public static async getScriptAddressWithStakeCredential(wallet : BrowserWallet, script : PlutusScript) : Promise<string> {
         const address = (await wallet.getUsedAddress()).asBase();
         const stakeCredentialHash = address!.getStakeCredential().hash.toString();
         const networkID = await wallet.getNetworkId();
-        
+
         return serializePlutusScript(script, stakeCredentialHash, networkID, false).address;
     }
 }

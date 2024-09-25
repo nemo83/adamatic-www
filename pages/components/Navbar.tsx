@@ -4,29 +4,10 @@ import {BrowserWallet} from "@meshsdk/core";
 import React, {useState} from "react";
 import "@meshsdk/react/styles.css";
 
-export default function Navbar() {
-    const { name } = useWallet();
+export default function Navbar(props: {network : string, isValidNetwork : boolean}) {
+    const { connected } = useWallet();
 
-    const [network, setNetwork] = useState("");
-
-
-    async function walletConnected() {
-
-        const browserWallet = await BrowserWallet.enable(name);
-        browserWallet.getNetworkId().then(value => {
-            switch (value) {
-                case 0:
-                    setNetwork("Testnet")
-                    break;
-                case 1:
-                    setNetwork("Mainnet")
-                    break;
-                default:
-                    setNetwork("Unknown")
-            }
-        });
-    }
-
+    const { network, isValidNetwork } = props;
 
     return (
         <Box>
@@ -41,6 +22,7 @@ export default function Navbar() {
                     <Typography variant="h6" >
                         Cardano recurring payments
                     </Typography>
+                    <Typography>{isValidNetwork ? connected ? network : <>Network from wallet not supporter</> : <></>}</Typography>
                     <CardanoWallet />
                 </Toolbar>
             </AppBar>
