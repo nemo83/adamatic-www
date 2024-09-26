@@ -3,8 +3,11 @@ import TimingDTO from "./TimingDTO";
 
 export default interface DatumDTO {
     amountToDeposit: number;
-    assetAmount: AssetAmount;
+    assetAmounts: AssetAmount[];
     payAddress: string;
-    timingDTO: TimingDTO;
+    startTime: number;
+    endTime?: number;
+    paymentIntervalHours?: number;
+    maxPaymentDelayHours?: number;
     maxFeesLovelace: number;
 }

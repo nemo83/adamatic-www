@@ -10,7 +10,7 @@ export default function Navbar(props: {network : string, isValidNetwork : boolea
     const { network, isValidNetwork } = props;
 
     return (
-        <Box>
+        <Box >
             <AppBar position="static" component="nav">
                 {/*<CssBaseline />*/}
                 <Toolbar disableGutters

@@ -39,14 +39,15 @@ export default class TransactionUtil {
                 paymentCredentialHash, // 0
                 mConStr(0,[stakeCredentialHash]), // 1
                 [
-                    mConStr(0,[datumDTO.assetAmount.policyId, datumDTO.assetAmount.assetName, BigInt(datumDTO.assetAmount.amount)]) // 2
+                    // TODO currently it's only possible to send one asset, could be extended in the future
+                    mConStr(0,datumDTO.assetAmounts.length > 0 ? [ datumDTO.assetAmounts[0].policyId, datumDTO.assetAmounts[0].assetName, BigInt(datumDTO.assetAmounts[0].amount)] : []) // 2
                 ],
                 payeeCredentialHash, // 3
                 mConStr1([]), // 4
-                BigInt(datumDTO.timingDTO.startTime), // 5
-                datumDTO.timingDTO.endTime !== undefined ? mConStr0([datumDTO.timingDTO.endTime]) : mConStr1([]), //6
-                datumDTO.timingDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.timingDTO.paymentIntervalHours)]) : mConStr1([]), // 7
-                datumDTO.timingDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.timingDTO.maxPaymentDelayHours]) : mConStr1([]), // 8
+                BigInt(datumDTO.startTime), // 5
+                datumDTO.endTime !== undefined ? mConStr0([datumDTO.endTime]) : mConStr1([]), //6
+                datumDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.paymentIntervalHours)]) : mConStr1([]), // 7
+                datumDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.maxPaymentDelayHours]) : mConStr1([]), // 8
                 BigInt(datumDTO.maxFeesLovelace) // 9
             ]);
     }

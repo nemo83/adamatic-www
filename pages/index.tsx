@@ -32,7 +32,7 @@ export default function Home() {
 
     const { wallet, connected } = useWallet();
     const [ txHash, setTxHash ] = useState("" as string);
-    const [datumDTO, setDatumDTO] = useState<DatumDTO>({amountToDeposit: 0, "assetAmount": {"policyId": "", "assetName": "", "amount": 0}, "payAddress": "", "timingDTO": {"startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined}, "maxFeesLovelace": 0});
+    const [datumDTO, setDatumDTO] = useState<DatumDTO>({amountToDeposit: 0, "assetAmounts": [], "payAddress": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0});
     const [networkID, setNetworkID] = useState(0 as number);
     const [network, setNetwork] = useState("" as string);
     const [validNetwork, setValidNetwork] = useState(false as boolean);
@@ -118,15 +118,15 @@ export default function Home() {
 
 
     return (
-        <Stack spacing={1} alignContent={"center"}>
+        <>
             <Navbar network={network} isValidNetwork={validNetwork}></Navbar>
-
-            <Grid container spacing={2} sx={{paddingTop:'10px'}}>
-                <Grid size={1}></Grid>
-                <Grid size={5}>
+        <div className={"body"}>
+        <Stack spacing={1} alignContent={"center"}>
+            <Grid container spacing={3} sx={{padding:'5'}}>
+                <Grid size={6}>
                     <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO} />
                 </Grid>
-                <Grid size={5}>
+                <Grid size={6}>
                     {connected ?
                         <Stack spacing={1}>
                             <div><strong>Script Address:</strong> {scriptAddress}</div>
@@ -141,9 +141,8 @@ export default function Home() {
                         </Stack> : <></>
                     }
                 </Grid>
-                <Grid size={1}></Grid>
             </Grid>
-            <Button variant={"outlined"} onClick={() => signAndSubmit()}>Sign & Submit</Button>
+            <Button variant={"outlined"} sx={{ justifyContent: "flex-start" }} onClick={() => signAndSubmit()}>Sign & Submit</Button>
             {txHash !== "" ? <p>Transaction Hash: {txHash}</p> : <></>}
             {connected ?
             <TableContainer component={Paper}>
@@ -183,5 +182,7 @@ export default function Home() {
                 </Table>
             </TableContainer> : <></> }
         </Stack>
+        </div>
+        </>
     );
 }
