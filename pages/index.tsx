@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import GetScriptTransactionsResponse from "../lib/interfaces/GetScriptTransactionsResponse";
 import RecurringPaymentDTO from "../lib/interfaces/RecurringPaymentDTO";
-import {Delete} from "@mui/icons-material";
+import {Delete, Send} from "@mui/icons-material";
 import {CodeBlock} from "react-code-blocks";
 
 export default function Home() {
@@ -120,69 +120,71 @@ export default function Home() {
     return (
         <>
             <Navbar network={network} isValidNetwork={validNetwork}></Navbar>
-        <div className={"body"}>
-        <Stack spacing={1} alignContent={"center"}>
-            <Grid container spacing={3} sx={{padding:'5'}}>
-                <Grid size={6}>
-                    <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO} />
-                </Grid>
-                <Grid size={6}>
+            <div className={"body"}>
+                <Stack spacing={1} alignContent={"center"}>
+                    <Grid container spacing={3} sx={{padding:'5'}}>
+                        <Grid size={6}>
+                            <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO} />
+                        </Grid>
+                        <Grid size={6}>
+                            {connected ?
+                                <Stack spacing={1}>
+                                    <div><strong>Script Address:</strong> {scriptAddress}</div>
+                                    <CodeBlock customStyle={{
+                                        maxHeight: '580px',
+                                        overflow: 'scroll',
+                                    }} text={JSON.stringify(datum, (key, value) =>
+                                        typeof value === 'bigint'
+                                            ? value.toString()
+                                            : value // return everything else unchanged
+                                    , 4)} language='json'></CodeBlock>
+                                </Stack> : <></>
+                            }
+                        </Grid>
+                    </Grid>
+                    <div>
+                        <Button startIcon={<Send/>} variant={"outlined"} onClick={() => signAndSubmit()}>Sign & Submit</Button>
+                        {txHash !== "" ? <p>Transaction Hash: {txHash}</p> : <></>}
+                    </div>
                     {connected ?
-                        <Stack spacing={1}>
-                            <div><strong>Script Address:</strong> {scriptAddress}</div>
-                            <CodeBlock customStyle={{
-                                maxHeight: '580px',
-                                overflow: 'scroll',
-                            }} text={JSON.stringify(datum, (key, value) =>
-                                typeof value === 'bigint'
-                                    ? value.toString()
-                                    : value // return everything else unchanged
-                            , 4)} language='json'></CodeBlock>
-                        </Stack> : <></>
-                    }
-                </Grid>
-            </Grid>
-            <Button variant={"outlined"} sx={{ justifyContent: "flex-start" }} onClick={() => signAndSubmit()}>Sign & Submit</Button>
-            {txHash !== "" ? <p>Transaction Hash: {txHash}</p> : <></>}
-            {connected ?
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>txHash</TableCell>
-                            <TableCell>PayeePaymentPkh</TableCell>
-                            <TableCell>StartTime</TableCell>
-                            <TableCell>Amount in Lovelace</TableCell>
-                            <TableCell>MaxFeesLovelace</TableCell>
-                            <TableCell>Cancel Payment</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {recurringPaymentDTOs.map((row) => (
-                            <TableRow
-                                key={row.txHash}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {row.txHash}
-                                </TableCell>
-                                <TableCell>{row.payeePaymentPkh}</TableCell>
-                                <TableCell>{row.startTime.toDateString() + " " + row.startTime.getHours() + ":" + row.startTime.getMinutes()}</TableCell>
-                                <TableCell>{row.amounts[0].quantity}</TableCell>
-                                <TableCell>{row.maxFeesLovelace}</TableCell>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>txHash</TableCell>
+                                    <TableCell>PayeePaymentPkh</TableCell>
+                                    <TableCell>StartTime</TableCell>
+                                    <TableCell>Amount in Lovelace</TableCell>
+                                    <TableCell>MaxFeesLovelace</TableCell>
+                                    <TableCell>Cancel Payment</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {recurringPaymentDTOs.map((row) => (
+                                    <TableRow
+                                        key={row.txHash}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            {row.txHash}
+                                        </TableCell>
+                                        <TableCell>{row.payeePaymentPkh}</TableCell>
+                                        <TableCell>{row.startTime.toDateString() + " " + row.startTime.getHours() + ":" + row.startTime.getMinutes()}</TableCell>
+                                        <TableCell>{row.amounts[0].quantity}</TableCell>
+                                        <TableCell>{row.maxFeesLovelace}</TableCell>
 
-                                <TableCell>
-                                    <Button variant="outlined" startIcon={<Delete />} onClick={() => cancelRecurringPayment(row)}>
-                                        Cancel
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer> : <></> }
-        </Stack>
-        </div>
+                                        <TableCell>
+                                            <Button variant="outlined" startIcon={<Delete />} onClick={() => cancelRecurringPayment(row)}>
+                                                Cancel
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer> : <></> }
+                </Stack>
+            </div>
         </>
     );
 }

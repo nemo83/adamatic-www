@@ -6,13 +6,25 @@ import type { AppProps } from "next/app";
 import {MeshProvider} from "@meshsdk/react";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers";
+import {createTheme, ThemeProvider} from "@mui/material";
+
+
+const theme = createTheme({
+    palette: {
+        primary:{
+            main: '#0033ad'
+        }
+    }
+})
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
       <MeshProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Component {...pageProps} />
-          </LocalizationProvider>
+          <ThemeProvider theme={theme}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <Component {...pageProps} />
+              </LocalizationProvider>
+          </ThemeProvider>
       </MeshProvider>
   );
 }
