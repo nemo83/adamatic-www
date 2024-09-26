@@ -21,7 +21,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
+    TableRow, Tooltip,
 } from "@mui/material";
 import GetScriptTransactionsResponse from "../lib/interfaces/GetScriptTransactionsResponse";
 import RecurringPaymentDTO from "../lib/interfaces/RecurringPaymentDTO";
@@ -129,10 +129,17 @@ export default function Home() {
                         <Grid size={6}>
                             {connected ?
                                 <Stack spacing={1}>
-                                    <div><strong>Script Address:</strong> {scriptAddress}</div>
+                                    <div><strong>Script Address:</strong>
+                                        <Tooltip title={"The address of the smart contract. Click to copy to clipboard"}>
+                                            <div style={{overflowX: "hidden"}} onClick={() => navigator.clipboard.writeText(scriptAddress)}>
+                                                {scriptAddress}
+                                            </div>
+                                        </Tooltip>
+                                    </div>
                                     <CodeBlock customStyle={{
                                         maxHeight: '580px',
                                         overflow: 'scroll',
+                                        textAlign: 'left',
                                     }} text={JSON.stringify(datum, (key, value) =>
                                         typeof value === 'bigint'
                                             ? value.toString()
