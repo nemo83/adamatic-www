@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import {BlockfrostProvider} from "@meshsdk/core";
 import axios from "axios";
-import GetScriptTransactionsResponse from "../interfaces/GetScriptTransactionsResponse";
+import GetScriptTransactionsResponse from "../../lib/interfaces/GetScriptTransactionsResponse";
 
 
 type Data = {

@@ -5,11 +5,11 @@ import {
     Recipient,
     Transaction, UTxO
 } from "@meshsdk/core";
-import TransactionUtil from "./util/TransactionUtil";
-import DatumDTO from "./interfaces/DatumDTO";
-import {SCRIPT} from "./util/Constants";
-import Navbar from "./components/Navbar";
-import UserInput from "./components/UserInput";
+import TransactionUtil from "../lib/util/TransactionUtil";
+import DatumDTO from "../lib/interfaces/DatumDTO";
+import {SCRIPT} from "../lib/util/Constants";
+import Navbar from "../components/Navbar";
+import UserInput from "../components/UserInput";
 import Grid from "@mui/material/Grid2";
 import {
     Box,
@@ -23,8 +23,8 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import GetScriptTransactionsResponse from "./interfaces/GetScriptTransactionsResponse";
-import RecurringPaymentDTO from "./interfaces/RecurringPaymentDTO";
+import GetScriptTransactionsResponse from "../lib/interfaces/GetScriptTransactionsResponse";
+import RecurringPaymentDTO from "../lib/interfaces/RecurringPaymentDTO";
 import {Delete} from "@mui/icons-material";
 import {CodeBlock} from "react-code-blocks";
 

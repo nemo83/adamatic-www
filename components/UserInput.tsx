@@ -1,4 +1,4 @@
-import DatumDTO from "../interfaces/DatumDTO";
+import DatumDTO from "../lib/interfaces/DatumDTO";
 import {
     Avatar,
     Button, Chip,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import React, {useEffect} from "react";
 import {Add} from "@mui/icons-material";
-import AssetAmount from "../interfaces/AssetAmount";
+import AssetAmount from "../lib/interfaces/AssetAmount";
 import {DateTimePicker} from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 
