@@ -19,11 +19,13 @@ export default function Home() {
         if (connected) {
             wallet.getNetworkId().then((id) => {
                 setNetworkID(id);
-                setNetwork(networkID == 0 ? "Testnet" : "Mainnet")
                 // @ts-ignore
                 if(id === +process.env.NEXT_PUBLIC_NETWORK) {
                     console.log("Network is valid")
                     setValidNetwork(true);
+                    TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT).then((address) => {
+                        setScriptAddress(address);
+                    });
                 } else {
                     console.log("Network is invalid")
                     setNetworkID(id);
@@ -32,20 +34,11 @@ export default function Home() {
                 }
             });
         }
-    }, [wallet]);
+    }, [wallet, connected]);
 
     useEffect(() => {
-        if (connected) {
-            wallet.getNetworkId().then((id) => {
-                if(validNetwork) {
-                    TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT).then((address) => {
-                        setScriptAddress(address);
-
-                    });
-                }
-            });
-        }
-    }, [validNetwork]);
+        setNetwork(networkID == 0 ? "Testnet" : "Mainnet");
+    }, [networkID]);
 
     return (
         <>

@@ -22,15 +22,9 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     const { datumDTO, setDatumDTO, isHoskyInput } = props;
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [assetAmounts, setAssetAmounts] = React.useState<AssetAmount[]>([]);
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
     const [endTime, setEndTime] = React.useState<Dayjs | null>(null);
     const [inputLovelace, setInputLovelae] = React.useState<boolean>(true)
-
-
-    useEffect(() => {
-        setAssetAmounts(datumDTO.assetAmounts)
-    }, [datumDTO]);
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
@@ -170,10 +164,10 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                 </Dialog>
                 <div style={{minHeight: "100px"}}>
                     {datumDTO.assetAmounts.map((asset, index) => (
-                        <Chip disabled={isHoskyInput} variant={"outlined"} color={"primary"} style={{height: "100%", maxWidth: "fit-content"}}
+                        <Chip key={asset.policyId} disabled={isHoskyInput} variant={"outlined"} color={"primary"} style={{height: "100%", maxWidth: "fit-content"}}
                               avatar={<Avatar src={"/img/cardano-starburst-white.svg"}/>}
                               label={(
-                                  <section >
+                                  <section>
                                       <div className={"assetChip"}>{asset.assetName}</div>
                                       <div className={"assetChip"}>{
                                           asset.policyId ?

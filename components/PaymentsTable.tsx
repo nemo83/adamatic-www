@@ -15,7 +15,7 @@ export default function PaymentsTable(props: {scriptAddress : string}) {
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
 
     useEffect(() => {
-        if(connected) {
+        if(connected && scriptAddress !== "") {
             fetch('api/GetScriptUTXOs', {method: "POST", body: scriptAddress}).then(response => response.json()).then(data => {
                 const utxos : TxInfo[] = JSON.parse(data.utxo);
                 let recurringPayments : RecurringPayment[] = [];
@@ -25,7 +25,7 @@ export default function PaymentsTable(props: {scriptAddress : string}) {
                 setRecurringPaymentDTOs(recurringPayments);
             });
         }
-    }, [scriptAddress]);
+    }, [scriptAddress, connected]);
 
     async function cancelRecurringPayment(recurringPaymentDTO : RecurringPayment) {
         const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);

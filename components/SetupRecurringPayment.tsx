@@ -40,7 +40,7 @@ export default function SetupRecurringPayment (props: {
             });
         }
 
-    }, [datumDTO, scriptAddress]);
+    }, [datumDTO, scriptAddress, connected]);
 
     useEffect(() => {
         setDatumDTO({...datumDTO,

@@ -24,7 +24,7 @@ export default function Navbar(props: {network : string, isValidNetwork : boolea
                             Cardano recurring payments
                         </Typography>
 
-                        <Switch value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)}/>
+                        <Switch color={"secondary"} value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)}/>
                         {hoskyInput ? "Hosky" : "General payment"}
                     </div>
                     <Typography>{isValidNetwork ? connected ? network : <>Network from wallet not
