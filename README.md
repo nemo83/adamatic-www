@@ -25,7 +25,7 @@ Thus we implemented a fixed Hosky mode to support the upper case scenario and a 
 - [ ] Clean up code and add comments
 - [ ] Add documentations including a more complet Readme
 
-## Starting
+## How to run
 - copy `.envExample` to `.env` and fill in the values
 - run `npm run dev`
 
