@@ -1,4 +1,4 @@
-import {AppBar, Box, CssBaseline, Link, makeStyles, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Button, CssBaseline, Link, makeStyles, Toolbar, Typography} from "@mui/material";
 import {CardanoWallet, useWallet} from "@meshsdk/react";
 import {BrowserWallet} from "@meshsdk/core";
 import React, {useState} from "react";

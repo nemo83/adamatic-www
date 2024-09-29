@@ -8,21 +8,21 @@ import {
     resolvePlutusScriptAddress,
     serializePlutusScript, Transaction, UTxO
 } from "@meshsdk/core";
-import DatumDTO from "../interfaces/DatumDTO";
+import RecurringPaymentDatum from "../interfaces/RecurringPaymentDatum";
 import {Address} from "@meshsdk/core-cst";
 import {applyCborEncoding} from "@meshsdk/core-csl";
-import RecurringPaymentDTO from "../interfaces/RecurringPaymentDTO";
+import RecurringPayment from "../interfaces/RecurringPayment";
 import AssetAmount from "../interfaces/AssetAmount";
 import {bytesToString} from "@scure/base";
 import {string} from "prop-types";
 import {hexToNumber} from "@harmoniclabs/crypto/dist/noble/abstract/utils";
-import GetScriptTransactionsResponse from "../interfaces/GetScriptTransactionsResponse";
+import TxInfo from "../interfaces/TxInfo";
 import {SCRIPT} from "./Constants";
 
 
 export default class TransactionUtil {
 
-    public static async createDatum(wallet : BrowserWallet, datumDTO : DatumDTO) : Promise<Data> {
+    public static async createDatum(wallet : BrowserWallet, datumDTO : RecurringPaymentDatum) : Promise<Data> {
         console.log(wallet)
         const address = (await wallet.getUsedAddress()).asBase();
         const paymentCredentialHash = address!.getPaymentCredential().hash.toString();
@@ -49,10 +49,11 @@ export default class TransactionUtil {
                 datumDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.paymentIntervalHours)]) : mConStr1([]), // 7
                 datumDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.maxPaymentDelayHours]) : mConStr1([]), // 8
                 BigInt(datumDTO.maxFeesLovelace) // 9
-            ]);
+            ]
+        );
     }
 
-    public static deserializeDatum(utxo : GetScriptTransactionsResponse) : RecurringPaymentDTO {
+    public static deserializeDatum(utxo : TxInfo) : RecurringPayment {
         const datum = deserializeDatum(utxo.tx_datum);
         let amountToSend : AssetAmount[] = [];
         for (let i = 0; i < datum.fields[2].length; i++) {
@@ -80,7 +81,7 @@ export default class TransactionUtil {
 
     }
 
-    public static async getUnsignedCancelTx(recurringPaymentDTO : RecurringPaymentDTO, scriptAddress : string, wallet : BrowserWallet) : Promise<Transaction> {
+    public static async getUnsignedCancelTx(recurringPaymentDTO : RecurringPayment, scriptAddress : string, wallet : BrowserWallet) : Promise<Transaction> {
         const utxo : UTxO =
             {
                 input: {

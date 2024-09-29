@@ -1,6 +1,6 @@
 import AssetAmount from "./AssetAmount";
 
-export default interface RecurringPaymentDTO {
+export default interface RecurringPayment {
     txHash: string,
     output_index: number,
     amounts: {quantity: string, unit : string}[],

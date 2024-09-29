@@ -1,13 +1,15 @@
 import type {NextApiRequest, NextApiResponse} from "next";
 import {BlockfrostProvider, BlockInfo} from "@meshsdk/core";
 
-// @ts-ignore
-
-
 interface Data {
     slot: number;
 }
 
+/**
+ * Returns the current slot.
+ * @param req
+ * @param res number of absolute slot
+ */
 export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>,

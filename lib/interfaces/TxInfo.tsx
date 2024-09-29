@@ -1,4 +1,4 @@
-export default interface GetScriptTransactionsResponse {
+export default interface TxInfo {
     tx_hash: string;
     tx_datum: string;
     output_index: number;

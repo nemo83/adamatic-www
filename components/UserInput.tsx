@@ -1,4 +1,4 @@
-import DatumDTO from "../lib/interfaces/DatumDTO";
+import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import {
     Avatar,
     Button, Chip,
@@ -17,7 +17,7 @@ import {DateTimePicker} from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 import {CONSTANTS} from "../lib/util/Constants";
 
-export default function UserInput(props: {datumDTO : DatumDTO, setDatumDTO :  (userInput: DatumDTO) => void}) {
+export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setDatumDTO :  (userInput: RecurringPaymentDatum) => void}) {
 
     const { datumDTO, setDatumDTO } = props;
     const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -49,12 +49,8 @@ export default function UserInput(props: {datumDTO : DatumDTO, setDatumDTO :  (u
     }
 
     useEffect(() => {
-        setDatumDTO({...datumDTO, startTime: startTime!.unix() * 1000});
-    }, [startTime]);
-
-    useEffect(() => {
-        setDatumDTO({...datumDTO, endTime: endTime ? endTime!.unix() * 1000 : undefined});
-    }, [endTime]);
+        setDatumDTO({...datumDTO, endTime: endTime ? endTime!.unix() * 1000 : undefined, startTime: startTime!.unix() * 1000});
+    }, [endTime, startTime]);
 
     return (
         <>

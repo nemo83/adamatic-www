@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import {BlockfrostProvider} from "@meshsdk/core";
 import axios from "axios";
-import GetScriptTransactionsResponse from "../../lib/interfaces/GetScriptTransactionsResponse";
+import TxInfo from "../../lib/interfaces/TxInfo";
 
 
 type Data = {
@@ -12,7 +12,10 @@ type Data = {
 interface BlockfrostTxInfo {
     output_index: number;
     inline_datum: string;
-    amount: {unit: string, quantity: string}[];
+    amount: {
+        unit: string,
+        quantity: string
+    }[];
     consumed_by_tx: string | null;
 }
 
@@ -30,7 +33,7 @@ async function getScriptTransactions(scriptAddress: string) {
 }
 
 async function fetchAddressTransaction(scriptAddress: string) {
-    const data : GetScriptTransactionsResponse[] = [];
+    const data : TxInfo[] = [];
     const scriptTransactions = await getScriptTransactions(scriptAddress);
     for (const tx of scriptTransactions.data) {
         const transactionUTxos = await getTxUtxos(tx.tx_hash);
@@ -41,6 +44,11 @@ async function fetchAddressTransaction(scriptAddress: string) {
     return data;
 }
 
+/**
+ * Get UTxOs for a given Script address, which aren't consumed yet
+ * @param req
+ * @param res
+ */
 export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>,
@@ -48,7 +56,6 @@ export default function handler(
 
     const scriptAddress = req.body;
     fetchAddressTransaction(scriptAddress).then((data) => {
-        console.log(data)
         res.status(200).json({utxo: JSON.stringify(data)});
     });
 }

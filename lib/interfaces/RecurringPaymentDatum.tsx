@@ -1,7 +1,7 @@
 import AssetAmount from "./AssetAmount";
-import TimingDTO from "./TimingDTO";
+import Timing from "./Timing";
 
-export default interface DatumDTO {
+export default interface RecurringPaymentDatum {
     amountToDeposit: number;
     assetAmounts: AssetAmount[];
     payAddress: string;
