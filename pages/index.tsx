@@ -4,7 +4,6 @@ import SetupRecurringPayment from "../components/SetupRecurringPayment";
 import Navbar from "../components/Navbar";
 import TransactionUtil from "../lib/util/TransactionUtil";
 import {SCRIPT} from "../lib/util/Constants";
-import UserInput from "../components/UserInput";
 
 export default function Home() {
 
@@ -14,7 +13,7 @@ export default function Home() {
     const [networkID, setNetworkID] = useState(0 as number);
     const [validNetwork, setValidNetwork] = useState(false as boolean);
     const [scriptAddress, setScriptAddress] = useState("" as string);
-
+    const [hoskyInput, setHoskyInput] = useState(true as boolean);
 
     useEffect(() => {
         if (connected) {
@@ -50,8 +49,8 @@ export default function Home() {
 
     return (
         <>
-            <Navbar network={network} isValidNetwork={validNetwork}/>
-            <SetupRecurringPayment scriptAddress={scriptAddress} hoskyInput={false} />
+            <Navbar network={network} isValidNetwork={validNetwork} hoskyInput={hoskyInput} setHoskyInput={setHoskyInput}/>
+            <SetupRecurringPayment scriptAddress={scriptAddress} hoskyInput={hoskyInput} />
         </>
     );
 }

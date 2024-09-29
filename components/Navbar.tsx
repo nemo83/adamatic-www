@@ -1,13 +1,13 @@
-import {AppBar, Box, Button, CssBaseline, Link, makeStyles, Toolbar, Typography} from "@mui/material";
+import {AppBar, Box, Button, CssBaseline, Link, makeStyles, Switch, Toolbar, Typography} from "@mui/material";
 import {CardanoWallet, useWallet} from "@meshsdk/react";
 import {BrowserWallet} from "@meshsdk/core";
 import React, {useState} from "react";
 import "@meshsdk/react/styles.css";
 
-export default function Navbar(props: {network : string, isValidNetwork : boolean}) {
+export default function Navbar(props: {network : string, isValidNetwork : boolean, hoskyInput: boolean, setHoskyInput : (hoskyInput: boolean) => void}) {
     const { connected } = useWallet();
 
-    const { network, isValidNetwork } = props;
+    const { network, isValidNetwork, setHoskyInput, hoskyInput } = props;
 
     return (
         <Box >
@@ -15,15 +15,21 @@ export default function Navbar(props: {network : string, isValidNetwork : boolea
                 {/*<CssBaseline />*/}
                 <Toolbar disableGutters
                          sx={{
-                             display: { xs: "flex" },
+                             display: {xs: "flex"},
                              flexDirection: "row",
                              justifyContent: "space-between"
                          }}>
-                    <Typography variant="h6" >
-                        Cardano recurring payments
-                    </Typography>
-                    <Typography>{isValidNetwork ? connected ? network : <>Network from wallet not supporter</> : <></>}</Typography>
-                    <CardanoWallet />
+                    <div>
+                        <Typography variant="h6">
+                            Cardano recurring payments
+                        </Typography>
+
+                        <Switch value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)}/>
+                        {hoskyInput ? "Hosky" : "General payment"}
+                    </div>
+                    <Typography>{isValidNetwork ? connected ? network : <>Network from wallet not
+                        supporter</> : <></>}</Typography>
+                    <CardanoWallet/>
                 </Toolbar>
             </AppBar>
         </Box>

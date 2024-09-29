@@ -15,7 +15,6 @@ import {SCRIPT} from "../lib/util/Constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 
-
 export default function SetupRecurringPayment (props: {
     scriptAddress: string,
     hoskyInput : boolean,
@@ -25,9 +24,11 @@ export default function SetupRecurringPayment (props: {
     const { wallet, connected } = useWallet();
 
     const [ txHash, setTxHash ] = useState("" as string);
-    const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>({amountToDeposit: 0, "assetAmounts": [], "payAddress": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0});
+    const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>(hoskyInput ?
+        {amountToDeposit: 0, "assetAmounts": [], "payAddress": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0}
+        :
+        {amountToDeposit: 0, "assetAmounts": [], "payAddress": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0});
     const [datum, setDatum] = useState<Data>();
-
 
     useEffect(() => {
         if(connected) {
@@ -40,6 +41,17 @@ export default function SetupRecurringPayment (props: {
         }
 
     }, [datumDTO, scriptAddress]);
+
+    useEffect(() => {
+        setDatumDTO({...datumDTO,
+            amountToDeposit: 2000000,
+            assetAmounts: [{
+                assetName: "484f534b59",
+                policyId: "a0028f350aaabe0545fdcb56b039bfb08e4bb4d8c4d7c3c7d481c235",
+                amount: 1000000
+            }]
+        });
+    }, [hoskyInput]);
 
     async function signAndSubmit() {
         if (wallet && datum) {
@@ -64,11 +76,7 @@ export default function SetupRecurringPayment (props: {
         <Stack spacing={1} alignContent={"center"}>
             <Grid container spacing={3} sx={{padding: '5'}}>
                 <Grid size={6}>
-                    {hoskyInput ?
-                        <HoskyUserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO}/> :
-                        <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO}/>
-                    }
-
+                        <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO} isHoskyInput={hoskyInput} />
                 </Grid>
                 <Grid size={6}>
                     {connected ?
