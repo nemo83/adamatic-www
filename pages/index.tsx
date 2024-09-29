@@ -1,17 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {CardanoWallet, useWallet} from "@meshsdk/react";
-import {
-    AppBar,
-    Box,
-    Toolbar, Typography,
-} from "@mui/material";
+import { useWallet } from "@meshsdk/react";
 import SetupRecurringPayment from "../components/SetupRecurringPayment";
 import Navbar from "../components/Navbar";
 import TransactionUtil from "../lib/util/TransactionUtil";
 import {SCRIPT} from "../lib/util/Constants";
-import {Data} from "@meshsdk/core";
-import PaymentsTable from "../components/PaymentsTable";
-import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
+import UserInput from "../components/UserInput";
 
 export default function Home() {
 
@@ -58,8 +51,7 @@ export default function Home() {
     return (
         <>
             <Navbar network={network} isValidNetwork={validNetwork}/>
-
-            <SetupRecurringPayment scriptAddress={scriptAddress} />
+            <SetupRecurringPayment scriptAddress={scriptAddress} hoskyInput={false} />
         </>
     );
 }

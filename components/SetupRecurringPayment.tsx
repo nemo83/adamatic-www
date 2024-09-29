@@ -1,35 +1,27 @@
 import {
     Button,
-    Paper,
     Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     Tooltip
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import UserInput from "./UserInput";
 import {CodeBlock} from "react-code-blocks";
-import {Delete, Send} from "@mui/icons-material";
+import {Send} from "@mui/icons-material";
 import React, {useEffect, useState} from "react";
 import {useWallet} from "@meshsdk/react";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import {Data, Recipient, Transaction} from "@meshsdk/core";
 import TransactionUtil from "../lib/util/TransactionUtil";
 import {SCRIPT} from "../lib/util/Constants";
-import TxInfo from "../lib/interfaces/TxInfo";
-import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import PaymentsTable from "./PaymentsTable";
+import UserInput from "./UserInput";
 
 
 export default function SetupRecurringPayment (props: {
-    scriptAddress: string
+    scriptAddress: string,
+    hoskyInput : boolean,
     }) {
 
-    const { scriptAddress} = props;
+    const { scriptAddress, hoskyInput} = props;
     const { wallet, connected } = useWallet();
 
     const [ txHash, setTxHash ] = useState("" as string);
@@ -72,7 +64,11 @@ export default function SetupRecurringPayment (props: {
         <Stack spacing={1} alignContent={"center"}>
             <Grid container spacing={3} sx={{padding: '5'}}>
                 <Grid size={6}>
-                    <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO}/>
+                    {hoskyInput ?
+                        <HoskyUserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO}/> :
+                        <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO}/>
+                    }
+
                 </Grid>
                 <Grid size={6}>
                     {connected ?

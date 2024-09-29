@@ -16,6 +16,16 @@ import AssetAmount from "../lib/interfaces/AssetAmount";
 import {DateTimePicker} from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 import {CONSTANTS} from "../lib/util/Constants";
+import {
+    DepositAda,
+    EndTime,
+    MaxFeesAda,
+    MaxPaymentDelayHours,
+    PayeeAddress,
+    PaymentIntervalHours,
+    StartTime
+} from "./UserInputComponents";
+import {end} from "@popperjs/core";
 
 export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setDatumDTO :  (userInput: RecurringPaymentDatum) => void}) {
 
@@ -56,41 +66,18 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         <>
             Set up a recurring Payment:
             <Stack spacing={1} style={{paddingTop: "10px"}}>
-                <Tooltip title={"The amount of ADA to deposit into the smart contract"}>
-                <TextField label={"Amount To Deposit"} type={"number"} value={inputLovelace ? datumDTO.amountToDeposit : datumDTO.amountToDeposit / CONSTANTS.ADA_CONVERSION} name={"amountToDeposit"} onChange={handleAdaInputChange}
-                    slotProps={{
-                        input: {
-                            endAdornment: <Button onClick={() => setInputLovelae(!inputLovelace)}>{inputLovelace? "Lovelace" : "Ada"}</Button>,
-                        },
-                    }}
-                />
-                </Tooltip>
-                <Tooltip title={"The maximum amount of fees ADA spent for the recurring payments"}>
-                    <TextField label={"Max Fees in Lovelace"}  type={"number"} value={inputLovelace ? datumDTO.maxFeesLovelace : datumDTO.maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"} onChange={handleAdaInputChange}
-                               slotProps={{
-                                   input: {
-                                       endAdornment: <Button onClick={() => setInputLovelae(!inputLovelace)}>{inputLovelace? "Lovelace" : "Ada"}</Button>,
-                                   },
-                               }}
-                    />
-                </Tooltip>
-                <Tooltip title={"The address of the payee. This address will receive the payments."}>
-                    <TextField label={"Payee Address"} value={datumDTO.payAddress} name={"payAddress"} onChange={handleInputChange}/>
-                </Tooltip>
-                <Tooltip title={"The Time of the first payment"}>
-                    <DateTimePicker label={"StartTime"} value={startTime} onChange={(newValue) => setStartTime(newValue)}/>
-                </Tooltip>
-                <Tooltip title={"The time of the last payment. If empty the payments will continue until there is no ADA left."}>
-                    <DateTimePicker label={"Endtime (optional)"} value={endTime} onChange={(newValue) => setEndTime(newValue)}/>
-                </Tooltip>
+                <DepositAda inputLovelace={inputLovelace} setInputLovelae={setInputLovelae} datumDTO={datumDTO} handleAdaInputChange={handleAdaInputChange} />
+                <MaxFeesAda inputLovelace={inputLovelace} setInputLovelae={setInputLovelae} datumDTO={datumDTO} handleAdaInputChange={handleAdaInputChange} />
+                <PayeeAddress datumDTO={datumDTO} handleInputChange={handleInputChange} />
+
+                <StartTime startTime={startTime} setStartTime={setStartTime} />
+                <EndTime endTime={endTime} setEndTime={setEndTime} />
+
                 <div>
-                    <Tooltip title={"The interval in hours between the payments"}>
-                    <TextField style={{width: "50%"}} label={"Payment Interval Hours"} type={"number"} value={datumDTO.paymentIntervalHours} name={"paymentIntervalHours"} onChange={handleInputChange} />
-                    </Tooltip>
-                    <Tooltip title={"The maximum delay in hours for a payment to be made."} >
-                        <TextField style={{width: "50%"}} label={"Max Payment Delay Hours"} type={"number"} value={datumDTO.maxPaymentDelayHours} name={"maxPaymentDelayHours"} onChange={handleInputChange} />
-                    </Tooltip>
+                    <PaymentIntervalHours datumDTO={datumDTO} handleInputChange={handleInputChange} />
+                    <MaxPaymentDelayHours datumDTO={datumDTO} handleInputChange={handleInputChange} />
                 </div>
+
                 <Tooltip title={"The assets to pay each payment."}>
                     <Button variant="outlined" startIcon={<Add/>} onClick={handleClickOpen}>
                         Add Asset
