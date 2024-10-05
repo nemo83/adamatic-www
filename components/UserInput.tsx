@@ -6,7 +6,7 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle,
+    DialogTitle, InputAdornment,
     Stack,
     TextField, Tooltip
 } from "@mui/material";
@@ -20,6 +20,8 @@ import {CONSTANTS} from "../lib/util/Constants";
 export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setDatumDTO :  (userInput: RecurringPaymentDatum) => void, isHoskyInput : boolean}) {
 
     const { datumDTO, setDatumDTO, isHoskyInput } = props;
+    const [currentEpochStart, setCurrentEpochStart] = React.useState<Dayjs>(dayjs());
+    const [currentEpochNumber, setCurrentEpochNumber] = React.useState<number>(0);
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
@@ -36,6 +38,16 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         setDatumDTO({...datumDTO, [name]: inputLovelace ? Number(value) : Number(value) * CONSTANTS.ADA_CONVERSION})
     }
 
+    function handleEpochChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.target;
+        if(name === 'startEpoch') {
+            setStartTime(epochToTime(Number(value)));
+        }
+        if (name === 'endEpoch') {
+            setEndTime(epochToTime(Number(value)));
+        }
+    }
+
     function handleClickOpen () {
         setDialogOpen(true);
     }
@@ -43,6 +55,30 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     function handleClose() {
         setDialogOpen(false);
     }
+
+    function timeToEpoch(time: Dayjs | null) {
+        if(time == null) {
+            return null;
+        }
+        let difference = Math.floor(time!.diff(currentEpochStart, 'days') / 5);
+        // need this special case because how difference is calculated for days
+        // I could calculate it with minutes, it would be more precise
+        if(difference == 0 && time?.isBefore(currentEpochStart)) {
+            difference = -1;
+        }
+        return currentEpochNumber + difference;
+    }
+
+    function epochToTime(epoch: number | null) {
+        return currentEpochStart.add((epoch! - currentEpochNumber) * 5, 'days');
+    }
+
+    useEffect(() => {
+        fetch('api/GetCurrentEpoch').then(response => response.json()).then(data => {
+            setCurrentEpochNumber(data.epoch);
+            setCurrentEpochStart(dayjs.unix(Number(data.startTimestamp)));
+        });
+    }, []);
 
     useEffect(() => {
         setDatumDTO({...datumDTO, endTime: endTime ? endTime!.unix() * 1000 : undefined, startTime: startTime!.unix() * 1000});
@@ -75,15 +111,42 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                 <Tooltip title={"The address of the payee. This address will receive the payments."}>
                     <TextField label={"Payee Address"} value={datumDTO.payAddress} name={"payAddress"} onChange={handleInputChange}/>
                 </Tooltip>
+                {
+                    isHoskyInput ?
+                        <Tooltip title={"The address of the owner of the smart contract. This address will be able to cancel the smart contract."}>
+                            <TextField type={"number"} label={"Start Epoch"} value={timeToEpoch(startTime)} name={"startEpoch"} onChange={handleEpochChange}
 
-                <Tooltip title={"The Time of the first payment"}>
-                    <DateTimePicker label={"StartTime"} value={startTime} onChange={(newValue) => setStartTime(newValue)}/>
-                </Tooltip>
+                                       slotProps={{
+                                           input: {
+                                               endAdornment: <InputAdornment position="end">{startTime!.format('DD.MM.YYYY HH:mm')}</InputAdornment>,
+                                           },
+                                       }}
+                            />
+                        </Tooltip>
+                        :
+                        <Tooltip title={"The Time of the first payment"}>
+                            <DateTimePicker label={"StartTime"} value={startTime} onChange={(newValue) => setStartTime(newValue)}/>
+                        </Tooltip>
+                }
 
 
-                <Tooltip title={"The time of the last payment. If empty the payments will continue until there is no ADA left."}>
-                    <DateTimePicker label={"Endtime (optional)"} value={endTime} onChange={(newValue) => setEndTime(newValue)}/>
-                </Tooltip>
+                {
+                    isHoskyInput ?
+                        <Tooltip title={"The address of the owner of the smart contract. This address will be able to cancel the smart contract."}>
+                            <TextField type={"number"} label={"Endtime (optional)"} value={timeToEpoch(endTime)} name={"endEpoch"} onChange={handleEpochChange}
+                                       slotProps={{
+                                           input: {
+                                               endAdornment: <InputAdornment position="end">{endTime ? endTime!.format('DD.MM.YYYY HH:mm') : ''}</InputAdornment>,
+                                           },
+                                       }}
+                            />
+                        </Tooltip>
+                        :
+                        <Tooltip title={"The time of the last payment. If empty the payments will continue until there is no ADA left."}>
+                            <DateTimePicker label={"Endtime (optional)"} value={endTime} onChange={(newValue) => setEndTime(newValue)}/>
+                        </Tooltip>
+                }
+
 
                 <div>
                     <Tooltip title={"The interval in hours between the payments"}>
