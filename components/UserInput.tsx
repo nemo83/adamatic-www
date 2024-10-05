@@ -133,7 +133,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                 {
                     isHoskyInput ?
                         <Tooltip title={"The address of the owner of the smart contract. This address will be able to cancel the smart contract."}>
-                            <TextField type={"number"} label={"Endtime (optional)"} value={timeToEpoch(endTime)} name={"endEpoch"} onChange={handleEpochChange}
+                            <TextField type={"number"} label={"Endtime (optional)"} value={endTime ? timeToEpoch(endTime) : ''} name={"endEpoch"} onChange={handleEpochChange}
                                        slotProps={{
                                            input: {
                                                endAdornment: <InputAdornment position="end">{endTime ? endTime!.format('DD.MM.YYYY HH:mm') : ''}</InputAdornment>,
@@ -149,18 +149,26 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
 
 
                 <div>
-                    <Tooltip title={"The interval in hours between the payments"}>
-                        <TextField style={{width: "50%"}} label={"Payment Interval Hours"} type={"number"} value={datumDTO.paymentIntervalHours} name={"paymentIntervalHours"} onChange={handleInputChange} />
-                    </Tooltip>
+                    {isHoskyInput ?
+                            <Tooltip title={"The interval in epochs between the payments"}>
+                                <TextField style={{width: "50%"}} label={"Payment Interval Epochs"} type={"number"} value={datumDTO.paymentIntervalHours} name={"paymentIntervalHours"} onChange={handleInputChange} />
+                            </Tooltip>
+                        :
+                            <Tooltip title={"The interval in hours between the payments"}>
+                                <TextField style={{width: "50%"}} label={"Payment Interval Hours"} type={"number"} value={datumDTO.paymentIntervalHours} name={"paymentIntervalHours"} onChange={handleInputChange} />
+                            </Tooltip>
+                    }
                     <Tooltip title={"The maximum delay in hours for a payment to be made."} >
                         <TextField style={{width: "50%"}} label={"Max Payment Delay Hours"} type={"number"} value={datumDTO.maxPaymentDelayHours} name={"maxPaymentDelayHours"} onChange={handleInputChange} />
                     </Tooltip>
                 </div>
 
                 <Tooltip title={"The assets to pay each payment."}>
-                    <Button disabled={isHoskyInput} variant="outlined" startIcon={<Add/>} onClick={handleClickOpen}>
-                        Add Asset
-                    </Button>
+                    <span> {/*I need to add a span to make the tooltip work eventhough the button is disabled. Mui is listening to events, which aren't triggered on disabled buttons.*/}
+                        <Button disabled={isHoskyInput} variant="outlined" startIcon={<Add/>} onClick={handleClickOpen}>
+                            Add Asset
+                        </Button>
+                    </span>
                 </Tooltip>
                 <Dialog open={dialogOpen} onClose={handleClose}
                     PaperProps={{
