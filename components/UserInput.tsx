@@ -28,7 +28,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
     const [endTime, setEndTime] = React.useState<Dayjs | null>(null);
-    const [inputLovelace, setInputLovelae] = React.useState<boolean>(true)
+    const [inputLovelace, setInputLovelae] = React.useState<boolean>(false)
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
@@ -48,16 +48,6 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         setEndTime(startTime!.add(numPayments * 5 * Number(value), 'days'));
     }
 
-    useEffect(() => {
-        if(isHoskyInput) {
-            const numPayments = Math.floor(Number(datumDTO.amountToDeposit) / CONSTANTS.COSTS_PER_EPOCH);
-            setEndTime(startTime!.add(numPayments * 5, 'days'));
-            const suggestedFees = numPayments * (CONSTANTS.SUGGESTED_TX_FEE + CONSTANTS.CUT);
-            setDatumDTO({...datumDTO, maxFeesLovelace: suggestedFees});
-        }
-    }, [datumDTO.amountToDeposit]);
-
-
     function handleEpochChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
         if(name === 'startEpoch') {
@@ -70,14 +60,6 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         if (name === 'endEpoch') {
             setEndTime(epochToTime(Number(value)));
         }
-    }
-
-    function handleClickOpen () {
-        setDialogOpen(true);
-    }
-
-    function handleClose() {
-        setDialogOpen(false);
     }
 
     function timeToEpoch(time: Dayjs | null) {
@@ -96,6 +78,15 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     function epochToTime(epoch: number | null) {
         return currentEpochStart.add((epoch! - currentEpochNumber) * 5, 'days');
     }
+
+    useEffect(() => {
+        if(isHoskyInput) {
+            const numPayments = Math.floor(Number(datumDTO.amountToDeposit) / CONSTANTS.COSTS_PER_EPOCH);
+            setEndTime(startTime!.add(numPayments * 5, 'days'));
+            const suggestedFees = numPayments * (CONSTANTS.SUGGESTED_TX_FEE + CONSTANTS.CUT);
+            setDatumDTO({...datumDTO, maxFeesLovelace: suggestedFees});
+        }
+    }, [datumDTO.amountToDeposit]);
 
     useEffect(() => {
         fetch('api/GetCurrentEpoch').then(response => response.json()).then(data => {
@@ -189,12 +180,12 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
 
                 <Tooltip title={"The assets to pay each payment."}>
                     <span> {/*I need to add a span to make the tooltip work eventhough the button is disabled. Mui is listening to events, which aren't triggered on disabled buttons.*/}
-                        <Button disabled={isHoskyInput} variant="outlined" startIcon={<Add/>} onClick={handleClickOpen}>
+                        <Button disabled={isHoskyInput} variant="outlined" startIcon={<Add/>} onClick={() => setDialogOpen(true)}>
                             Add Asset
                         </Button>
                     </span>
                 </Tooltip>
-                <Dialog open={dialogOpen} onClose={handleClose}
+                <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}
                     PaperProps={{
                         component: 'form',
                         onSubmit: (event : React.FormEvent<HTMLFormElement>) => {
@@ -209,7 +200,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                             const arr = datumDTO.assetAmounts;
                             arr.push(asset);
                             setDatumDTO({...datumDTO, assetAmounts: arr});
-                            handleClose();
+                            setDialogOpen(false);
                         },
                 }}>
                     <DialogTitle>Add Assets</DialogTitle>
@@ -253,7 +244,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
                         <Button type="submit">Add</Button>
                     </DialogActions>
                 </Dialog>
