@@ -16,12 +16,14 @@ import AssetAmount from "../lib/interfaces/AssetAmount";
 import {DateTimePicker} from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 import {CONSTANTS} from "../lib/util/Constants";
+import TransactionUtil from "../lib/util/TransactionUtil";
 
 export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setDatumDTO :  (userInput: RecurringPaymentDatum) => void, isHoskyInput : boolean}) {
 
     const { datumDTO, setDatumDTO, isHoskyInput } = props;
     const [currentEpochStart, setCurrentEpochStart] = React.useState<Dayjs>(dayjs());
     const [currentEpochNumber, setCurrentEpochNumber] = React.useState<number>(0);
+    const [paymentIntervalEpochs, setPaymentIntervalEpochs] = React.useState<number>(1);
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
@@ -38,10 +40,32 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         setDatumDTO({...datumDTO, [name]: inputLovelace ? Number(value) : Number(value) * CONSTANTS.ADA_CONVERSION})
     }
 
+    function handlePaymentInterval(event: React.ChangeEvent<HTMLInputElement>) {
+        const { value } = event.target;
+        setPaymentIntervalEpochs(Number(value));
+        setDatumDTO({...datumDTO, paymentIntervalHours: Number(value) * CONSTANTS.HOURS_PER_EPOCH});
+        const numPayments = Math.floor(Number(datumDTO.amountToDeposit) / CONSTANTS.COSTS_PER_EPOCH);
+        setEndTime(startTime!.add(numPayments * 5 * Number(value), 'days'));
+    }
+
+    useEffect(() => {
+        if(isHoskyInput) {
+            const numPayments = Math.floor(Number(datumDTO.amountToDeposit) / CONSTANTS.COSTS_PER_EPOCH);
+            setEndTime(startTime!.add(numPayments * 5, 'days'));
+            const suggestedFees = numPayments * (CONSTANTS.SUGGESTED_TX_FEE + CONSTANTS.CUT);
+            setDatumDTO({...datumDTO, maxFeesLovelace: suggestedFees});
+        }
+    }, [datumDTO.amountToDeposit]);
+
+
     function handleEpochChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
         if(name === 'startEpoch') {
             setStartTime(epochToTime(Number(value)));
+            if (isHoskyInput) {
+                const numPayments = Math.floor(Number(datumDTO.amountToDeposit) / CONSTANTS.COSTS_PER_EPOCH);
+                setEndTime(epochToTime(Number(value)).add(numPayments * 5 * paymentIntervalEpochs, 'days'));
+            }
         }
         if (name === 'endEpoch') {
             setEndTime(epochToTime(Number(value)));
@@ -90,7 +114,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
             <Stack spacing={1} style={{paddingTop: "10px"}}>
                 {/*<DepositAda inputLovelace={inputLovelace} setInputLovelae={setInputLovelae} datumDTO={datumDTO} handleAdaInputChange={handleAdaInputChange} />*/}
                 <Tooltip title={"The amount of ADA to deposit into the smart contract"}>
-                    <TextField disabled={isHoskyInput} label={"Amount To Deposit"} type={"number"} value={inputLovelace ? datumDTO.amountToDeposit : datumDTO.amountToDeposit / CONSTANTS.ADA_CONVERSION} name={"amountToDeposit"} onChange={handleAdaInputChange}
+                    <TextField label={"Amount To Deposit"} type={"number"} value={inputLovelace ? datumDTO.amountToDeposit : datumDTO.amountToDeposit / CONSTANTS.ADA_CONVERSION} name={"amountToDeposit"} onChange={handleAdaInputChange}
                                slotProps={{
                                    input: {
                                        endAdornment: <Button onClick={() => setInputLovelae(!inputLovelace)}>{inputLovelace? "Lovelace" : "Ada"}</Button>,
@@ -99,7 +123,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                     />
                 </Tooltip>
                 <Tooltip title={"The maximum amount of fees ADA spent for the recurring payments"}>
-                    <TextField label={"Max Fees in Lovelace"}  type={"number"} value={inputLovelace ? datumDTO.maxFeesLovelace : datumDTO.maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"} onChange={handleAdaInputChange}
+                    <TextField disabled={isHoskyInput} label={"Max Fees in Lovelace"}  type={"number"} value={inputLovelace ? datumDTO.maxFeesLovelace : datumDTO.maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"} onChange={handleAdaInputChange}
                                slotProps={{
                                    input: {
                                        endAdornment: <Button onClick={() => setInputLovelae(!inputLovelace)}>{inputLovelace? "Lovelace" : "Ada"}</Button>,
@@ -133,7 +157,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                 {
                     isHoskyInput ?
                         <Tooltip title={"The address of the owner of the smart contract. This address will be able to cancel the smart contract."}>
-                            <TextField type={"number"} label={"Endtime (optional)"} value={endTime ? timeToEpoch(endTime) : ''} name={"endEpoch"} onChange={handleEpochChange}
+                            <TextField disabled={true} type={"number"} label={"Endtime (optional)"} value={endTime ? timeToEpoch(endTime) : ''} name={"endEpoch"} onChange={handleEpochChange}
                                        slotProps={{
                                            input: {
                                                endAdornment: <InputAdornment position="end">{endTime ? endTime!.format('DD.MM.YYYY HH:mm') : ''}</InputAdornment>,
@@ -151,7 +175,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                 <div>
                     {isHoskyInput ?
                             <Tooltip title={"The interval in epochs between the payments"}>
-                                <TextField style={{width: "50%"}} label={"Payment Interval Epochs"} type={"number"} value={datumDTO.paymentIntervalHours} name={"paymentIntervalHours"} onChange={handleInputChange} />
+                                <TextField style={{width: "50%"}} label={"Payment Interval Epochs"} type={"number"} value={paymentIntervalEpochs} name={"paymentIntervalHours"} onChange={handlePaymentInterval} />
                             </Tooltip>
                         :
                             <Tooltip title={"The interval in hours between the payments"}>

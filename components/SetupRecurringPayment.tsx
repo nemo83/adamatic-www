@@ -11,7 +11,7 @@ import {useWallet} from "@meshsdk/react";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import {Data, Recipient, Transaction} from "@meshsdk/core";
 import TransactionUtil from "../lib/util/TransactionUtil";
-import {SCRIPT} from "../lib/util/Constants";
+import {CONSTANTS, SCRIPT} from "../lib/util/Constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 
@@ -44,12 +44,12 @@ export default function SetupRecurringPayment (props: {
 
     useEffect(() => {
         setDatumDTO({...datumDTO,
-            amountToDeposit: 2000000,
             assetAmounts: [{
                 assetName: "484f534b59",
                 policyId: "a0028f350aaabe0545fdcb56b039bfb08e4bb4d8c4d7c3c7d481c235",
-                amount: 1000000
-            }]
+                amount: CONSTANTS.ASSET_AMOUNT_HOSKY
+            }],
+            paymentIntervalHours: 120
         });
     }, [hoskyInput]);
 

@@ -17,7 +17,7 @@ import {bytesToString} from "@scure/base";
 import {string} from "prop-types";
 import {hexToNumber} from "@harmoniclabs/crypto/dist/noble/abstract/utils";
 import TxInfo from "../interfaces/TxInfo";
-import {SCRIPT} from "./Constants";
+import {CONSTANTS, SCRIPT} from "./Constants";
 
 
 export default class TransactionUtil {
@@ -115,5 +115,9 @@ export default class TransactionUtil {
         const networkID = await wallet.getNetworkId();
 
         return serializePlutusScript(script, stakeCredentialHash, networkID, false).address;
+    }
+
+    public static getSuggestedFees(numPayments : number, amountToSend = 2000000) : number {
+        return numPayments * (amountToSend + CONSTANTS.SUGGESTED_TX_FEE * CONSTANTS.CUT)
     }
 }
