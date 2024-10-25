@@ -2,9 +2,9 @@ import AssetAmount from "./AssetAmount";
 import Timing from "./Timing";
 
 export default interface RecurringPaymentDatum {
-    amountToDeposit: number;
-    assetAmounts: AssetAmount[];
-    payAddress: string;
+    owner: string;
+    amountToSend: AssetAmount[];
+    payee: string;
     startTime: number;
     endTime?: number;
     paymentIntervalHours?: number;

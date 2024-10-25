@@ -9,53 +9,95 @@ import {
     serializePlutusScript, Transaction, UTxO
 } from "@meshsdk/core";
 import RecurringPaymentDatum from "../interfaces/RecurringPaymentDatum";
-import {Address} from "@meshsdk/core-cst";
-import {applyCborEncoding} from "@meshsdk/core-csl";
+import { Address, AddressType } from "@meshsdk/core-cst";
 import RecurringPayment from "../interfaces/RecurringPayment";
 import AssetAmount from "../interfaces/AssetAmount";
-import {bytesToString} from "@scure/base";
-import {string} from "prop-types";
-import {hexToNumber} from "@harmoniclabs/crypto/dist/noble/abstract/utils";
 import TxInfo from "../interfaces/TxInfo";
-import {CONSTANTS, SCRIPT} from "./Constants";
+import { CONSTANTS, SCRIPT } from "./Constants";
 
 
 export default class TransactionUtil {
 
-    public static async createDatum(wallet : BrowserWallet, datumDTO : RecurringPaymentDatum) : Promise<Data> {
-        console.log(wallet)
-        const address = (await wallet.getUsedAddress()).asBase();
-        const paymentCredentialHash = address!.getPaymentCredential().hash.toString();
-        const stakeCredentialHash = address!.getStakeCredential().hash.toString();
-        let payeeCredentialHash;
-        try {
-            payeeCredentialHash = datumDTO.payAddress ? Address.fromString(datumDTO.payAddress)!.asBase()!.getPaymentCredential().hash.toString() : "";
-        } catch (TypeError) {
-            payeeCredentialHash = "ERROR: Wrong Payee Address!";
-        }
+    public static async createDatum(wallet: BrowserWallet, datumDTO: RecurringPaymentDatum): Promise<Data> {
 
-        return mConStr0(
-            [
-                paymentCredentialHash, // 0
-                mConStr(0,[stakeCredentialHash]), // 1
+        try {
+
+            console.log('datum: ' + JSON.stringify(datumDTO));
+
+            if (datumDTO.owner === "" || datumDTO.payee === "") {
+                return mConStr(0, [])
+            }
+
+            const owner = Address.fromBech32(datumDTO.owner);
+            const payee = Address.fromBech32(datumDTO.payee);
+
+            let payeeCredentialHash;
+            try {
+                payeeCredentialHash = datumDTO.payee ? Address.fromString(datumDTO.payee)!.asBase()!.getPaymentCredential().hash.toString() : "";
+            } catch (TypeError) {
+                payeeCredentialHash = "ERROR: Wrong Payee Address!";
+            }
+
+            return mConStr0(
                 [
-                    // TODO currently it's only possible to send one asset, could be extended in the future
-                    mConStr(0,datumDTO.assetAmounts.length > 0 ? [ datumDTO.assetAmounts[0].policyId, datumDTO.assetAmounts[0].assetName, BigInt(datumDTO.assetAmounts[0].amount)] : []) // 2
-                ],
-                payeeCredentialHash, // 3
-                mConStr1([]), // 4
-                BigInt(datumDTO.startTime), // 5
-                datumDTO.endTime !== undefined ? mConStr0([datumDTO.endTime]) : mConStr1([]), //6
-                datumDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.paymentIntervalHours)]) : mConStr1([]), // 7
-                datumDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.maxPaymentDelayHours]) : mConStr1([]), // 8
-                BigInt(datumDTO.maxFeesLovelace) // 9
-            ]
-        );
+                    TransactionUtil.toOnchainAddress(owner),
+                    [
+                        // TODO currently it's only possible to send one asset, could be extended in the future
+                        mConStr(0, datumDTO.amountToSend.length > 0 ? [datumDTO.amountToSend[0].policyId, datumDTO.amountToSend[0].assetName, BigInt(datumDTO.amountToSend[0].amount)] : []) // 2
+                    ],
+                    TransactionUtil.toOnchainAddress(payee),
+                    BigInt(datumDTO.startTime), // 5
+                    datumDTO.endTime !== undefined ? mConStr0([datumDTO.endTime]) : mConStr1([]), //6
+                    datumDTO.paymentIntervalHours !== undefined ? mConStr0([BigInt(datumDTO.paymentIntervalHours)]) : mConStr1([]), // 7
+                    datumDTO.maxPaymentDelayHours !== undefined ? mConStr0([datumDTO.maxPaymentDelayHours]) : mConStr1([]), // 8
+                    BigInt(datumDTO.maxFeesLovelace) // 9
+                ]
+            );
+        } catch (error) {
+            console.error('could not create datum' + error);
+            return mConStr(0, []);
+        }
     }
 
-    public static deserializeDatum(utxo : TxInfo) : RecurringPayment {
+    public static toOnchainAddress(address: Address): Data {
+        try {
+            console.log('address: ' + address.toBech32().toString());
+            const addressType = address.getType();
+
+            let paymentCredentialHash = "";
+            let stakeCredentialHashOpt = "";
+            switch (address.getType()) {
+                case AddressType.BasePaymentKeyStakeKey:
+                case AddressType.BasePaymentScriptStakeKey:
+                case AddressType.BasePaymentKeyStakeScript:
+                case AddressType.BasePaymentScriptStakeScript:
+                    const baseAddress = address.asBase()!;
+                    paymentCredentialHash = baseAddress.getPaymentCredential().hash.toString();
+                    stakeCredentialHashOpt = baseAddress.getStakeCredential().hash.toString();
+                    break;
+                case AddressType.EnterpriseKey:
+                case AddressType.EnterpriseScript:
+                    const enterpriseAddress = address.asEnterprise()!;
+                    paymentCredentialHash = enterpriseAddress.getPaymentCredential().hash.toString();
+                    break;
+                default:
+                // code block
+            }
+
+            return mConStr(0, [
+                mConStr(0, [paymentCredentialHash]),
+                mConStr(0, [mConStr(0, [stakeCredentialHashOpt ? mConStr(0, [stakeCredentialHashOpt]) : mConStr(1, [])])]),
+            ]);
+        } catch (error) {
+            console.error('could not create onchain address' + error);
+            return mConStr(0, []);
+        }
+
+    }
+
+    public static deserializeDatum(utxo: TxInfo): RecurringPayment {
         const datum = deserializeDatum(utxo.tx_datum);
-        let amountToSend : AssetAmount[] = [];
+        let amountToSend: AssetAmount[] = [];
         for (let i = 0; i < datum.fields[2].length; i++) {
             amountToSend.push({
                 policyId: datum.fields[2][i].fields[0],
@@ -81,21 +123,21 @@ export default class TransactionUtil {
 
     }
 
-    public static async getUnsignedCancelTx(recurringPaymentDTO : RecurringPayment, scriptAddress : string, wallet : BrowserWallet) : Promise<Transaction> {
-        const utxo : UTxO =
-            {
-                input: {
-                    txHash: recurringPaymentDTO.txHash,
-                    outputIndex: recurringPaymentDTO.output_index
-                },
-                output: {
-                    address: scriptAddress,
-                    amount: recurringPaymentDTO.amounts
-                }
+    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, scriptAddress: string, wallet: BrowserWallet): Promise<Transaction> {
+        const utxo: UTxO =
+        {
+            input: {
+                txHash: recurringPaymentDTO.txHash,
+                outputIndex: recurringPaymentDTO.output_index
+            },
+            output: {
+                address: scriptAddress,
+                amount: recurringPaymentDTO.amounts
             }
+        }
         const response = await fetch('api/GetCurrentSlot');
-        const slot : number = (await response.json()).slot;
-        return new Transaction({initiator: wallet})
+        const slot: number = (await response.json()).slot;
+        return new Transaction({ initiator: wallet })
             .setRequiredSigners([(await wallet.getUsedAddress()).toBech32().toString()])
             .setTimeToStart('' + slot)
             .setTimeToExpire('' + (slot + 200))
@@ -109,7 +151,7 @@ export default class TransactionUtil {
             });
     }
 
-    public static async getScriptAddressWithStakeCredential(wallet : BrowserWallet, script : PlutusScript) : Promise<string> {
+    public static async getScriptAddressWithStakeCredential(wallet: BrowserWallet, script: PlutusScript): Promise<string> {
         const address = (await wallet.getUsedAddress()).asBase();
         const stakeCredentialHash = address!.getStakeCredential().hash.toString();
         const networkID = await wallet.getNetworkId();
@@ -117,7 +159,7 @@ export default class TransactionUtil {
         return serializePlutusScript(script, stakeCredentialHash, networkID, false).address;
     }
 
-    public static getSuggestedFees(numPayments : number, amountToSend = 2000000) : number {
+    public static getSuggestedFees(numPayments: number, amountToSend = 2000000): number {
         return numPayments * (amountToSend + CONSTANTS.SUGGESTED_TX_FEE * CONSTANTS.CUT)
     }
 }

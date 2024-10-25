@@ -25,9 +25,9 @@ export default function SetupRecurringPayment (props: {
 
     const [ txHash, setTxHash ] = useState("" as string);
     const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>(hoskyInput ?
-        {amountToDeposit: 0, "assetAmounts": [], "payAddress": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0}
+        {owner: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0}
         :
-        {amountToDeposit: 0, "assetAmounts": [], "payAddress": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0});
+        {owner: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0});
     const [datum, setDatum] = useState<Data>();
 
     useEffect(() => {
@@ -44,9 +44,9 @@ export default function SetupRecurringPayment (props: {
 
     useEffect(() => {
         setDatumDTO({...datumDTO,
-            assetAmounts: [{
-                assetName: "484f534b59",
-                policyId: "a0028f350aaabe0545fdcb56b039bfb08e4bb4d8c4d7c3c7d481c235",
+            amountToSend: [{
+                assetName: "",
+                policyId: "",
                 amount: CONSTANTS.ASSET_AMOUNT_HOSKY
             }],
             paymentIntervalHours: 120
@@ -63,7 +63,7 @@ export default function SetupRecurringPayment (props: {
                     inline: true
                 }
             };
-            const unsignedTx = await new Transaction({initiator: wallet}).sendLovelace(recipient, String(datumDTO.amountToDeposit)).build();
+            const unsignedTx = await new Transaction({initiator: wallet}).sendLovelace(recipient, String(datumDTO.amountToSend)).build();
             const signedTx = await wallet.signTx(unsignedTx);
             setTxHash(await wallet.submitTx(signedTx));
         }

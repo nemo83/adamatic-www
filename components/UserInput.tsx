@@ -18,17 +18,21 @@ import dayjs, {Dayjs} from "dayjs";
 import {ADAMATIC_HOST, CONSTANTS} from "../lib/util/Constants";
 import TransactionUtil from "../lib/util/TransactionUtil";
 import { parse } from "path";
+import {useWallet } from "@meshsdk/react";
+import {Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
 
 export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setDatumDTO :  (userInput: RecurringPaymentDatum) => void, isHoskyInput : boolean}) {
 
     const { datumDTO, setDatumDTO, isHoskyInput } = props;
-    const [currentEpochStart, setCurrentEpochStart] = React.useState<Dayjs>(dayjs());
-    const [currentEpochNumber, setCurrentEpochNumber] = React.useState<number>(0);
-    
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
+    const { wallet, connected } = useWallet();
+
+    const [walletFrom, setWalletFrom] = React.useState<string>("");
+
     const [deposit, setDeposit] = React.useState<number>(0);
+    const [owner, setOwner] = React.useState<string>("");
     const [payee, setPayee] = React.useState<string>("");
     const [maxFeesLovelace, setMaxFeesLovelace] = React.useState<number>(1_000_000);    
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
@@ -41,6 +45,24 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     const [epochEnd, setEpochEnd] = React.useState<number>(0);
 
     const [numPulls, setNumPulls] = React.useState<number>(1);
+
+    useEffect(() => {
+        
+        if (connected) {
+            wallet.getUsedAddress().then((address) => {
+                const userWallet = address.asBase()!.toAddress().toBech32().toString();
+                setOwner(userWallet);
+                if (!walletFrom) {
+                    setWalletFrom( userWallet );
+                    // setWalletFrom( userWallet ? userWallet.substring(0, 20) + '...'+ userWallet.substring(userWallet.length - 20) : "" );
+                }
+            });
+        } else {
+            setWalletFrom("");
+        }
+
+        
+    }, [connected])
 
     useEffect(() => {
             if(isHoskyInput) {
@@ -90,11 +112,48 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         })}
     }
 
+    useEffect(() => {
+        
+        console.log('running set datum dto stuff')
+        console.log('owner: ' + owner )
+        console.log('walletFrom: ' + walletFrom )
+        console.log('payee: ' + payee )
+
+        let ownerAddress = owner;
+        if (owner != walletFrom) {
+            try {
+                ownerAddress = new Address({
+                    type: AddressType.BasePaymentKeyStakeKey,
+                    networkId: NetworkId.Testnet,
+                    paymentPart: Address.fromBech32(owner).asBase()!.getPaymentCredential(),
+                    delegationPart: Address.fromBech32(walletFrom).asBase()!.getPaymentCredential()
+                }).toBech32().toString();
+            } catch (error) {
+                ownerAddress = "";
+            }
+            
+        }
+
+        const newDatumDTO = {
+            ...datumDTO,
+            owner: ownerAddress,
+            payee
+        }
+        setDatumDTO(newDatumDTO);
+
+    }, [owner, payee, walletFrom])
+
+
+
+
+
     return (
         <>
             Set up a recurring Payment:
             <Stack spacing={1} style={{paddingTop: "10px"}}>
-                {/*<DepositAda inputLovelace={inputLovelace} setInputLovelae={setInputLovelae} datumDTO={datumDTO} handleAdaInputChange={handleAdaInputChange} />*/}
+                <Tooltip title={"Address for which collecting rewards"}>
+                    <TextField required={true} label={"Reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}/>
+                </Tooltip>
                 <Tooltip title={"The amount of ADA to deposit into the smart contract"}>
                     <TextField disabled={true} label={"Amount To Deposit"} type={"number"} value={inputLovelace ? deposit : deposit / CONSTANTS.ADA_CONVERSION} name={"amountToDeposit"} 
                                slotProps={{
@@ -194,9 +253,9 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                                 assetName: formJson.assetName ? formJson.assetName : "lovelace",
                                 amount: inputLovelace ? Number(formJson.amount) : Number(formJson.amount) * 1000000
                             };
-                            const arr = datumDTO.assetAmounts;
+                            const arr = datumDTO.amountToSend;
                             arr.push(asset);
-                            setDatumDTO({...datumDTO, assetAmounts: arr});
+                            setDatumDTO({...datumDTO, amountToSend: arr});
                             setDialogOpen(false);
                         },
                 }}>
@@ -246,7 +305,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                     </DialogActions>
                 </Dialog>
                 <div style={{minHeight: "100px"}}>
-                    {datumDTO.assetAmounts.map((asset, index) => (
+                    {datumDTO.amountToSend.map((asset, index) => (
                         <Chip key={asset.policyId} disabled={isHoskyInput} variant={"outlined"} color={"primary"} style={{height: "100%", maxWidth: "fit-content"}}
                               avatar={<Avatar src={"/img/cardano-starburst-white.svg"}/>}
                               label={(
@@ -264,9 +323,9 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                               )}
                             onDelete={() => {
                                 if (!isHoskyInput) {
-                                    const arr = datumDTO.assetAmounts;
+                                    const arr = datumDTO.amountToSend;
                                     arr.splice(index, 1);
-                                    setDatumDTO({...datumDTO, assetAmounts: arr});
+                                    setDatumDTO({...datumDTO, amountToSend: arr});
                                 }
                             }}
                         />
