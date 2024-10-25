@@ -20,6 +20,7 @@ import TransactionUtil from "../lib/util/TransactionUtil";
 import { parse } from "path";
 import {useWallet } from "@meshsdk/react";
 import {Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
+import { assetName, policyId } from "@meshsdk/core";
 
 export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setDatumDTO :  (userInput: RecurringPaymentDatum) => void, isHoskyInput : boolean}) {
 
@@ -38,7 +39,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
     const [endTime, setEndTime] = React.useState<Dayjs | null>(null);
     const [paymentIntervalEpochs, setPaymentIntervalEpochs] = React.useState<number>(1);
-
+    const [paymentIntervalHours, setPaymentIntervalHours] = React.useState<number>(1);
     const [inputLovelace, setInputLovelace] = React.useState<boolean>(false)
 
     const [epochStart, setEpochStart] = React.useState<number>(0);
@@ -82,6 +83,8 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                     setPayee(data.payee_address);
                     setStartTime(dayjs(data.start_time_timestamp));
                     setEndTime(dayjs(data.end_time_timestamp));
+
+                    setPaymentIntervalHours(data.payment_interval_hours);
                     
             })}
     }, [isHoskyInput]);
@@ -114,11 +117,6 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
 
     useEffect(() => {
         
-        console.log('running set datum dto stuff')
-        console.log('owner: ' + owner )
-        console.log('walletFrom: ' + walletFrom )
-        console.log('payee: ' + payee )
-
         let ownerAddress = owner;
         if (owner != walletFrom) {
             try {
@@ -137,22 +135,43 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         const newDatumDTO = {
             ...datumDTO,
             owner: ownerAddress,
-            payee
+            amountToSend: [{policyId: "", assetName: "", amount: 2000000}],
+            payee,
+            startTime: startTime ? startTime.unix() : 0,
+            endTime: endTime ? endTime.unix() : 0,
+            paymentIntervalHours: paymentIntervalHours,
+            maxFeesLovelace    : maxFeesLovelace,
         }
         setDatumDTO(newDatumDTO);
 
+
+        // owner: string;
+        // amountToSend: AssetAmount[];
+        // payee: string;
+        // startTime: number;
+        // endTime?: number;
+        // paymentIntervalHours?: number;
+        // maxPaymentDelayHours?: number;
+        // maxFeesLovelace: number;
+
     }, [owner, payee, walletFrom])
 
-
-
-
+    const updateWalletFrom = (newWalletFrom: string) => {
+        if (newWalletFrom ) {
+            setWalletFrom(newWalletFrom)   ;
+        } else {
+            setWalletFrom(owner);
+        }
+    }
 
     return (
         <>
             Set up a recurring Payment:
             <Stack spacing={1} style={{paddingTop: "10px"}}>
                 <Tooltip title={"Address for which collecting rewards"}>
-                    <TextField required={true} label={"Reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}/>
+                    <TextField required={true} label={"Reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
+                    onBlur={(e) => updateWalletFrom(e.target.value)}
+                    />
                 </Tooltip>
                 <Tooltip title={"The amount of ADA to deposit into the smart contract"}>
                     <TextField disabled={true} label={"Amount To Deposit"} type={"number"} value={inputLovelace ? deposit : deposit / CONSTANTS.ADA_CONVERSION} name={"amountToDeposit"} 

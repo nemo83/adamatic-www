@@ -63,7 +63,8 @@ export default function SetupRecurringPayment (props: {
                     inline: true
                 }
             };
-            const unsignedTx = await new Transaction({initiator: wallet}).sendLovelace(recipient, String(datumDTO.amountToSend)).build();
+            console.log('data: ' + datum);
+            const unsignedTx = await new Transaction({initiator: wallet}).sendLovelace(recipient, String("30000000")).build();
             const signedTx = await wallet.signTx(unsignedTx);
             setTxHash(await wallet.submitTx(signedTx));
         }
