@@ -137,8 +137,8 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
             owner: ownerAddress,
             amountToSend: [{policyId: "", assetName: "", amount: 2000000}],
             payee,
-            startTime: startTime ? startTime.unix() : 0,
-            endTime: endTime ? endTime.unix() : 0,
+            startTime: startTime!.valueOf(),
+            endTime: endTime?.valueOf(),
             paymentIntervalHours: paymentIntervalHours,
             maxFeesLovelace    : maxFeesLovelace,
         }
