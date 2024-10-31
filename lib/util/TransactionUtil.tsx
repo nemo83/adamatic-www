@@ -132,15 +132,11 @@ export default class TransactionUtil {
             },
             output: {
                 address: scriptAddress,
-                amount: recurringPaymentDTO.amounts
+                amount: [{quantity: String(recurringPaymentDTO.balance[0].amount), unit: 'lovelace'}]
             }
         }
-        const response = await fetch('api/GetCurrentSlot');
-        const slot: number = (await response.json()).slot;
         return new Transaction({ initiator: wallet })
             .setRequiredSigners([(await wallet.getUsedAddress()).toBech32().toString()])
-            .setTimeToStart('' + slot)
-            .setTimeToExpire('' + (slot + 200))
             .redeemValue({
                 value: utxo
                 ,

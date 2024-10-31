@@ -1,16 +1,14 @@
+import dayjs from "dayjs";
 import AssetAmount from "./AssetAmount";
 
 export default interface RecurringPayment {
     txHash: string,
     output_index: number,
-    amounts: {quantity: string, unit : string}[],
-    ownerPaymentPkh: string;
-    ownerStakePkh: string | undefined;
+    balance: AssetAmount[],
     amountToSend: AssetAmount[];
-    payeePaymentPkh: string;
-    payeeStakePkh: string | undefined;
-    startTime: Date;
-    endTime: number | undefined;
+    payee: string,
+    startTime: dayjs.Dayjs;
+    endTime: dayjs.Dayjs | undefined;
     paymentIntervalHours: number | undefined;
     maxPaymentDelayHours: number | undefined;
     maxFeesLovelace: number;

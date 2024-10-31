@@ -6,6 +6,7 @@ import TransactionUtil from "../lib/util/TransactionUtil";
 import { useWallet } from "@meshsdk/react";
 import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import TxInfo from "../lib/interfaces/TxInfo";
+import dayjs from "dayjs";
 
 export default function PaymentsTable(props: { scriptAddress: string }) {
 
@@ -14,23 +15,22 @@ export default function PaymentsTable(props: { scriptAddress: string }) {
 
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
 
-    useEffect(() => {
-        if (connected && scriptAddress !== "") {
-            fetch('api/GetScriptUTXOs', { method: "POST", body: scriptAddress }).then(response => response.json()).then(data => {
-                const utxos: TxInfo[] = JSON.parse(data.utxo);
-                let recurringPayments: RecurringPayment[] = [];
-                utxos.forEach((utxo) => {
-                    recurringPayments.push(TransactionUtil.deserializeDatum(utxo));
-                });
-                setRecurringPaymentDTOs(recurringPayments);
-            });
-        }
-    }, [scriptAddress, connected]);
+    // useEffect(() => {
+    //     if (connected && scriptAddress !== "") {
+    //         fetch('api/GetScriptUTXOs', { method: "POST", body: scriptAddress }).then(response => response.json()).then(data => {
+    //             const utxos: TxInfo[] = JSON.parse(data.utxo);
+    //             let recurringPayments: RecurringPayment[] = [];
+    //             utxos.forEach((utxo) => {
+    //                 recurringPayments.push(TransactionUtil.deserializeDatum(utxo));
+    //             });
+    //             setRecurringPaymentDTOs(recurringPayments);
+    //         });
+    //     }
+    // }, [scriptAddress, connected]);
 
 
     useEffect(() => {
         if (connected) {
-
             wallet
                 .getUsedAddress()
                 .then((address) => {
@@ -40,9 +40,23 @@ export default function PaymentsTable(props: { scriptAddress: string }) {
                 .then(response => response.json())
                 .then(data => {
                     console.log('data: ' + JSON.stringify(data));
+                    let recurringPaymentDTOs: RecurringPayment[] = [];
+                    data.forEach((recurringPayment: any) => {
+                        recurringPaymentDTOs.push({
+                            txHash: recurringPayment.tx_hash,
+                            output_index: recurringPayment.output_index,
+                            balance: recurringPayment.balance,
+                            amountToSend: [],
+                            payee: recurringPayment.payee,
+                            startTime: dayjs(recurringPayment.start_time_timestamp),
+                            endTime: undefined,
+                            paymentIntervalHours: 0,
+                            maxPaymentDelayHours: 0,
+                            maxFeesLovelace: recurringPayment.max_fees_lovelace
+                        });
+                    });
+                    setRecurringPaymentDTOs(recurringPaymentDTOs);
                 })
-
-
         }
     }, [connected]);
 
@@ -78,9 +92,9 @@ export default function PaymentsTable(props: { scriptAddress: string }) {
                                     <TableCell component="th" scope="row">
                                         {row.txHash}
                                     </TableCell>
-                                    <TableCell>{row.payeePaymentPkh}</TableCell>
-                                    <TableCell>{row.startTime.toDateString() + " " + row.startTime.getHours() + ":" + row.startTime.getMinutes()}</TableCell>
-                                    <TableCell>{row.amounts[0].quantity}</TableCell>
+                                    <TableCell>{row.payee}</TableCell>
+                                    <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
+                                    <TableCell>{row.balance[0].amount}</TableCell>
                                     <TableCell>{row.maxFeesLovelace}</TableCell>
 
                                     <TableCell>
