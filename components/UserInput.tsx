@@ -16,11 +16,8 @@ import AssetAmount from "../lib/interfaces/AssetAmount";
 import {DateTimePicker} from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 import {ADAMATIC_HOST, CONSTANTS} from "../lib/util/Constants";
-import TransactionUtil from "../lib/util/TransactionUtil";
-import { parse } from "path";
 import {useWallet } from "@meshsdk/react";
 import {Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
-import { assetName, policyId } from "@meshsdk/core";
 
 export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setDatumDTO :  (userInput: RecurringPaymentDatum) => void, isHoskyInput : boolean}) {
 
@@ -48,21 +45,20 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     const [numPulls, setNumPulls] = React.useState<number>(1);
 
     useEffect(() => {
-        
+
         if (connected) {
             wallet.getUsedAddress().then((address) => {
                 const userWallet = address.asBase()!.toAddress().toBech32().toString();
                 setOwner(userWallet);
                 if (!walletFrom) {
-                    setWalletFrom( userWallet );
-                    // setWalletFrom( userWallet ? userWallet.substring(0, 20) + '...'+ userWallet.substring(userWallet.length - 20) : "" );
+                    setWalletFrom(userWallet);
                 }
             });
         } else {
             setWalletFrom("");
         }
 
-        
+
     }, [connected])
 
     useEffect(() => {
@@ -70,7 +66,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                 fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky')
                 .then(response => response.json())
                 .then(data => {
-                    console.log('data: ' + JSON.stringify(data))
+                    // console.log('data: ' + JSON.stringify(data))
 
                     setEpochStart(data.epoch_start);
                     setEpochEnd(data.epoch_end);
@@ -100,7 +96,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky?' + new URLSearchParams(baseRequest).toString())
             .then(response => response.json())
             .then(data => {
-                console.log('data: ' + JSON.stringify(data))
+                // console.log('data: ' + JSON.stringify(data))
 
                 setEpochStart(data.epoch_start);
                 setEpochEnd(data.epoch_end);
@@ -135,30 +131,20 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
         const newDatumDTO = {
             ...datumDTO,
             owner: ownerAddress,
-            amountToSend: [{policyId: "", assetName: "", amount: 2000000}],
+            amountToSend: [{ policyId: "", assetName: "", amount: 2000000 }],
             payee,
             startTime: startTime!.valueOf(),
             endTime: endTime?.valueOf(),
             paymentIntervalHours: paymentIntervalHours,
-            maxFeesLovelace    : maxFeesLovelace,
+            maxFeesLovelace: maxFeesLovelace,
         }
         setDatumDTO(newDatumDTO);
-
-
-        // owner: string;
-        // amountToSend: AssetAmount[];
-        // payee: string;
-        // startTime: number;
-        // endTime?: number;
-        // paymentIntervalHours?: number;
-        // maxPaymentDelayHours?: number;
-        // maxFeesLovelace: number;
 
     }, [owner, payee, walletFrom])
 
     const updateWalletFrom = (newWalletFrom: string) => {
-        if (newWalletFrom ) {
-            setWalletFrom(newWalletFrom)   ;
+        if (newWalletFrom) {
+            setWalletFrom(newWalletFrom);
         } else {
             setWalletFrom(owner);
         }
@@ -166,7 +152,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
 
     return (
         <>
-            Set up a recurring Payment:
+            {/* Set up a recurring Payment: */}
             <Stack spacing={1} style={{paddingTop: "10px"}}>
                 <Tooltip title={"Address for which collecting rewards"}>
                     <TextField required={true} label={"Reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
@@ -234,11 +220,17 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
                 <div>
                     {isHoskyInput ?
 
-                            <Tooltip title={"Number or Hosky Rewards pull"}>
-                                <TextField style={{width: "50%"}} label={"Number of Rewards pulls"} type={"number"} value={numPulls} name={"numPulls"} 
-                                onChange={(event) => { setNumPulls(parseInt(event.target.value)); updateStuff(epochStart, parseInt(event.target.value), paymentIntervalEpochs) } }   
-                                />
-                            </Tooltip>
+                        <Tooltip title={"Number or Hosky Rewards pull"}>
+                            <TextField style={{ width: "50%" }}
+                                label={"Number of Rewards pulls"}
+                                type={"number"}
+                                // inputProps={{ inputProps: { min: 1, max: 10 } }}
+                                slotProps={{ htmlInput: { min: 1, max: 10 } }}
+                                value={numPulls}
+                                name={"numPulls"}
+                                onChange={(event) => { setNumPulls(parseInt(event.target.value)); updateStuff(epochStart, parseInt(event.target.value), paymentIntervalEpochs) }}
+                            />
+                        </Tooltip>
                             
 
                         :  <Tooltip title={"The maximum delay in hours for a payment to be made."} >

@@ -75,12 +75,12 @@ export default function PaymentsTable(props: { scriptAddress: string }) {
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>txHash</TableCell>
-                                <TableCell>PayeePaymentPkh</TableCell>
-                                <TableCell>StartTime</TableCell>
-                                <TableCell>Amount in Lovelace</TableCell>
-                                <TableCell>MaxFeesLovelace</TableCell>
-                                <TableCell>Cancel Payment</TableCell>
+                                <TableCell>Hash</TableCell>
+                                <TableCell>Payee</TableCell>
+                                <TableCell>Execution Time</TableCell>
+                                <TableCell>Amount (ada)</TableCell>
+                                <TableCell>Max Fees (ada)</TableCell>
+                                <TableCell>Cancel</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -90,12 +90,12 @@ export default function PaymentsTable(props: { scriptAddress: string }) {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {row.txHash}
+                                        {row.txHash.substring(0, 10) + "..." + row.txHash.substring(row.txHash.length - 10)}
                                     </TableCell>
-                                    <TableCell>{row.payee}</TableCell>
+                                    <TableCell>{row.payee.substring(0, 10) + "..." + row.payee.substring(row.payee.length - 10)}</TableCell>
                                     <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
-                                    <TableCell>{row.balance[0].amount}</TableCell>
-                                    <TableCell>{row.maxFeesLovelace}</TableCell>
+                                    <TableCell>{row.balance[0].amount / 1_000_000}</TableCell>
+                                    <TableCell>{row.maxFeesLovelace / 1_000_000}</TableCell>
 
                                     <TableCell>
                                         <Button variant="outlined" startIcon={<Delete />}
