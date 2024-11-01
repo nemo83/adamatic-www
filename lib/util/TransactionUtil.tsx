@@ -14,6 +14,7 @@ import RecurringPayment from "../interfaces/RecurringPayment";
 import AssetAmount from "../interfaces/AssetAmount";
 import TxInfo from "../interfaces/TxInfo";
 import { CONSTANTS, SCRIPT } from "./Constants";
+import dayjs from "dayjs";
 
 
 export default class TransactionUtil {
@@ -91,34 +92,6 @@ export default class TransactionUtil {
         } catch (error) {
             console.error('could not create onchain address' + error);
             return mConStr(0, []);
-        }
-
-    }
-
-    public static deserializeDatum(utxo: TxInfo): RecurringPayment {
-        const datum = deserializeDatum(utxo.tx_datum);
-        let amountToSend: AssetAmount[] = [];
-        for (let i = 0; i < datum.fields[2].length; i++) {
-            amountToSend.push({
-                policyId: datum.fields[2][i].fields[0],
-                assetName: datum.fields[2][i].fields[1],
-                amount: datum.fields[2][i].fields[2]
-            } as AssetAmount);
-        }
-        return {
-            txHash: utxo.tx_hash,
-            output_index: utxo.output_index,
-            amounts: utxo.amount,
-            ownerPaymentPkh: datum.fields[0].bytes,
-            ownerStakePkh: datum.fields[1].constructor === 0 ? datum.fields[1].fields[0].bytes : undefined,
-            amountToSend: amountToSend,
-            payeePaymentPkh: datum.fields[3].bytes,
-            payeeStakePkh: datum.fields[4].constructor === 0 ? datum.fields[4].fields[0].bytes : undefined,
-            startTime: new Date(datum.fields[5].int),
-            endTime: datum.fields[6].constructor === 0 ? datum.fields[6].fields[0] : undefined,
-            paymentIntervalHours: datum.fields[7].constructor === 0 ? datum.fields[7].fields[0] : undefined,
-            maxPaymentDelayHours: datum.fields[8].constructor === 0 ? datum.fields[8].fields[0] : undefined,
-            maxFeesLovelace: datum.fields[9].int
         }
 
     }
