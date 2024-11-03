@@ -1,33 +1,66 @@
-import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
-import {Delete} from "@mui/icons-material";
-import React, {useEffect, useState} from "react";
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Delete } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import TransactionUtil from "../lib/util/TransactionUtil";
-import {useWallet} from "@meshsdk/react";
-import {SCRIPT} from "../lib/util/Constants";
+import { useWallet } from "@meshsdk/react";
+import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import TxInfo from "../lib/interfaces/TxInfo";
+import dayjs from "dayjs";
 
-export default function PaymentsTable(props: {scriptAddress : string}) {
+export default function PaymentsTable(props: { scriptAddress: string }) {
 
     const { wallet, connected } = useWallet();
-    const { scriptAddress} = props;
+    const { scriptAddress } = props;
 
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
 
-    useEffect(() => {
-        if(connected && scriptAddress !== "") {
-            fetch('api/GetScriptUTXOs', {method: "POST", body: scriptAddress}).then(response => response.json()).then(data => {
-                const utxos : TxInfo[] = JSON.parse(data.utxo);
-                let recurringPayments : RecurringPayment[] = [];
-                utxos.forEach((utxo) => {
-                    recurringPayments.push(TransactionUtil.deserializeDatum(utxo));
-                });
-                setRecurringPaymentDTOs(recurringPayments);
-            });
-        }
-    }, [scriptAddress, connected]);
+    // useEffect(() => {
+    //     if (connected && scriptAddress !== "") {
+    //         fetch('api/GetScriptUTXOs', { method: "POST", body: scriptAddress }).then(response => response.json()).then(data => {
+    //             const utxos: TxInfo[] = JSON.parse(data.utxo);
+    //             let recurringPayments: RecurringPayment[] = [];
+    //             utxos.forEach((utxo) => {
+    //                 recurringPayments.push(TransactionUtil.deserializeDatum(utxo));
+    //             });
+    //             setRecurringPaymentDTOs(recurringPayments);
+    //         });
+    //     }
+    // }, [scriptAddress, connected]);
 
-    async function cancelRecurringPayment(recurringPaymentDTO : RecurringPayment) {
+
+    useEffect(() => {
+        if (connected) {
+            wallet
+                .getUsedAddress()
+                .then((address) => {
+                    const paymentPubKeyHash = address.asBase()!.getPaymentCredential().hash.toString();
+                    return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + paymentPubKeyHash);
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('data: ' + JSON.stringify(data));
+                    let recurringPaymentDTOs: RecurringPayment[] = [];
+                    data.forEach((recurringPayment: any) => {
+                        recurringPaymentDTOs.push({
+                            txHash: recurringPayment.tx_hash,
+                            output_index: recurringPayment.output_index,
+                            balance: recurringPayment.balance,
+                            amountToSend: [],
+                            payee: recurringPayment.payee,
+                            startTime: dayjs(recurringPayment.start_time_timestamp),
+                            endTime: undefined,
+                            paymentIntervalHours: 0,
+                            maxPaymentDelayHours: 0,
+                            maxFeesLovelace: recurringPayment.max_fees_lovelace
+                        });
+                    });
+                    setRecurringPaymentDTOs(recurringPaymentDTOs);
+                })
+        }
+    }, [connected]);
+
+    async function cancelRecurringPayment(recurringPaymentDTO: RecurringPayment) {
         const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
         const tx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, scriptAddress, wallet);
         const unsignedTx = await tx.build();
@@ -37,36 +70,36 @@ export default function PaymentsTable(props: {scriptAddress : string}) {
 
     return (
         <>
-        {connected ?
+            {connected ?
                 <TableContainer component={Paper}>
-                    <Table sx={{minWidth: 650}} aria-label="simple table">
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>txHash</TableCell>
-                                <TableCell>PayeePaymentPkh</TableCell>
-                                <TableCell>StartTime</TableCell>
-                                <TableCell>Amount in Lovelace</TableCell>
-                                <TableCell>MaxFeesLovelace</TableCell>
-                                <TableCell>Cancel Payment</TableCell>
+                                <TableCell>Hash</TableCell>
+                                <TableCell>Payee</TableCell>
+                                <TableCell>Execution Time</TableCell>
+                                <TableCell>Amount (ada)</TableCell>
+                                <TableCell>Max Fees (ada)</TableCell>
+                                <TableCell>Cancel</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {recurringPaymentDTOs.map((row) => (
                                 <TableRow
                                     key={row.txHash}
-                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {row.txHash}
+                                        {row.txHash.substring(0, 10) + "..." + row.txHash.substring(row.txHash.length - 10)}
                                     </TableCell>
-                                    <TableCell>{row.payeePaymentPkh}</TableCell>
-                                    <TableCell>{row.startTime.toDateString() + " " + row.startTime.getHours() + ":" + row.startTime.getMinutes()}</TableCell>
-                                    <TableCell>{row.amounts[0].quantity}</TableCell>
-                                    <TableCell>{row.maxFeesLovelace}</TableCell>
+                                    <TableCell>{row.payee.substring(0, 10) + "..." + row.payee.substring(row.payee.length - 10)}</TableCell>
+                                    <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
+                                    <TableCell>{row.balance[0].amount / 1_000_000}</TableCell>
+                                    <TableCell>{row.maxFeesLovelace / 1_000_000}</TableCell>
 
                                     <TableCell>
-                                        <Button variant="outlined" startIcon={<Delete/>}
-                                                onClick={() => cancelRecurringPayment(row)}>
+                                        <Button variant="outlined" startIcon={<Delete />}
+                                            onClick={() => cancelRecurringPayment(row)}>
                                             Cancel
                                         </Button>
                                     </TableCell>
