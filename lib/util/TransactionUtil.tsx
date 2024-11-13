@@ -19,17 +19,16 @@ import dayjs from "dayjs";
 
 export default class TransactionUtil {
 
-    public static async createDatum(wallet: BrowserWallet, datumDTO: RecurringPaymentDatum): Promise<Data> {
+    public static async createDatum(datumDTO: RecurringPaymentDatum): Promise<Data> {
 
         try {
 
             console.log('datum: ' + JSON.stringify(datumDTO));
 
-            if (datumDTO.owner === "" || datumDTO.payee === "") {
+            if (datumDTO.ownerPaymentPubKeyHash === "" || datumDTO.payee === "") {
                 return mConStr(0, [])
             }
 
-            const owner = Address.fromBech32(datumDTO.owner);
             const payee = Address.fromBech32(datumDTO.payee);
 
             let payeeCredentialHash;
@@ -41,7 +40,7 @@ export default class TransactionUtil {
 
             return mConStr0(
                 [
-                    TransactionUtil.toOnchainAddress(owner),
+                    datumDTO.ownerPaymentPubKeyHash,
                     [
                         // TODO currently it's only possible to send one asset, could be extended in the future
                         mConStr(0, datumDTO.amountToSend.length > 0 ? [datumDTO.amountToSend[0].policyId, datumDTO.amountToSend[0].assetName, BigInt(datumDTO.amountToSend[0].amount)] : []) // 2

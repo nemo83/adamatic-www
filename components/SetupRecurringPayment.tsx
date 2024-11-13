@@ -27,15 +27,14 @@ export default function SetupRecurringPayment (props: {
 
     const [ txHash, setTxHash ] = useState("" as string);
     const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>(hoskyInput ?
-        {owner: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0}
+        {ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0}
         :
-        {owner: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0});
+        {ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0});
     const [datum, setDatum] = useState<Data>();
 
     useEffect(() => {
-        if(connected) {
+        if (connected) {
             TransactionUtil.createDatum(
-                wallet,
                 datumDTO
             ).then((datum) => {
                 setDatum(datum);

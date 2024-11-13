@@ -113,24 +113,9 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
 
     useEffect(() => {
         
-        let ownerAddress = owner;
-        if (owner != walletFrom) {
-            try {
-                ownerAddress = new Address({
-                    type: AddressType.BasePaymentKeyStakeKey,
-                    networkId: NetworkId.Testnet,
-                    paymentPart: Address.fromBech32(owner).asBase()!.getPaymentCredential(),
-                    delegationPart: Address.fromBech32(walletFrom).asBase()!.getPaymentCredential()
-                }).toBech32().toString();
-            } catch (error) {
-                ownerAddress = "";
-            }
-            
-        }
-
         const newDatumDTO = {
             ...datumDTO,
-            owner: ownerAddress,
+            ownerPaymentPubKeyHash: owner ? Address.fromBech32(owner).asBase()!.getPaymentCredential().hash.toString() : "",
             amountToSend: [{ policyId: "", assetName: "", amount: 2000000 }],
             payee,
             startTime: startTime!.valueOf(),

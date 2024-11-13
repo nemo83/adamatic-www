@@ -2,7 +2,7 @@ import AssetAmount from "./AssetAmount";
 import Timing from "./Timing";
 
 export default interface RecurringPaymentDatum {
-    owner: string;
+    ownerPaymentPubKeyHash: string;
     amountToSend: AssetAmount[];
     payee: string;
     startTime: number;
