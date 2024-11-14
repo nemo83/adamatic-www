@@ -86,7 +86,7 @@ export default class TransactionUtil {
 
             return mConStr(0, [
                 mConStr(0, [paymentCredentialHash]),
-                mConStr(0, [stakeCredentialHashOpt ? mConStr(0, [mConStr(0, [stakeCredentialHashOpt])]) : mConStr(1, [])]),
+                stakeCredentialHashOpt ? mConStr(0, [mConStr(0, [mConStr(0, [stakeCredentialHashOpt])])]) : mConStr(1, []),
             ]);
         } catch (error) {
             console.error('could not create onchain address' + error);
@@ -104,7 +104,7 @@ export default class TransactionUtil {
             },
             output: {
                 address: scriptAddress,
-                amount: [{quantity: String(recurringPaymentDTO.balance[0].amount), unit: 'lovelace'}]
+                amount: [{ quantity: String(recurringPaymentDTO.balance[0].amount), unit: 'lovelace' }]
             }
         }
         return new Transaction({ initiator: wallet })

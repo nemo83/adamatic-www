@@ -138,7 +138,7 @@ export default function UserInput(props: {datumDTO : RecurringPaymentDatum, setD
     return (
         <>
             {/* Set up a recurring Payment: */}
-            <Stack spacing={1} style={{paddingTop: "10px"}}>
+            <Stack spacing={1} style={{paddingTop: "10px"}} id={"gio"}>
                 <Tooltip title={"Address for which collecting rewards"}>
                     <TextField required={true} label={"Reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
                     onBlur={(e) => updateWalletFrom(e.target.value)}
