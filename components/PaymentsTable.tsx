@@ -9,9 +9,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
 
 
-export default function PaymentsTable(props: { walletFrom: string }) {
-
-    const { walletFrom } = props;
+export default function PaymentsTable() {
 
     const { wallet, connected } = useWallet();
 
@@ -49,8 +47,8 @@ export default function PaymentsTable(props: { walletFrom: string }) {
     }, [connected]);
 
     async function cancelRecurringPayment(recurringPaymentDTO: RecurringPayment) {
-        const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
-        const tx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, scriptAddress, wallet);
+        // const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
+        const tx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
         const unsignedTx = await tx.build();
         const signedTx = await wallet.signTx(unsignedTx);
         console.log(await wallet.submitTx(signedTx));
@@ -84,15 +82,19 @@ export default function PaymentsTable(props: { walletFrom: string }) {
                                         </Button>
 
                                     </TableCell>
-                                    <TableCell>{row.payee.substring(0, 10) + "..." + row.payee.substring(row.payee.length - 10)}</TableCell>
+                                    <TableCell>
+                                        <Button href={"https://cardanoscan.io/transaction/" + row.txHash}
+                                            endIcon={<LaunchIcon />}                                        >
+                                            {row.payee.substring(0, 10) + "..." + row.payee.substring(row.payee.length - 10)}
+                                        </Button>
+                                    </TableCell>
                                     <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
                                     <TableCell>2</TableCell>
 
                                     <TableCell>
                                         <IconButton aria-label="delete"
-                                            onClick={() => cancelRecurringPayment(row)}
-                                        >
-                                            <DeleteIcon />
+                                            onClick={() => cancelRecurringPayment(row)}>
+                                            <DeleteIcon color="error" />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>

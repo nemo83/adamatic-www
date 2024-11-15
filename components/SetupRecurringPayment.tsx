@@ -4,15 +4,13 @@ import {
     Stack,
     Tooltip
 } from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import { CodeBlock } from "react-code-blocks";
 import { Send } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import { useWallet } from "@meshsdk/react";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import { Data, Recipient, Transaction } from "@meshsdk/core";
 import TransactionUtil from "../lib/util/TransactionUtil";
-import { CONSTANTS, SCRIPT } from "../lib/util/Constants";
+import { SCRIPT } from "../lib/util/Constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 
@@ -78,15 +76,15 @@ export default function SetupRecurringPayment(props: {
                         setWalletFrom={setWalletFrom}
                         datumDTO={datumDTO}
                         setDatumDTO={setDatumDTO}
-                        isHoskyInput={hoskyInput} 
-                        />
+                        isHoskyInput={hoskyInput}
+                    />
 
                     <div>
-                        <Button disabled={!isValidNetwork}  startIcon={<Send />} variant={"outlined"} onClick={() => signAndSubmit()}>Sign & Submit</Button>
+                        <Button disabled={!isValidNetwork} startIcon={<Send />} variant={"outlined"} onClick={() => signAndSubmit()}>Sign & Submit</Button>
                         {txHash !== "" ? <p>Transaction Hash: {txHash}</p> : <></>}
                     </div>
 
-                    <PaymentsTable walletFrom={walletFrom} />
+                    <PaymentsTable />
                 </Box>
             </Stack>
         </div>

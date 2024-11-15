@@ -95,7 +95,8 @@ export default class TransactionUtil {
 
     }
 
-    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, scriptAddress: string, wallet: BrowserWallet): Promise<Transaction> {
+    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: BrowserWallet): Promise<Transaction> {
+        const walletAddress = (await wallet.getUsedAddress()).toBech32().toString();
         const utxo: UTxO =
         {
             input: {
@@ -103,15 +104,14 @@ export default class TransactionUtil {
                 outputIndex: recurringPaymentDTO.output_index
             },
             output: {
-                address: scriptAddress,
+                address: walletAddress,
                 amount: [{ quantity: String(recurringPaymentDTO.balance[0].amount), unit: 'lovelace' }]
             }
         }
         return new Transaction({ initiator: wallet })
-            .setRequiredSigners([(await wallet.getUsedAddress()).toBech32().toString()])
+            .setRequiredSigners([walletAddress])
             .redeemValue({
-                value: utxo
-                ,
+                value: utxo,
                 script: SCRIPT,
                 redeemer: {
                     data: mConStr0([])
@@ -120,8 +120,10 @@ export default class TransactionUtil {
     }
 
     public static async getScriptAddressWithStakeCredential(wallet: BrowserWallet, script: PlutusScript, walletFrom: string): Promise<string> {
+        console.log('walletFrom: ' + walletFrom);
         const addressFrom = Address.fromBech32(walletFrom);
-        const address = (await wallet.getUsedAddress()).asBase();
+        console.log('addressFrom: ' + addressFrom);
+        // const address = (await wallet.getUsedAddress()).asBase();
         // const stakeCredentialHash = address!.getStakeCredential().hash.toString();
         const stakeCredentialHash = addressFrom.asBase()!.getStakeCredential().hash.toString();
         const networkID = await wallet.getNetworkId();
