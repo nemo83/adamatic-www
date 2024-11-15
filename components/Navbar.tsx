@@ -24,7 +24,7 @@ export default function Navbar(props: { network: string, isValidNetwork: boolean
                             Cardano recurring payments
                         </Typography>
 
-                        <Switch color={"secondary"} value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)} />
+                        <Switch disabled={true} color={"secondary"} value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)} />
                         {hoskyInput ? "Hosky" : "General payment"}
                     </div>
 
