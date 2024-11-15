@@ -17,21 +17,21 @@ import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 
 export default function SetupRecurringPayment(props: {
-    scriptAddress: string,
+    isValidNetwork: boolean,
     hoskyInput: boolean,
 }) {
 
     const isDebugMode = false;
 
-    const { scriptAddress, hoskyInput } = props;
+    const { isValidNetwork, hoskyInput } = props;
     const { wallet, connected } = useWallet();
 
-    const [txHash, setTxHash] = useState("" as string);
-    const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>(hoskyInput ?
-        { ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 }
-        :
-        { ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 });
+    const [txHash, setTxHash] = useState<string>("");
+    const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>({ ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 });
+
+    const [deposit, setDeposit] = useState<number>(0);
     const [datum, setDatum] = useState<Data>();
+
 
     useEffect(() => {
         if (connected) {
@@ -40,21 +40,11 @@ export default function SetupRecurringPayment(props: {
             ).then((datum) => {
                 setDatum(datum);
             });
+        } else {
+            setDatum(undefined);
         }
 
-    }, [datumDTO, scriptAddress, connected]);
-
-    useEffect(() => {
-        setDatumDTO({
-            ...datumDTO,
-            amountToSend: [{
-                assetName: "",
-                policyId: "",
-                amount: CONSTANTS.ASSET_AMOUNT_HOSKY
-            }],
-            paymentIntervalHours: 120
-        });
-    }, [hoskyInput]);
+    }, [datumDTO, connected]);
 
     async function signAndSubmit() {
         if (wallet && datum) {
@@ -67,7 +57,7 @@ export default function SetupRecurringPayment(props: {
                 }
             };
             console.log('data: ' + datum);
-            const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String("30000000")).build();
+            const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
             const signedTx = await wallet.signTx(unsignedTx);
             setTxHash(await wallet.submitTx(signedTx));
         }
@@ -77,17 +67,23 @@ export default function SetupRecurringPayment(props: {
 
     return (
         <div className={"body"}>
-            <Stack spacing={1} sx={{alignItems:"center"}} >
+            <Stack spacing={1} sx={{ alignItems: "center" }} >
 
                 <Box width={"60%"}>
-                    <UserInput setDatumDTO={setDatumDTO} datumDTO={datumDTO} isHoskyInput={hoskyInput} />
+                    <UserInput
+                        deposit={deposit}
+                        setDeposit={setDeposit}
+                        setDatumDTO={setDatumDTO}
+                        datumDTO={datumDTO}
+                        isHoskyInput={hoskyInput} 
+                        />
 
                     <div>
-                        <Button startIcon={<Send />} variant={"outlined"} onClick={() => signAndSubmit()}>Sign & Submit</Button>
+                        <Button disabled={!isValidNetwork}  startIcon={<Send />} variant={"outlined"} onClick={() => signAndSubmit()}>Sign & Submit</Button>
                         {txHash !== "" ? <p>Transaction Hash: {txHash}</p> : <></>}
                     </div>
 
-                    <PaymentsTable scriptAddress={scriptAddress} />
+                    <PaymentsTable />
                 </Box>
             </Stack>
         </div>

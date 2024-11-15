@@ -15,4 +15,7 @@ export const CONSTANTS = {
     HOURS_PER_EPOCH: 120,
 }
 
-export const ADAMATIC_HOST = 'https://api.adamatic.xyz';
+export const NETWORK_ID = process.env.NEXT_PUBLIC_CARDANO_NETWORK_ID
+export const NETWORK = process.env.NEXT_PUBLIC_CARDANO_NETWORK
+
+export const ADAMATIC_HOST = process.env.NEXT_PUBLIC_ADAMATIC_API_URL

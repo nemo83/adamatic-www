@@ -8,26 +8,11 @@ import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import TxInfo from "../lib/interfaces/TxInfo";
 import dayjs from "dayjs";
 
-export default function PaymentsTable(props: { scriptAddress: string }) {
+export default function PaymentsTable() {
 
     const { wallet, connected } = useWallet();
-    const { scriptAddress } = props;
-
+    
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
-
-    // useEffect(() => {
-    //     if (connected && scriptAddress !== "") {
-    //         fetch('api/GetScriptUTXOs', { method: "POST", body: scriptAddress }).then(response => response.json()).then(data => {
-    //             const utxos: TxInfo[] = JSON.parse(data.utxo);
-    //             let recurringPayments: RecurringPayment[] = [];
-    //             utxos.forEach((utxo) => {
-    //                 recurringPayments.push(TransactionUtil.deserializeDatum(utxo));
-    //             });
-    //             setRecurringPaymentDTOs(recurringPayments);
-    //         });
-    //     }
-    // }, [scriptAddress, connected]);
-
 
     useEffect(() => {
         if (connected) {
