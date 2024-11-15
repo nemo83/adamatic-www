@@ -8,7 +8,7 @@ import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import TxInfo from "../lib/interfaces/TxInfo";
 import dayjs from "dayjs";
 
-export default function PaymentsTable(props: { walletFrom: String }) {
+export default function PaymentsTable(props: { walletFrom: string }) {
 
     const { walletFrom } = props;
 
