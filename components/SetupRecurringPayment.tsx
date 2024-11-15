@@ -30,6 +30,7 @@ export default function SetupRecurringPayment(props: {
     const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>({ ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 });
 
     const [deposit, setDeposit] = useState<number>(0);
+    const [walletFrom, setWalletFrom] = useState<string>("");
     const [datum, setDatum] = useState<Data>();
 
 
@@ -48,7 +49,7 @@ export default function SetupRecurringPayment(props: {
 
     async function signAndSubmit() {
         if (wallet && datum) {
-            const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
+            const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
             const recipient: Recipient = {
                 address: scriptAddress,
                 datum: {
@@ -73,8 +74,10 @@ export default function SetupRecurringPayment(props: {
                     <UserInput
                         deposit={deposit}
                         setDeposit={setDeposit}
-                        setDatumDTO={setDatumDTO}
+                        walletFrom={walletFrom}
+                        setWalletFrom={setWalletFrom}
                         datumDTO={datumDTO}
+                        setDatumDTO={setDatumDTO}
                         isHoskyInput={hoskyInput} 
                         />
 
@@ -83,7 +86,7 @@ export default function SetupRecurringPayment(props: {
                         {txHash !== "" ? <p>Transaction Hash: {txHash}</p> : <></>}
                     </div>
 
-                    <PaymentsTable />
+                    <PaymentsTable walletFrom={walletFrom} />
                 </Box>
             </Stack>
         </div>

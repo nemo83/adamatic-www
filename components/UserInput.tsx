@@ -22,18 +22,18 @@ import { Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
 export default function UserInput(props: {
     deposit: number,
     setDeposit: (deposit: number) => void,
+    walletFrom: string,
+    setWalletFrom: (walletFrom: string) => void,
     datumDTO: RecurringPaymentDatum,
     setDatumDTO: (userInput: RecurringPaymentDatum) => void,
     isHoskyInput: boolean
 }) {
 
-    const { deposit, setDeposit, datumDTO, setDatumDTO, isHoskyInput } = props;
+    const { deposit, setDeposit, walletFrom, setWalletFrom, datumDTO, setDatumDTO, isHoskyInput } = props;
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
     const { wallet, connected } = useWallet();
-
-    const [walletFrom, setWalletFrom] = React.useState<string>("");
 
     const [owner, setOwner] = React.useState<string>("");
     const [payee, setPayee] = React.useState<string>("");

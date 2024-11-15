@@ -8,10 +8,12 @@ import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import TxInfo from "../lib/interfaces/TxInfo";
 import dayjs from "dayjs";
 
-export default function PaymentsTable() {
+export default function PaymentsTable(props: { walletFrom: String }) {
+
+    const { walletFrom } = props;
 
     const { wallet, connected } = useWallet();
-    
+
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
 
     useEffect(() => {
@@ -46,7 +48,7 @@ export default function PaymentsTable() {
     }, [connected]);
 
     async function cancelRecurringPayment(recurringPaymentDTO: RecurringPayment) {
-        const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
+        const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
         const tx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, scriptAddress, wallet);
         const unsignedTx = await tx.build();
         const signedTx = await wallet.signTx(unsignedTx);

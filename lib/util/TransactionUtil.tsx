@@ -119,9 +119,11 @@ export default class TransactionUtil {
             });
     }
 
-    public static async getScriptAddressWithStakeCredential(wallet: BrowserWallet, script: PlutusScript): Promise<string> {
+    public static async getScriptAddressWithStakeCredential(wallet: BrowserWallet, script: PlutusScript, walletFrom: string): Promise<string> {
+        const addressFrom = Address.fromBech32(walletFrom);
         const address = (await wallet.getUsedAddress()).asBase();
-        const stakeCredentialHash = address!.getStakeCredential().hash.toString();
+        // const stakeCredentialHash = address!.getStakeCredential().hash.toString();
+        const stakeCredentialHash = addressFrom.asBase()!.getStakeCredential().hash.toString();
         const networkID = await wallet.getNetworkId();
 
         return serializePlutusScript(script, stakeCredentialHash, networkID, false).address;
