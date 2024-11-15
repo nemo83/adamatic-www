@@ -1,12 +1,13 @@
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import TransactionUtil from "../lib/util/TransactionUtil";
 import { useWallet } from "@meshsdk/react";
 import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
-import TxInfo from "../lib/interfaces/TxInfo";
 import dayjs from "dayjs";
+import DeleteIcon from '@mui/icons-material/Delete';
+import LaunchIcon from '@mui/icons-material/Launch';
+
 
 export default function PaymentsTable(props: { walletFrom: string }) {
 
@@ -64,9 +65,9 @@ export default function PaymentsTable(props: { walletFrom: string }) {
                             <TableRow>
                                 <TableCell>Hash</TableCell>
                                 <TableCell>Payee</TableCell>
-                                <TableCell>Execution Time</TableCell>
+                                <TableCell>Next run</TableCell>
                                 <TableCell>Amount (ada)</TableCell>
-                                <TableCell>Max Fees (ada)</TableCell>
+
                                 <TableCell>Cancel</TableCell>
                             </TableRow>
                         </TableHead>
@@ -77,18 +78,22 @@ export default function PaymentsTable(props: { walletFrom: string }) {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell component="th" scope="row">
-                                        {row.txHash.substring(0, 10) + "..." + row.txHash.substring(row.txHash.length - 10)}
+                                        <Button href={"https://cardanoscan.io/transaction/" + row.txHash}
+                                            endIcon={<LaunchIcon />}                                        >
+                                            {row.txHash.substring(0, 10) + "..." + row.txHash.substring(row.txHash.length - 10)}
+                                        </Button>
+
                                     </TableCell>
                                     <TableCell>{row.payee.substring(0, 10) + "..." + row.payee.substring(row.payee.length - 10)}</TableCell>
                                     <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
-                                    <TableCell>{row.balance[0].amount / 1_000_000}</TableCell>
-                                    <TableCell>{row.maxFeesLovelace / 1_000_000}</TableCell>
+                                    <TableCell>2</TableCell>
 
                                     <TableCell>
-                                        <Button variant="outlined" startIcon={<Delete />}
-                                            onClick={() => cancelRecurringPayment(row)}>
-                                            Cancel
-                                        </Button>
+                                        <IconButton aria-label="delete"
+                                            onClick={() => cancelRecurringPayment(row)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
                                     </TableCell>
                                 </TableRow>
                             ))}
