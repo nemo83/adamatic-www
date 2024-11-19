@@ -19,3 +19,5 @@ export const NETWORK_ID = process.env.NEXT_PUBLIC_CARDANO_NETWORK_ID
 export const NETWORK = process.env.NEXT_PUBLIC_CARDANO_NETWORK
 
 export const ADAMATIC_HOST = process.env.NEXT_PUBLIC_ADAMATIC_API_URL
+
+export const BLOCKFROST_API_KEY = process.env.NEXT_PUBLIC_BLOCKFROST_API_KEY

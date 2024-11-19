@@ -1,21 +1,56 @@
 import {
     BrowserWallet,
-    Data, deserializeDatum, hexToString,
+    Data,
     mConStr,
     mConStr0,
     mConStr1,
+    MeshTxBuilder,
     PlutusScript,
-    resolvePlutusScriptAddress,
-    serializePlutusScript, Transaction, UTxO
+    serializePlutusScript
 } from "@meshsdk/core";
 import RecurringPaymentDatum from "../interfaces/RecurringPaymentDatum";
 import { Address, AddressType } from "@meshsdk/core-cst";
 import RecurringPayment from "../interfaces/RecurringPayment";
-import AssetAmount from "../interfaces/AssetAmount";
-import TxInfo from "../interfaces/TxInfo";
-import { CONSTANTS, SCRIPT } from "./Constants";
-import dayjs from "dayjs";
+import { BLOCKFROST_API_KEY, CONSTANTS, SCRIPT } from "./Constants";
+import { BlockfrostProvider } from "@meshsdk/core";
 
+class BlockfrostProviderSingleton {
+
+    private static instance: BlockfrostProvider;
+
+    private constructor() { }
+
+    public static getInstance(): BlockfrostProvider {
+        if (!BlockfrostProviderSingleton.instance) {
+            console.log('BLOCKFROST_API_KEY: ' + BLOCKFROST_API_KEY);
+            BlockfrostProviderSingleton.instance = new BlockfrostProvider(BLOCKFROST_API_KEY!);
+        }
+        return BlockfrostProviderSingleton.instance;
+    }
+
+}
+
+const blockchainProvider = BlockfrostProviderSingleton.getInstance();
+
+class TxBuilderSingleton {
+
+    private static instance: MeshTxBuilder;
+
+    private constructor() { }
+
+    public static getInstance(): MeshTxBuilder {
+        if (!TxBuilderSingleton.instance) {
+            TxBuilderSingleton.instance = new MeshTxBuilder({
+                fetcher: blockchainProvider,
+                submitter: blockchainProvider,
+            });
+        }
+        return TxBuilderSingleton.instance;
+    }
+
+}
+
+const txBuilder = TxBuilderSingleton.getInstance();
 
 export default class TransactionUtil {
 
@@ -95,34 +130,39 @@ export default class TransactionUtil {
 
     }
 
-    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: BrowserWallet): Promise<Transaction> {
+    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: BrowserWallet): Promise<string> {
+
+        const utxos = await blockchainProvider.fetchUTxOs(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index);
+
+        const collateral = await wallet.getCollateral();
+
+        const walletUtxos = await wallet.getUtxos();
+
         const walletAddress = (await wallet.getUsedAddress()).toBech32().toString();
-        const utxo: UTxO =
-        {
-            input: {
-                txHash: recurringPaymentDTO.txHash,
-                outputIndex: recurringPaymentDTO.output_index
-            },
-            output: {
-                address: walletAddress,
-                amount: [{ quantity: String(recurringPaymentDTO.balance[0].amount), unit: 'lovelace' }]
-            }
-        }
-        return new Transaction({ initiator: wallet })
-            .setRequiredSigners([walletAddress])
-            .redeemValue({
-                value: utxo,
-                script: SCRIPT,
-                redeemer: {
-                    data: mConStr0([])
-                }
-            });
+
+        await txBuilder
+            .spendingPlutusScriptV3()
+            .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index, utxos[0].output.amount, utxos[0].output.address)
+            .txInScript(SCRIPT.code)
+            .txInInlineDatumPresent()
+            .txInRedeemerValue(mConStr(0, []))
+            .txOut(walletAddress, [])
+            .selectUtxosFrom(walletUtxos)
+            .changeAddress(walletAddress)
+            .txInCollateral(collateral[0].input.txHash, collateral[0].input.outputIndex)
+            .complete();
+
+
+        const unsignedTx = txBuilder.txHex;
+
+        const signedTx = await wallet.signTx(unsignedTx, true);
+
+        return wallet.submitTx(signedTx);
+
     }
 
     public static async getScriptAddressWithStakeCredential(wallet: BrowserWallet, script: PlutusScript, walletFrom: string): Promise<string> {
-        console.log('walletFrom: ' + walletFrom);
         const addressFrom = Address.fromBech32(walletFrom);
-        console.log('addressFrom: ' + addressFrom);
         // const address = (await wallet.getUsedAddress()).asBase();
         // const stakeCredentialHash = address!.getStakeCredential().hash.toString();
         const stakeCredentialHash = addressFrom.asBase()!.getStakeCredential().hash.toString();
