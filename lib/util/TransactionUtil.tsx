@@ -153,11 +153,7 @@ export default class TransactionUtil {
             .complete();
 
 
-        const unsignedTx = txBuilder.txHex;
-
-        const signedTx = await wallet.signTx(unsignedTx, true);
-
-        return wallet.submitTx(signedTx);
+        return txBuilder.txHex;
 
     }
 

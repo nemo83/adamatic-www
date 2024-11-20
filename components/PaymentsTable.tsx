@@ -48,8 +48,7 @@ export default function PaymentsTable() {
 
     async function cancelRecurringPayment(recurringPaymentDTO: RecurringPayment) {
         // const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
-        const tx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
-        const unsignedTx = await tx.build();
+        const unsignedTx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
         const signedTx = await wallet.signTx(unsignedTx);
         console.log(await wallet.submitTx(signedTx));
     }
