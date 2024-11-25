@@ -1,6 +1,8 @@
 import {
     Box,
     Button,
+    Grid,
+    Grid2,
     Stack,
     Tooltip
 } from "@mui/material";
@@ -10,9 +12,10 @@ import { useWallet } from "@meshsdk/react";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import { Data, Recipient, Transaction } from "@meshsdk/core";
 import TransactionUtil from "../lib/util/TransactionUtil";
-import { SCRIPT } from "../lib/util/Constants";
+import { HOSKY_TOUR_DISPLAYED, SCRIPT } from "../lib/util/Constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
+import { TourProvider, useTour } from '@reactour/tour'
 
 export default function SetupRecurringPayment(props: {
     isValidNetwork: boolean,
@@ -20,6 +23,19 @@ export default function SetupRecurringPayment(props: {
 }) {
 
     const isDebugMode = false;
+
+    const { setIsOpen } = useTour();
+
+    useEffect(() => {
+        const hoskyTourDisplayed = localStorage.getItem(HOSKY_TOUR_DISPLAYED);
+        console.log('hoskyTourDisplayed: ' + hoskyTourDisplayed);
+        if (!hoskyTourDisplayed) {
+            setIsOpen(true);
+            console.log('hoskyTourDisplayed is null');
+            localStorage.setItem(HOSKY_TOUR_DISPLAYED, "true");
+
+        }
+    }, []);
 
     const { isValidNetwork, hoskyInput } = props;
     const { wallet, connected } = useWallet();
@@ -62,13 +78,17 @@ export default function SetupRecurringPayment(props: {
         }
     }
 
-
-
     return (
         <div className={"body"}>
-            <Stack spacing={1} sx={{ alignItems: "center" }} >
 
-                <Box width={"60%"}>
+            <Stack spacing={4} sx={{ alignItems: "center" }} >
+
+                <Box width={"60%"}
+                    sx={{
+                        marginTop: "10rem"
+                    }}
+                >
+
                     <UserInput
                         deposit={deposit}
                         setDeposit={setDeposit}
@@ -79,14 +99,21 @@ export default function SetupRecurringPayment(props: {
                         isHoskyInput={hoskyInput}
                     />
 
-                    <div>
-                        <Button disabled={!isValidNetwork} startIcon={<Send />} variant={"outlined"} onClick={() => signAndSubmit()}>Sign & Submit</Button>
-                        {txHash !== "" ? <p>Transaction Hash: {txHash}</p> : <></>}
-                    </div>
 
+                </Box>
+                <Grid2 container width={"60%"} spacing={2} justifyContent={"space-evenly"} >
+                    <Grid2 >
+                        <Button variant="outlined" onClick={() => setIsOpen(true)}>Take a tour</Button>
+                    </Grid2>
+                    <Grid2>
+                        <Button disabled={!isValidNetwork} variant="contained" startIcon={<Send />} onClick={() => signAndSubmit()}>Sign & Submit</Button>
+                    </Grid2>
+                </Grid2>
+                <Box>
                     <PaymentsTable />
                 </Box>
             </Stack>
-        </div>
+
+        </div >
     );
 }
