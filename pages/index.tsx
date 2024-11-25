@@ -16,14 +16,8 @@ export default function Home() {
     const [hoskyInput, setHoskyInput] = useState<boolean>(true);
 
     useEffect(() => {
-        console.log('INIT - NETWORK: ' + NETWORK_ID)
-        console.log('INIT - ADAMATIC_HOST: ' + ADAMATIC_HOST)
-        console.log('INIT - NETWORK: ' + process.env.NEXT_PUBLIC_CARDANO_NETWORK)
-        console.log('INIT - ADAMATIC_HOST: ' + process.env.NEXT_PUBLIC_ADAMATIC_API_URL)
         if (connected) {
             wallet.getNetworkId().then((id) => {
-                console.log("Connected to network: " + id);
-                console.log("Connected to NETWORK: " + NETWORK_ID);
                 setNetworkID(id);
                 const isValidNetwork = String(id) == NETWORK_ID
                 setValidNetwork(isValidNetwork);
@@ -43,10 +37,10 @@ export default function Home() {
     }, [NETWORK_ID]);
 
     return (
-        <>
+        <div>
             <Toaster />
             <Navbar network={network} isValidNetwork={validNetwork} hoskyInput={hoskyInput} setHoskyInput={setHoskyInput} />
             <SetupRecurringPayment isValidNetwork={validNetwork} hoskyInput={hoskyInput} />
-        </>
+        </div>
     );
 }

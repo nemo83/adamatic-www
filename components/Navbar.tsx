@@ -20,10 +20,6 @@ export default function Navbar(props: { network: string, isValidNetwork: boolean
                         justifyContent: "space-between"
                     }}>
                     <div>
-                        <Typography variant="h6">
-                            Cardano recurring payments
-                        </Typography>
-
                         <Switch disabled={true} color={"secondary"} value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)} />
                         {hoskyInput ? "Hosky" : "General payment"}
                     </div>

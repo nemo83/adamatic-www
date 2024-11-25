@@ -4,7 +4,8 @@ import {
     Grid,
     Grid2,
     Stack,
-    Tooltip
+    Tooltip,
+    Typography
 } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
@@ -79,9 +80,52 @@ export default function SetupRecurringPayment(props: {
     }
 
     return (
-        <div className={"body"}>
+        <Box
+            id="hero"
+            sx={(theme) => ({
+                width: '100%',
+                backgroundRepeat: 'no-repeat',
 
-            <Stack spacing={4} sx={{ alignItems: "center" }} >
+                backgroundImage:
+                    'radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 70%), transparent)',
+                ...theme.applyStyles('dark', {
+                    backgroundImage:
+                        'radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 16%), transparent)',
+                }),
+            })}
+        >
+
+            <Stack spacing={4} sx={{
+                alignItems: "center",
+                pt: { xs: 4, sm: 7 },
+            }} >
+
+
+                <Typography
+                    variant="h1"
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        alignItems: 'center',
+                        fontSize: 'clamp(3rem, 10vw, 3.5rem)',
+                    }}
+                >
+                    Ada
+                    <Typography
+                        component="span"
+                        variant="h1"
+                        sx={(theme) => ({
+                            fontSize: 'inherit',
+                            color: 'primary.main',
+                            ...theme.applyStyles('dark', {
+                                color: 'primary.light',
+                            }),
+                        })}
+                    >
+                        matic
+                    </Typography>
+                </Typography>
+
 
                 <Box width={"60%"}
                     sx={{
@@ -114,6 +158,6 @@ export default function SetupRecurringPayment(props: {
                 </Box>
             </Stack>
 
-        </div >
+        </Box>
     );
 }
