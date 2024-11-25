@@ -37,7 +37,7 @@ export default function UserInput(props: {
 
     const [owner, setOwner] = React.useState<string>("");
     const [payee, setPayee] = React.useState<string>("");
-    const [maxFeesLovelace, setMaxFeesLovelace] = React.useState<number>(1_000_000);
+    const [maxFeesLovelace, setMaxFeesLovelace] = React.useState<number>(500_000);
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
     const [endTime, setEndTime] = React.useState<Dayjs | null>(null);
     const [paymentIntervalEpochs, setPaymentIntervalEpochs] = React.useState<number>(1);
@@ -146,6 +146,7 @@ export default function UserInput(props: {
             <Tooltip title={"Address for which collecting rewards"}>
                 <TextField required={true} label={"Reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
                     onBlur={(e) => updateWalletFrom(e.target.value)}
+                    data-tut="step-1"
                 />
             </Tooltip>
             <Tooltip title={"The amount of ADA to deposit into the smart contract"}>
@@ -155,20 +156,24 @@ export default function UserInput(props: {
                             endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
                         },
                     }}
+                    data-tut="step-2"
                 />
             </Tooltip>
             <Tooltip title={"The maximum amount of fees ADA spent for the recurring payments"}>
-                <TextField disabled={isHoskyInput} label={"Max Fees in Lovelace"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
+                <TextField disabled={isHoskyInput} label={"Max Fees"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
                     slotProps={{
                         input: {
                             endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
                         },
+                        htmlInput: { min: 0.5 }
                     }}
+                    data-tut="step-3"
+                    onChange={(event) => { setMaxFeesLovelace(inputLovelace ? Number(event.target.value) : Number(event.target.value) * CONSTANTS.ADA_CONVERSION) }}
                 />
             </Tooltip>
 
             <Tooltip title={"The address of the payee. This address will receive the payments."}>
-                <TextField disabled={isHoskyInput} label={"Payee Address"} value={payee} name={"payAddress"} />
+                <TextField disabled={isHoskyInput} label={"Payee Address"} value={payee} name={"payAddress"} data-tut="step-4" />
             </Tooltip>
             {
                 isHoskyInput ?
@@ -179,6 +184,7 @@ export default function UserInput(props: {
                                     endAdornment: <InputAdornment position="end">{startTime!.format('DD.MM.YYYY HH:mm')}</InputAdornment>,
                                 },
                             }}
+                            data-tut="step-5"
                         />
                     </Tooltip>
                     :
@@ -197,6 +203,7 @@ export default function UserInput(props: {
                                     endAdornment: <InputAdornment position="end">{endTime ? endTime!.format('DD.MM.YYYY HH:mm') : ''}</InputAdornment>,
                                 },
                             }}
+                            data-tut="step-6"
                         />
                     </Tooltip>
                     :
@@ -218,6 +225,7 @@ export default function UserInput(props: {
                             value={numPulls}
                             name={"numPulls"}
                             onChange={(event) => { setNumPulls(parseInt(event.target.value)); updateStuff(epochStart, parseInt(event.target.value), paymentIntervalEpochs) }}
+                            data-tut="step-7"
                         />
                     </Tooltip>
 
@@ -230,6 +238,7 @@ export default function UserInput(props: {
                 <Tooltip title={"The interval in epochs between the payments"}>
                     <TextField style={{ width: "50%" }} label={"Payment Interval Epochs"} type={"number"} value={paymentIntervalEpochs} name={"paymentIntervalHours"}
                         onChange={(event) => { updateStuff(epochStart, numPulls, parseInt(event.target.value)) }}
+                        data-tut="step-8"
                     />
                 </Tooltip>
             </div>
