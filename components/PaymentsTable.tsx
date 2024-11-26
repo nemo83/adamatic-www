@@ -25,7 +25,6 @@ export default function PaymentsTable() {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('data: ' + JSON.stringify(data));
                     let recurringPaymentDTOs: RecurringPayment[] = [];
                     data.forEach((recurringPayment: any) => {
                         recurringPaymentDTOs.push({
@@ -50,22 +49,21 @@ export default function PaymentsTable() {
         // const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
         const unsignedTx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
         const signedTx = await wallet.signTx(unsignedTx);
-        console.log(await wallet.submitTx(signedTx));
+        await wallet.submitTx(signedTx);
     }
 
     return (
         <>
             {connected ?
                 <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <Table aria-label="Payments Table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Hash</TableCell>
+                                {/* <TableCell>Hash</TableCell> */}
                                 <TableCell>Payee</TableCell>
                                 <TableCell>Next run</TableCell>
-                                <TableCell>Amount (ada)</TableCell>
-
-                                <TableCell>Cancel</TableCell>
+                                <TableCell>Amount</TableCell>
+                                <TableCell>&nbsp;</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -74,13 +72,13 @@ export default function PaymentsTable() {
                                     key={row.txHash}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
-                                    <TableCell component="th" scope="row">
+                                    {/* <TableCell component="th" scope="row">
                                         <Button href={"https://cardanoscan.io/transaction/" + row.txHash}
                                             endIcon={<LaunchIcon />}                                        >
                                             {row.txHash.substring(0, 10) + "..." + row.txHash.substring(row.txHash.length - 10)}
                                         </Button>
 
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell>
                                         <Button href={"https://cardanoscan.io/transaction/" + row.txHash}
                                             endIcon={<LaunchIcon />}                                        >
@@ -88,7 +86,7 @@ export default function PaymentsTable() {
                                         </Button>
                                     </TableCell>
                                     <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
-                                    <TableCell>2</TableCell>
+                                    <TableCell>2 ADA</TableCell>
 
                                     <TableCell>
                                         <IconButton aria-label="delete"

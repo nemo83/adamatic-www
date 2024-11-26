@@ -1,4 +1,5 @@
 import {
+    Alert,
     Box,
     Button,
     Grid,
@@ -13,7 +14,7 @@ import { useWallet } from "@meshsdk/react";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import { Data, Recipient, Transaction } from "@meshsdk/core";
 import TransactionUtil from "../lib/util/TransactionUtil";
-import { HOSKY_TOUR_DISPLAYED, SCRIPT } from "../lib/util/Constants";
+import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, SCRIPT } from "../lib/util/Constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 import { TourProvider, useTour } from '@reactour/tour'
@@ -27,12 +28,13 @@ export default function SetupRecurringPayment(props: {
 
     const { setIsOpen } = useTour();
 
+    const [showInfo, setShowInfo] = useState(false);
+    const [showLimit, setShowLimit] = useState(false);
+
     useEffect(() => {
         const hoskyTourDisplayed = localStorage.getItem(HOSKY_TOUR_DISPLAYED);
-        console.log('hoskyTourDisplayed: ' + hoskyTourDisplayed);
         if (!hoskyTourDisplayed) {
             setIsOpen(true);
-            console.log('hoskyTourDisplayed is null');
             localStorage.setItem(HOSKY_TOUR_DISPLAYED, "true");
 
         }
@@ -62,6 +64,22 @@ export default function SetupRecurringPayment(props: {
 
     }, [datumDTO, connected]);
 
+    useEffect(() => {
+        fetch(ADAMATIC_HOST + '/recurring_payments')
+            .then(response => response.json())
+            .then((data: []) => {
+                if (data.length >= 0 && data.length < 10) {
+                    setShowInfo(true);
+                } else {
+                    setShowLimit(true)
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setShowLimit(true)
+            })
+    }, []);
+
     async function signAndSubmit() {
         if (wallet && datum) {
             const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
@@ -72,7 +90,6 @@ export default function SetupRecurringPayment(props: {
                     inline: true
                 }
             };
-            console.log('data: ' + datum);
             const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
             const signedTx = await wallet.signTx(unsignedTx);
             setTxHash(await wallet.submitTx(signedTx));
@@ -100,38 +117,18 @@ export default function SetupRecurringPayment(props: {
                 pt: { xs: 4, sm: 7 },
             }} >
 
-
-                <Typography
-                    variant="h1"
-                    sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', sm: 'row' },
-                        alignItems: 'center',
-                        fontSize: 'clamp(3rem, 10vw, 3.5rem)',
-                    }}
-                >
-                    Ada
-                    <Typography
-                        component="span"
-                        variant="h1"
-                        sx={(theme) => ({
-                            fontSize: 'inherit',
-                            color: 'primary.main',
-                            ...theme.applyStyles('dark', {
-                                color: 'primary.light',
-                            }),
-                        })}
-                    >
-                        matic
-                    </Typography>
-                </Typography>
-
-
-                <Box width={"60%"}
+                <Box width={"600px"} maxWidth={"60%"}
                     sx={{
                         marginTop: "10rem"
                     }}
                 >
+
+                    <Alert hidden={!showInfo} severity="info" sx={{ my: 2 }}>Welcome to Adamatic BETA.</Alert>
+
+                    <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Adamatic is running in BETA mode. Limit of payments reached.</Alert>
+
+
+                    <Typography variant="h4">Setup New Payment</Typography>
 
                     <UserInput
                         deposit={deposit}
@@ -150,12 +147,15 @@ export default function SetupRecurringPayment(props: {
                         <Button variant="outlined" onClick={() => setIsOpen(true)}>Take a tour</Button>
                     </Grid2>
                     <Grid2>
-                        <Button disabled={!isValidNetwork} variant="contained" startIcon={<Send />} onClick={() => signAndSubmit()}>Sign & Submit</Button>
+                        <Button disabled={!isValidNetwork || showLimit} variant="contained" startIcon={<Send />} onClick={() => signAndSubmit()}>Sign & Submit</Button>
                     </Grid2>
                 </Grid2>
-                <Box>
-                    <PaymentsTable />
-                </Box>
+                {connected ?
+                    <Stack width={"600px"} maxWidth={"60%"}>
+                        <Typography variant="h4">My Payments</Typography>
+                        <PaymentsTable />
+                    </Stack>
+                    : null}
             </Stack>
 
         </Box>

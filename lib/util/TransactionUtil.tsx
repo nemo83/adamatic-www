@@ -22,7 +22,6 @@ class BlockfrostProviderSingleton {
 
     public static getInstance(): BlockfrostProvider {
         if (!BlockfrostProviderSingleton.instance) {
-            console.log('BLOCKFROST_API_KEY: ' + BLOCKFROST_API_KEY);
             BlockfrostProviderSingleton.instance = new BlockfrostProvider(BLOCKFROST_API_KEY!);
         }
         return BlockfrostProviderSingleton.instance;
@@ -57,8 +56,6 @@ export default class TransactionUtil {
     public static async createDatum(datumDTO: RecurringPaymentDatum): Promise<Data> {
 
         try {
-
-            console.log('datum: ' + JSON.stringify(datumDTO));
 
             if (datumDTO.ownerPaymentPubKeyHash === "" || datumDTO.payee === "") {
                 return mConStr(0, [])
@@ -96,7 +93,6 @@ export default class TransactionUtil {
 
     public static toOnchainAddress(address: Address): Data {
         try {
-            console.log('address: ' + address.toBech32().toString());
             const addressType = address.getType();
 
             let paymentCredentialHash = "";

@@ -13,20 +13,44 @@ export default function Navbar(props: { network: string, isValidNetwork: boolean
         <Box >
             <AppBar position="static" component="nav">
                 {/*<CssBaseline />*/}
-                <Toolbar disableGutters
+                <Toolbar
                     sx={{
                         display: { xs: "flex" },
                         flexDirection: "row",
                         justifyContent: "space-between"
                     }}>
-                    <div>
+                    {/* <div>
                         <Switch disabled={true} color={"secondary"} value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)} />
                         {hoskyInput ? "Hosky" : "General payment"}
-                    </div>
+                    </div> */}
 
-                    {connected ?
-                        isValidNetwork ? <Typography>{network}</Typography> : <Typography>Wrong wallet network</Typography>
-                        : <Typography>{network}</Typography>}
+
+                    <Box>
+                        <Typography
+                            variant="h1"
+                            sx={{
+                                display: 'flex',
+                                flexDirection: { xs: 'column', sm: 'row' },
+                                alignItems: 'center',
+                                fontSize: 'clamp(3rem, 10vw, 3.5rem)',
+                            }}
+                        >
+                            Ada
+                            <Typography
+                                component="span"
+                                variant="h1"
+                                sx={(theme) => ({
+                                    fontSize: 'inherit',
+                                    color: 'primary.dark',
+                                    ...theme.applyStyles('dark', {
+                                        color: 'secondary.light',
+                                    }),
+                                })}
+                            >
+                                matic
+                            </Typography>
+                        </Typography>
+                    </Box>
                     <CardanoWallet />
                 </Toolbar>
             </AppBar>

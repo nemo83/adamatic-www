@@ -71,8 +71,6 @@ export default function UserInput(props: {
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky')
                 .then(response => response.json())
                 .then(data => {
-                    // console.log('data: ' + JSON.stringify(data))
-
                     setEpochStart(data.epoch_start);
                     setEpochEnd(data.epoch_end);
                     setPaymentIntervalEpochs(data.epoch_frequency);
@@ -97,7 +95,7 @@ export default function UserInput(props: {
             num_pulls: numPulls.toString(),
             epoch_frequency: epochFrequency.toString()
         };
-        console.log('baseRequest: ' + JSON.stringify(baseRequest));
+        
         if (isHoskyInput) {
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky?' + new URLSearchParams(baseRequest).toString())
                 .then(response => response.json())
