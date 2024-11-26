@@ -22,6 +22,10 @@ const theme = createTheme({
 
 const steps = [
     {
+        selector: '[data-tut="step-0"]',
+        content: 'Hosky pulls payments can be setup with any wallet, not necessarily the one that is used to delegate to the Rug Pool',
+    },
+    {
         selector: '[data-tut="step-1"]',
         content: 'The address delegated to a Hosky Rug Pool you want to collect rewards for. ' +
             'It\'s set by default to the connected wallet',

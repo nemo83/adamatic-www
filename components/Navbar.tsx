@@ -51,7 +51,9 @@ export default function Navbar(props: { network: string, isValidNetwork: boolean
                             </Typography>
                         </Typography>
                     </Box>
-                    <CardanoWallet />
+                    <Box data-tut="step-0">
+                        <CardanoWallet />
+                    </Box>
                 </Toolbar>
             </AppBar>
         </Box>
