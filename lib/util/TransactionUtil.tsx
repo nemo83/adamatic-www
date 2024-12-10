@@ -42,9 +42,7 @@ class TxBuilderSingleton {
         if (!TxBuilderSingleton.instance) {
             TxBuilderSingleton.instance = new MeshTxBuilder({
                 fetcher: blockchainProvider,
-                // submitter: blockchainProvider,
-                evaluator: blockchainProvider,
-                verbose: true
+                evaluator: blockchainProvider
             });
             TxBuilderSingleton.instance.setNetwork("mainnet");
         }
