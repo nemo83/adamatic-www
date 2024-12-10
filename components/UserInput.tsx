@@ -170,12 +170,12 @@ export default function UserInput(props: {
                 />
             </Tooltip>
 
-            <Tooltip title={"The address of the payee. This address will receive the payments."}>
+            <Tooltip title={"Hosky Dogbowl Address."}>
                 <TextField disabled={isHoskyInput} label={"Payee Address"} value={payee} name={"payAddress"} data-tut="step-4" />
             </Tooltip>
             {
                 isHoskyInput ?
-                    <Tooltip title={"The address of the owner of the smart contract. This address will be able to cancel the smart contract."}>
+                    <Tooltip title={"Epoch of the first rewards being pulled."}>
                         <TextField type={"number"} label={"Start Epoch"} value={epochStart} name={"startEpoch"} onChange={(event) => updateStuff(parseInt(event.target.value), Math.floor((epochEnd - epochStart) / paymentIntervalEpochs), paymentIntervalEpochs)}
                             slotProps={{
                                 input: {
@@ -194,7 +194,7 @@ export default function UserInput(props: {
 
             {
                 isHoskyInput ?
-                    <Tooltip title={"The address of the owner of the smart contract. This address will be able to cancel the smart contract."}>
+                    <Tooltip title={"Epoch of the last rewards being pulled."}>
                         <TextField disabled={isHoskyInput} type={"number"} label={"Endtime (optional)"} value={epochEnd} name={"endEpoch"}
                             slotProps={{
                                 input: {
