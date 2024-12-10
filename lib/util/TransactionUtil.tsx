@@ -42,6 +42,7 @@ class TxBuilderSingleton {
             TxBuilderSingleton.instance = new MeshTxBuilder({
                 fetcher: blockchainProvider,
                 submitter: blockchainProvider,
+                evaluator: blockchainProvider
             });
         }
         return TxBuilderSingleton.instance;
@@ -128,24 +129,35 @@ export default class TransactionUtil {
 
     public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: BrowserWallet): Promise<string> {
 
-        const utxos = await blockchainProvider.fetchUTxOs(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index);
+        const baseAddress = (await wallet.getUsedAddress())
 
-        const collateral = await wallet.getCollateral();
+        const walletAddress = baseAddress.toBech32().toString();
 
-        const walletUtxos = await wallet.getUtxos();
+        const walletPkh = baseAddress.asBase()!.getPaymentCredential().hash.toString();
 
-        const walletAddress = (await wallet.getUsedAddress()).toBech32().toString();
+        const collateral = (await wallet.getCollateral()).filter((utxo) => utxo.output.address == walletAddress);
+
+        const walletUtxos = (await wallet.getUtxos()).filter((utxo) => utxo.output.address == walletAddress);
+
+        const protocolParams = await blockchainProvider.fetchProtocolParameters();
+
+        // const utxos = await blockchainProvider.fetchUTxOs(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index);
+
+        txBuilder.reset();
 
         await txBuilder
+            .setNetwork("mainnet")
+            .protocolParams(protocolParams)
             .spendingPlutusScriptV3()
-            .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index, utxos[0].output.amount, utxos[0].output.address)
-            .txInScript(SCRIPT.code)
+            .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index)
+            // .txInScript(SCRIPT.code)
+            .spendingTxInReference("4eb4d38a4006a8524c811fbac0f6b5d414f9a31c5ff83856dcd991b3bc63b0e5", 0)
             .txInInlineDatumPresent()
             .txInRedeemerValue(mConStr(0, []))
-            .txOut(walletAddress, [])
-            .selectUtxosFrom(walletUtxos)
-            .changeAddress(walletAddress)
             .txInCollateral(collateral[0].input.txHash, collateral[0].input.outputIndex)
+            .selectUtxosFrom(walletUtxos)
+            .requiredSignerHash(walletPkh)
+            .changeAddress(walletAddress)
             .complete();
 
 
