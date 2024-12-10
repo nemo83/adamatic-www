@@ -1,6 +1,7 @@
 import {
     BrowserWallet,
     Data,
+    IWallet,
     mConStr,
     mConStr0,
     mConStr1,
@@ -41,9 +42,11 @@ class TxBuilderSingleton {
         if (!TxBuilderSingleton.instance) {
             TxBuilderSingleton.instance = new MeshTxBuilder({
                 fetcher: blockchainProvider,
-                submitter: blockchainProvider,
-                evaluator: blockchainProvider
+                // submitter: blockchainProvider,
+                evaluator: blockchainProvider,
+                verbose: true
             });
+            TxBuilderSingleton.instance.setNetwork("mainnet");
         }
         return TxBuilderSingleton.instance;
     }
@@ -127,9 +130,9 @@ export default class TransactionUtil {
 
     }
 
-    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: BrowserWallet): Promise<string> {
+    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: IWallet): Promise<string> {
 
-        const baseAddress = (await wallet.getUsedAddress())
+        const baseAddress = Address.fromBech32((await wallet.getUsedAddresses())[0]);
 
         const walletAddress = baseAddress.toBech32().toString();
 
@@ -146,12 +149,12 @@ export default class TransactionUtil {
         txBuilder.reset();
 
         await txBuilder
-            .setNetwork("mainnet")
-            .protocolParams(protocolParams)
+            // .setNetwork("mainnet")
+            // .protocolParams(protocolParams)
             .spendingPlutusScriptV3()
             .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index)
-            // .txInScript(SCRIPT.code)
-            .spendingTxInReference("4eb4d38a4006a8524c811fbac0f6b5d414f9a31c5ff83856dcd991b3bc63b0e5", 0)
+            .txInScript(SCRIPT.code)
+            // .spendingTxInReference("4eb4d38a4006a8524c811fbac0f6b5d414f9a31c5ff83856dcd991b3bc63b0e5", 0)
             .txInInlineDatumPresent()
             .txInRedeemerValue(mConStr(0, []))
             .txInCollateral(collateral[0].input.txHash, collateral[0].input.outputIndex)
@@ -165,7 +168,7 @@ export default class TransactionUtil {
 
     }
 
-    public static async getScriptAddressWithStakeCredential(wallet: BrowserWallet, script: PlutusScript, walletFrom: string): Promise<string> {
+    public static async getScriptAddressWithStakeCredential(wallet: IWallet, script: PlutusScript, walletFrom: string): Promise<string> {
         const addressFrom = Address.fromBech32(walletFrom);
         // const address = (await wallet.getUsedAddress()).asBase();
         // const stakeCredentialHash = address!.getStakeCredential().hash.toString();

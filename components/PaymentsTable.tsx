@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import TransactionUtil from "../lib/util/TransactionUtil";
 import { useWallet } from "@meshsdk/react";
+import { Address } from "@meshsdk/core-cst";
 import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -18,8 +19,9 @@ export default function PaymentsTable() {
     useEffect(() => {
         if (connected) {
             wallet
-                .getUsedAddress()
-                .then((address) => {
+                .getUsedAddresses()
+                .then((addresses) => {
+                    const address = Address.fromBech32(addresses[0])
                     const paymentPubKeyHash = address.asBase()!.getPaymentCredential().hash.toString();
                     return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + paymentPubKeyHash);
                 })

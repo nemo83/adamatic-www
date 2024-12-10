@@ -52,7 +52,8 @@ export default function UserInput(props: {
     useEffect(() => {
 
         if (connected) {
-            wallet.getUsedAddress().then((address) => {
+            wallet.getUsedAddresses().then((addresses) => {
+                const address = Address.fromBech32(addresses[0])
                 const userWallet = address.asBase()!.toAddress().toBech32().toString();
                 setOwner(userWallet);
                 if (!walletFrom) {
@@ -95,12 +96,12 @@ export default function UserInput(props: {
             num_pulls: numPulls.toString(),
             epoch_frequency: epochFrequency.toString()
         };
-        
+
         if (isHoskyInput) {
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky?' + new URLSearchParams(baseRequest).toString())
                 .then(response => response.json())
                 .then(data => {
-                    
+
                     setEpochStart(data.epoch_start);
                     setEpochEnd(data.epoch_end);
 
