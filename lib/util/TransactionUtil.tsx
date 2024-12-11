@@ -131,13 +131,6 @@ export default class TransactionUtil {
 
     public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: IWallet): Promise<string> {
 
-        const bfProvider = new BlockfrostProvider(BLOCKFROST_API_KEY!);
-
-        const localTxBuilder = new MeshTxBuilder({
-            fetcher: bfProvider,
-            evaluator: bfProvider
-        })
-
         const baseAddress = Address.fromBech32((await wallet.getUsedAddresses())[0]);
 
         const walletAddress = baseAddress.toBech32().toString();
@@ -153,23 +146,20 @@ export default class TransactionUtil {
 
         const utxos = await blockchainProvider.fetchUTxOs(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index);
 
-        // txBuilder.reset();
+        txBuilder.reset();
 
-        const unsignedTx = await localTxBuilder
-            .setNetwork("mainnet")
-            // .protocolParams(protocolParams)
+        const unsignedTx = await txBuilder
+            // .setNetwork('mainnet')
             .spendingPlutusScriptV3()
             .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index, utxos[0].output.amount, utxos[0].output.address)
             .txInInlineDatumPresent()
             .txInRedeemerValue(mConStr(0, []))
-            // .txInScript(SCRIPT.code)
             .spendingTxInReference("4eb4d38a4006a8524c811fbac0f6b5d414f9a31c5ff83856dcd991b3bc63b0e5", 0)
             .changeAddress(walletAddress)
             .txInCollateral(collateral[0].input.txHash, collateral[0].input.outputIndex)
             .selectUtxosFrom(walletUtxos)
             .requiredSignerHash(walletPkh)
             .complete();
-
 
         return unsignedTx;
 

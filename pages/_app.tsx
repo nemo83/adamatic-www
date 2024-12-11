@@ -23,7 +23,7 @@ const theme = createTheme({
 const steps = [
     {
         selector: '[data-tut="step-0"]',
-        content: 'Hosky pulls payments can be setup with any wallet, not necessarily the one that is used to delegate to the Rug Pool.',
+        content: 'Hosky pulls payments can be setup with any wallet, not necessarily the one that is delegate to the Rug Pool.',
     },
     {
         selector: '[data-tut="step-1"]',

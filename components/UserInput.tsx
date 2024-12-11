@@ -18,6 +18,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { ADAMATIC_HOST, CONSTANTS } from "../lib/util/Constants";
 import { useWallet } from "@meshsdk/react";
 import { Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
+import { HoskyTemplate } from "../lib/interfaces/AdaMaticTypes";
 
 export default function UserInput(props: {
     deposit: number,
@@ -71,49 +72,43 @@ export default function UserInput(props: {
         if (isHoskyInput) {
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky')
                 .then(response => response.json())
-                .then(data => {
-                    setEpochStart(data.epoch_start);
-                    setEpochEnd(data.epoch_end);
-                    setPaymentIntervalEpochs(data.epoch_frequency);
-
-                    const numPulls = Math.floor((data.epoch_end - data.epoch_start) / data.epoch_frequency);
-                    setNumPulls(numPulls)
-
-                    setDeposit(data.suggested_deposit[0].amount);
-                    setPayee(data.payee_address);
-                    setStartTime(dayjs(data.start_time_timestamp));
-                    setEndTime(dayjs(data.end_time_timestamp));
-
-                    setPaymentIntervalHours(data.payment_interval_hours);
-
-                })
+                .then((data: HoskyTemplate) => updateForm(data));
         }
     }, [isHoskyInput]);
 
     const updateStuff = async (epochStart: number, numPulls: number, epochFrequency: number) => {
+
         let baseRequest = {
             epoch_start: epochStart.toString(),
             num_pulls: numPulls.toString(),
             epoch_frequency: epochFrequency.toString()
         };
 
+        console.log('baseRequest: ' + JSON.stringify(baseRequest));
+
         if (isHoskyInput) {
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky?' + new URLSearchParams(baseRequest).toString())
                 .then(response => response.json())
-                .then(data => {
-
-                    setEpochStart(data.epoch_start);
-                    setEpochEnd(data.epoch_end);
-
-                    setDeposit(data.suggested_deposit[0].amount);
-                    setPayee(data.payee_address);
-                    setStartTime(dayjs(data.start_time_timestamp));
-                    setEndTime(dayjs(data.end_time_timestamp));
-
-                    setPaymentIntervalEpochs(data.epoch_frequency);
-
-                })
+                .then((data: HoskyTemplate) => updateForm(data));
         }
+    }
+
+    const updateForm = (data: HoskyTemplate) => {
+        console.log('data: ' + JSON.stringify(data));
+
+        setEpochStart(data.epoch_start);
+        setEpochEnd(data.epoch_end);
+
+        const numPulls = Math.floor((data.epoch_end - data.epoch_start) / data.epoch_frequency);
+        setNumPulls(numPulls)
+
+        setDeposit(data.suggested_deposit[0].amount);
+        setPayee(data.payee_address);
+        setStartTime(dayjs(data.start_time_timestamp));
+        setEndTime(dayjs(data.end_time_timestamp));
+
+        setPaymentIntervalHours(data.payment_interval_hours);
+        setPaymentIntervalEpochs(data.epoch_frequency);
     }
 
     useEffect(() => {
@@ -128,9 +123,11 @@ export default function UserInput(props: {
             paymentIntervalHours: paymentIntervalHours,
             maxFeesLovelace: maxFeesLovelace,
         }
+        console.log("datumDTO", JSON.stringify(datumDTO));
+        console.log("newDatumDTO", JSON.stringify(newDatumDTO));
         setDatumDTO(newDatumDTO);
 
-    }, [owner, payee, walletFrom])
+    }, [owner, payee, startTime, endTime, paymentIntervalHours, maxFeesLovelace])
 
     const updateWalletFrom = (newWalletFrom: string) => {
         if (newWalletFrom) {
@@ -177,7 +174,7 @@ export default function UserInput(props: {
             {
                 isHoskyInput ?
                     <Tooltip title={"Epoch of the first rewards being pulled."}>
-                        <TextField type={"number"} label={"Start Epoch"} value={epochStart} name={"startEpoch"} onChange={(event) => updateStuff(parseInt(event.target.value), Math.floor((epochEnd - epochStart) / paymentIntervalEpochs), paymentIntervalEpochs)}
+                        <TextField type={"number"} label={"First Epoch"} value={epochStart} name={"startEpoch"} onChange={(event) => updateStuff(parseInt(event.target.value), Math.floor((epochEnd - epochStart) / paymentIntervalEpochs), paymentIntervalEpochs)}
                             slotProps={{
                                 input: {
                                     endAdornment: <InputAdornment position="end">{startTime!.format('DD.MM.YYYY HH:mm')}</InputAdornment>,
@@ -196,7 +193,7 @@ export default function UserInput(props: {
             {
                 isHoskyInput ?
                     <Tooltip title={"Epoch of the last rewards being pulled."}>
-                        <TextField disabled={isHoskyInput} type={"number"} label={"Endtime (optional)"} value={epochEnd} name={"endEpoch"}
+                        <TextField disabled={isHoskyInput} type={"number"} label={"Last Epoch (optional)"} value={epochEnd} name={"endEpoch"}
                             slotProps={{
                                 input: {
                                     endAdornment: <InputAdornment position="end">{endTime ? endTime!.format('DD.MM.YYYY HH:mm') : ''}</InputAdornment>,

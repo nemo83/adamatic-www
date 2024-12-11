@@ -2,8 +2,8 @@ import {
     Alert,
     Box,
     Button,
-    Grid,
     Grid2,
+    IconButton,
     Stack,
     Tooltip,
     Typography
@@ -17,7 +17,8 @@ import TransactionUtil from "../lib/util/TransactionUtil";
 import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, SCRIPT } from "../lib/util/Constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
-import { TourProvider, useTour } from '@reactour/tour'
+import { useTour } from '@reactour/tour'
+import CachedIcon from '@mui/icons-material/Cached';
 
 export default function SetupRecurringPayment(props: {
     isValidNetwork: boolean,
@@ -31,12 +32,13 @@ export default function SetupRecurringPayment(props: {
     const [showInfo, setShowInfo] = useState(false);
     const [showLimit, setShowLimit] = useState(false);
 
+    const [version, setVersion] = useState(0);
+
     useEffect(() => {
         const hoskyTourDisplayed = localStorage.getItem(HOSKY_TOUR_DISPLAYED);
         if (!hoskyTourDisplayed) {
             setIsOpen(true);
             localStorage.setItem(HOSKY_TOUR_DISPLAYED, "true");
-
         }
     }, []);
 
@@ -128,7 +130,7 @@ export default function SetupRecurringPayment(props: {
                     <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Adamatic is running in BETA mode. Limit of payments reached.</Alert>
 
 
-                    <Typography variant="h4">Setup New Payment</Typography>
+                    <Typography variant="h4">Setup New Hosky Auto-pull</Typography>
 
                     <UserInput
                         deposit={deposit}
@@ -152,8 +154,26 @@ export default function SetupRecurringPayment(props: {
                 </Grid2>
                 {connected ?
                     <Stack width={"600px"} maxWidth={"60%"}>
-                        <Typography variant="h4">My Payments</Typography>
-                        <PaymentsTable />
+
+                        <Grid2 container width={"100%"} justifyContent={"space-between"}>
+                            <Grid2>
+                                <Typography variant="h4">My Auto-pulls</Typography>
+                            </Grid2>
+                            <Grid2>
+                                <Tooltip title="Reload auto-pulls">
+                                    <IconButton
+                                        color="primary"
+                                        size="large"
+                                        aria-label="reload auto pulls"
+                                        onClick={() => setVersion(version + 1)}>
+                                        <CachedIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid2>
+
+                        </Grid2>
+
+                        <PaymentsTable version={version} />
                     </Stack>
                     : null}
             </Stack>
