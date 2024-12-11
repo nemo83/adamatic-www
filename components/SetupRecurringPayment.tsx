@@ -84,6 +84,20 @@ export default function SetupRecurringPayment(props: {
     }, []);
 
     const signAndSubmit = async () => {
+
+        const balance = await wallet.getBalance();
+        const collateralUtxos = await wallet.getCollateral();
+
+        const collateralSum = collateralUtxos.map((utxo) => utxo.output.amount.filter((asset) => asset.unit === "lovelace")[0].quantity).reduce((a, b) => a + parseInt(b), 0);
+
+        const adaBalance = parseInt(balance.filter((asset) => asset.unit === "lovelace")[0].quantity) + collateralSum;
+
+        const minAdaBalance = deposit + 10_000_000;
+        if (adaBalance < minAdaBalance) {
+            toast.error(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`, { duration: 5000 })
+            return Promise.reject(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`);
+        }
+
         if (wallet && datum) {
             const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
             const recipient: Recipient = {
@@ -93,14 +107,15 @@ export default function SetupRecurringPayment(props: {
                     inline: true
                 }
             };
-            const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
+            
             try {
+                const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
                 const signedTx = await wallet.signTx(unsignedTx);
                 const txHash = await wallet.submitTx(signedTx);
                 setTxHash(await wallet.submitTx(signedTx));
                 toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
             } catch (error) {
-                toast.error('Error: ' + error, { duration: 5000 })
+                toast.error('' + error, { duration: 5000 });
             }
         }
     }

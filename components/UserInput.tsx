@@ -94,8 +94,6 @@ export default function UserInput(props: {
     }
 
     const updateForm = (data: HoskyTemplate) => {
-        console.log('data: ' + JSON.stringify(data));
-
         setEpochStart(data.epoch_start);
         setEpochEnd(data.epoch_end);
 
@@ -123,8 +121,6 @@ export default function UserInput(props: {
             paymentIntervalHours: paymentIntervalHours,
             maxFeesLovelace: maxFeesLovelace,
         }
-        console.log("datumDTO", JSON.stringify(datumDTO));
-        console.log("newDatumDTO", JSON.stringify(newDatumDTO));
         setDatumDTO(newDatumDTO);
 
     }, [owner, payee, startTime, endTime, paymentIntervalHours, maxFeesLovelace])

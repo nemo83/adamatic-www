@@ -66,7 +66,7 @@ export default function PaymentsTable(props: { version: number }) {
             const txHash = await wallet.submitTx(signedTx);
             toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
         } catch (error) {
-            toast.error('Error: ' + error, { duration: 5000 })
+            toast.error('' + error, { duration: 5000 })
         }
     }
 

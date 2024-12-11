@@ -138,25 +138,28 @@ export default class TransactionUtil {
         const walletPkh = baseAddress.asBase()!.getPaymentCredential().hash.toString();
         console.log('walletPkh: ' + walletPkh)
 
-        const collateral = (await wallet.getCollateral()).filter((utxo) => utxo.output.address == walletAddress);
-
         const walletUtxos = (await wallet.getUtxos()).filter((utxo) => utxo.output.address == walletAddress);
 
-        const protocolParams = await blockchainProvider.fetchProtocolParameters();
+        let collateralUtxos = (await wallet.getCollateral()).filter((utxo) => utxo.output.address == walletAddress);
 
-        const utxos = await blockchainProvider.fetchUTxOs(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index);
+        if (collateralUtxos.length == 0) {
+            collateralUtxos = walletUtxos.filter((utxo) => utxo.output.amount.length == 1);
+        }
+
+        if (collateralUtxos.length == 0) {
+            return Promise.reject('Wallet has no available collateral, please set it in the wallet, or send additional 5 ada to the current wallet address');
+        }
 
         txBuilder.reset();
 
         return txBuilder
-            // .setNetwork('mainnet')
             .spendingPlutusScriptV3()
-            .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index, utxos[0].output.amount, utxos[0].output.address)
+            .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index)
             .txInInlineDatumPresent()
             .txInRedeemerValue(mConStr(0, []))
             .spendingTxInReference("4eb4d38a4006a8524c811fbac0f6b5d414f9a31c5ff83856dcd991b3bc63b0e5", 0)
             .changeAddress(walletAddress)
-            .txInCollateral(collateral[0].input.txHash, collateral[0].input.outputIndex)
+            .txInCollateral(collateralUtxos[0].input.txHash, collateralUtxos[0].input.outputIndex)
             .selectUtxosFrom(walletUtxos)
             .requiredSignerHash(walletPkh)
             .complete();
