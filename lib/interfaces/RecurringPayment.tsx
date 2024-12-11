@@ -4,6 +4,7 @@ import AssetAmount from "./AssetAmount";
 export default interface RecurringPayment {
     txHash: string,
     output_index: number,
+    staking_address: string,
     balance: AssetAmount[],
     amountToSend: AssetAmount[];
     payee: string,

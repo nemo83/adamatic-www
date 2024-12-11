@@ -39,12 +39,13 @@ export default function PaymentsTable(props: { version: number }) {
                 return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + paymentPubKeyHash);
             })
             .then(response => response.json())
-            .then(data => {
+            .then((data: RecurringPayment[]) => {
                 let recurringPaymentDTOs: RecurringPayment[] = [];
                 data.forEach((recurringPayment: any) => {
                     recurringPaymentDTOs.push({
                         txHash: recurringPayment.tx_hash,
                         output_index: recurringPayment.output_index,
+                        staking_address: recurringPayment.staking_address,
                         balance: recurringPayment.balance,
                         amountToSend: [],
                         payee: recurringPayment.payee,
@@ -78,10 +79,10 @@ export default function PaymentsTable(props: { version: number }) {
                         <TableHead>
                             <TableRow>
                                 {/* <TableCell>Hash</TableCell> */}
-                                <TableCell>Payee</TableCell>
+                                <TableCell>Staking Address</TableCell>
                                 <TableCell>Next run</TableCell>
-                                <TableCell>Amount</TableCell>
-                                <TableCell>&nbsp;</TableCell>
+                                <TableCell>Balance</TableCell>
+                                <TableCell>Cancel</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -98,13 +99,13 @@ export default function PaymentsTable(props: { version: number }) {
 
                                     </TableCell> */}
                                     <TableCell>
-                                        <Button href={"https://cardanoscan.io/transaction/" + row.txHash}
+                                        <Button href={"https://cardanoscan.io/stakekey/" + row.staking_address}
                                             endIcon={<LaunchIcon />}                                        >
-                                            {row.payee.substring(0, 10) + "..." + row.payee.substring(row.payee.length - 10)}
+                                            {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 10)}
                                         </Button>
                                     </TableCell>
                                     <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
-                                    <TableCell>2 ADA</TableCell>
+                                    <TableCell>{(row.balance[0].amount / 1_000_000).toFixed(2)} ADA</TableCell>
 
                                     <TableCell>
                                         <IconButton aria-label="delete"

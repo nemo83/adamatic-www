@@ -141,7 +141,7 @@ export default function SetupRecurringPayment(props: {
                 pt: { xs: 4, sm: 7 },
             }} >
 
-                <Box width={"600px"} maxWidth={"60%"}
+                <Box width={"750px"} maxWidth={"60%"}
                     sx={{
                         marginTop: "10rem"
                     }}
@@ -175,7 +175,7 @@ export default function SetupRecurringPayment(props: {
                     </Grid2>
                 </Grid2>
                 {connected ?
-                    <Stack width={"600px"} maxWidth={"60%"}>
+                    <Stack width={"750px"} maxWidth={"60%"}>
 
                         <Grid2 container width={"100%"} justifyContent={"space-between"}>
                             <Grid2>
