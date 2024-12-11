@@ -51,7 +51,7 @@ export default function PaymentsTable() {
         // const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
         const unsignedTx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
         const signedTx = await wallet.signTx(unsignedTx);
-        await wallet.submitTx(signedTx);
+        const txHash = await wallet.submitTx(signedTx);
     }
 
     return (
