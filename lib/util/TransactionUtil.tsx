@@ -148,7 +148,7 @@ export default class TransactionUtil {
 
         txBuilder.reset();
 
-        const unsignedTx = await txBuilder
+        return txBuilder
             // .setNetwork('mainnet')
             .spendingPlutusScriptV3()
             .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index, utxos[0].output.amount, utxos[0].output.address)
@@ -160,8 +160,6 @@ export default class TransactionUtil {
             .selectUtxosFrom(walletUtxos)
             .requiredSignerHash(walletPkh)
             .complete();
-
-        return unsignedTx;
 
     }
 

@@ -8,6 +8,7 @@ import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
+import toast from "react-hot-toast";
 
 
 export default function PaymentsTable(props: { version: number }) {
@@ -58,11 +59,15 @@ export default function PaymentsTable(props: { version: number }) {
             })
     }
 
-    async function cancelRecurringPayment(recurringPaymentDTO: RecurringPayment) {
-        // const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT);
+    const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
         const unsignedTx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
-        const signedTx = await wallet.signTx(unsignedTx);
-        const txHash = await wallet.submitTx(signedTx);
+        try {
+            const signedTx = await wallet.signTx(unsignedTx);
+            const txHash = await wallet.submitTx(signedTx);
+            toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
+        } catch (error) {
+            toast.error('Error: ' + error, { duration: 5000 })
+        }
     }
 
     return (

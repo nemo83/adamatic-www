@@ -19,6 +19,7 @@ import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
+import toast from "react-hot-toast";
 
 export default function SetupRecurringPayment(props: {
     isValidNetwork: boolean,
@@ -82,7 +83,7 @@ export default function SetupRecurringPayment(props: {
             })
     }, []);
 
-    async function signAndSubmit() {
+    const signAndSubmit = async () => {
         if (wallet && datum) {
             const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
             const recipient: Recipient = {
@@ -93,8 +94,14 @@ export default function SetupRecurringPayment(props: {
                 }
             };
             const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
-            const signedTx = await wallet.signTx(unsignedTx);
-            setTxHash(await wallet.submitTx(signedTx));
+            try {
+                const signedTx = await wallet.signTx(unsignedTx);
+                const txHash = await wallet.submitTx(signedTx);
+                setTxHash(await wallet.submitTx(signedTx));
+                toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
+            } catch (error) {
+                toast.error('Error: ' + error, { duration: 5000 })
+            }
         }
     }
 
