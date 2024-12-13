@@ -23,7 +23,7 @@ const theme = createTheme({
 const steps = [
     {
         selector: '[data-tut="step-0"]',
-        content: 'Hosky pulls payments can be setup with any wallet, not necessarily the one that is delegate to the Rug Pool.',
+        content: 'Hosky pulls payments can be setup with any wallet, not necessarily the one that is delegated to the Rug Pool.',
     },
     {
         selector: '[data-tut="step-1"]',
@@ -59,7 +59,7 @@ const steps = [
     {
         selector: '[data-tut="step-8"]',
         content: 'The epoch frequency interval to pull Hosky rewards. Hosky allows to stack rewards which allows smaller wallets to save on fees. ' +
-            'Such wallet should pull less frequently (2 to 3 epochs). While larger wallets should pull each epoch (e.g. 1 epoch).',
+            'Such wallets should pull less frequently (2 to 3 epochs). While larger wallets should pull each epoch (e.g. 1 epoch).',
     }
 ]
 
