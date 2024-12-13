@@ -30,7 +30,8 @@ export default function SetupRecurringPayment(props: {
 
     const { setIsOpen } = useTour();
 
-    const [showInfo, setShowInfo] = useState(false);
+    const [showInfo, setShowInfo] = useState(true);
+
     const [showLimit, setShowLimit] = useState(false);
 
     const [version, setVersion] = useState(0);
@@ -73,9 +74,7 @@ export default function SetupRecurringPayment(props: {
         fetch(ADAMATIC_HOST + '/recurring_payments')
             .then(response => response.json())
             .then((data: []) => {
-                if (data.length >= 0 && data.length < 20) {
-                    setShowInfo(true);
-                } else {
+                if (data.length >= 20) {
                     setShowLimit(true)
                 }
             })
@@ -145,16 +144,16 @@ export default function SetupRecurringPayment(props: {
 
                 <Box width={"750px"} maxWidth={"60%"}
                     sx={{
-                        marginTop: "10rem"
+                        marginTop: "6rem"
                     }}
                 >
 
                     <Alert hidden={!showInfo} severity="info" sx={{ my: 2 }}>Welcome to Adamatic BETA.</Alert>
 
-                    <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Adamatic is running in BETA mode. Limit of payments reached.</Alert>
+                    <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Limit of payments reached.</Alert>
 
 
-                    <Typography variant="h4">Setup New Hosky Auto-pull</Typography>
+                    <Typography variant="h4" marginTop={2}>Setup New Hosky Auto-pull</Typography>
 
                     <UserInput
                         deposit={deposit}
