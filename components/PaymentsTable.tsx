@@ -1,4 +1,4 @@
-import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import TransactionUtil from "../lib/util/TransactionUtil";
@@ -8,6 +8,7 @@ import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import toast from "react-hot-toast";
 
 
@@ -78,10 +79,12 @@ export default function PaymentsTable(props: { version: number }) {
                     <Table aria-label="Payments Table">
                         <TableHead>
                             <TableRow>
-                                {/* <TableCell>Hash</TableCell> */}
+
+                                <TableCell>View</TableCell>
                                 <TableCell>Staking Address</TableCell>
                                 <TableCell>Next run</TableCell>
                                 <TableCell>Balance</TableCell>
+
                                 <TableCell>Cancel</TableCell>
                             </TableRow>
                         </TableHead>
@@ -89,15 +92,15 @@ export default function PaymentsTable(props: { version: number }) {
                             {recurringPaymentDTOs.map((row) => (
                                 <TableRow
                                     key={row.txHash}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    {/* <TableCell component="th" scope="row">
-                                        <Button href={"https://cardanoscan.io/transaction/" + row.txHash}
-                                            endIcon={<LaunchIcon />}                                        >
-                                            {row.txHash.substring(0, 10) + "..." + row.txHash.substring(row.txHash.length - 10)}
-                                        </Button>
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 
-                                    </TableCell> */}
+                                    <TableCell>
+                                        <Tooltip title={"coming soon..."}>
+                                            <IconButton href={"#"} >
+                                                <VisibilityIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </TableCell>
                                     <TableCell>
                                         <Button href={"https://cardanoscan.io/stakekey/" + row.staking_address}
                                             target="_blank"

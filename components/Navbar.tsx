@@ -3,24 +3,18 @@ import { CardanoWallet, useWallet } from "@meshsdk/react";
 import React, { useState } from "react";
 import "@meshsdk/react/styles.css";
 
-export default function Navbar(props: { network: string, isValidNetwork: boolean, hoskyInput: boolean, setHoskyInput: (hoskyInput: boolean) => void }) {
-    const { connected } = useWallet();
-
-    const { network, isValidNetwork, setHoskyInput, hoskyInput } = props;
+export default function Navbar() {
 
     return (
         <Box >
             <AppBar position="static" component="nav">
                 <Toolbar
+                
                     sx={{
                         display: { xs: "flex" },
                         flexDirection: "row",
                         justifyContent: "space-between"
                     }}>
-                    {/* <div>
-                        <Switch disabled={true} color={"secondary"} value={hoskyInput} onClick={() => setHoskyInput(!hoskyInput)} />
-                        {hoskyInput ? "Hosky" : "General payment"}
-                    </div> */}
 
 
                     <Box>
