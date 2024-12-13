@@ -1,12 +1,12 @@
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import {
     Avatar,
-    Button, Chip,
+    Button, Checkbox, Chip,
     Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle, InputAdornment,
+    DialogTitle, FormControlLabel, FormGroup, InputAdornment,
     Stack,
     TextField, Tooltip
 } from "@mui/material";
@@ -25,12 +25,16 @@ export default function UserInput(props: {
     setDeposit: (deposit: number) => void,
     walletFrom: string,
     setWalletFrom: (walletFrom: string) => void,
+    acceptRisk: boolean,
+    setAcceptRisk: (acceptRisk: boolean) => void,
+    acceptFees: boolean,
+    setAcceptFees: (acceptFees: boolean) => void,
     datumDTO: RecurringPaymentDatum,
     setDatumDTO: (userInput: RecurringPaymentDatum) => void,
     isHoskyInput: boolean
 }) {
 
-    const { deposit, setDeposit, walletFrom, setWalletFrom, datumDTO, setDatumDTO, isHoskyInput } = props;
+    const { deposit, setDeposit, walletFrom, setWalletFrom, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isHoskyInput } = props;
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -49,6 +53,7 @@ export default function UserInput(props: {
     const [epochEnd, setEpochEnd] = React.useState<number>(0);
 
     const [numPulls, setNumPulls] = React.useState<number>(1);
+
 
     useEffect(() => {
 
@@ -136,7 +141,7 @@ export default function UserInput(props: {
     return (
         <Stack spacing={1} style={{ paddingTop: "10px" }}>
             <Tooltip title={"Address for which collecting rewards"}>
-                <TextField required={true} label={"Reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
+                <TextField required={true} label={"Payment or Staking reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
                     onBlur={(e) => updateWalletFrom(e.target.value)}
                     data-tut="step-1"
                 />
@@ -336,6 +341,17 @@ export default function UserInput(props: {
                         ))}
                     </div>
                 </>}
+            <FormGroup>
+                <FormControlLabel required control={<Checkbox />} label="I accept to use this tool at my own risk"
+                    value={acceptRisk}
+                    onChange={() => setAcceptRisk(!acceptRisk)}
+                />
+                <FormControlLabel required control={<Checkbox />} label={`I accept to pay required transaction and protocol fees to setup my automated payments`}
+                    value={acceptFees}
+                    onChange={() => setAcceptFees(!acceptFees)}
+                />
+            </FormGroup>
+
         </Stack>
 
     )

@@ -51,6 +51,8 @@ export default function SetupRecurringPayment(props: {
 
     const [deposit, setDeposit] = useState<number>(0);
     const [walletFrom, setWalletFrom] = useState<string>("");
+    const [acceptRisk, setAcceptRisk] = useState<boolean>(false);
+    const [acceptFees, setAcceptFees] = useState<boolean>(false);
     const [datum, setDatum] = useState<Data>();
 
 
@@ -107,12 +109,12 @@ export default function SetupRecurringPayment(props: {
                     inline: true
                 }
             };
-            
+
             try {
                 const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
                 const signedTx = await wallet.signTx(unsignedTx);
                 const txHash = await wallet.submitTx(signedTx);
-                setTxHash(await wallet.submitTx(signedTx));
+                setTxHash(txHash);
                 toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
             } catch (error) {
                 toast.error('' + error, { duration: 5000 });
@@ -159,6 +161,10 @@ export default function SetupRecurringPayment(props: {
                         setDeposit={setDeposit}
                         walletFrom={walletFrom}
                         setWalletFrom={setWalletFrom}
+                        acceptRisk={acceptRisk}
+                        setAcceptRisk={setAcceptRisk}
+                        acceptFees={acceptFees}
+                        setAcceptFees={setAcceptFees}
                         datumDTO={datumDTO}
                         setDatumDTO={setDatumDTO}
                         isHoskyInput={hoskyInput}
@@ -171,7 +177,12 @@ export default function SetupRecurringPayment(props: {
                         <Button variant="outlined" onClick={() => setIsOpen(true)}>Take a tour</Button>
                     </Grid2>
                     <Grid2>
-                        <Button disabled={!isValidNetwork || showLimit} variant="contained" startIcon={<Send />} onClick={() => signAndSubmit()}>Sign & Submit</Button>
+                        <Button disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees}
+                            variant="contained"
+                            startIcon={<Send />}
+                            onClick={() => signAndSubmit()}>
+                            Sign & Submit
+                        </Button>
                     </Grid2>
                 </Grid2>
                 {connected ?

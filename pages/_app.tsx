@@ -27,7 +27,7 @@ const steps = [
     },
     {
         selector: '[data-tut="step-1"]',
-        content: 'The address delegated to a Hosky Rug Pool you want to collect rewards for. ' +
+        content: 'The Staking or Payment address delegated to a Hosky Rug Pool you want to collect rewards for. ' +
             'It\'s set by default to the connected wallet',
     },
     {

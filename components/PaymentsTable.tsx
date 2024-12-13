@@ -100,6 +100,8 @@ export default function PaymentsTable(props: { version: number }) {
                                     </TableCell> */}
                                     <TableCell>
                                         <Button href={"https://cardanoscan.io/stakekey/" + row.staking_address}
+                                            target="_blank"
+                                            rel="noopener"
                                             endIcon={<LaunchIcon />}                                        >
                                             {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 10)}
                                         </Button>

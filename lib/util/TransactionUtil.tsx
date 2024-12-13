@@ -167,13 +167,25 @@ export default class TransactionUtil {
     }
 
     public static async getScriptAddressWithStakeCredential(wallet: IWallet, script: PlutusScript, walletFrom: string): Promise<string> {
-        const addressFrom = Address.fromBech32(walletFrom);
-        // const address = (await wallet.getUsedAddress()).asBase();
-        // const stakeCredentialHash = address!.getStakeCredential().hash.toString();
-        const stakeCredentialHash = addressFrom.asBase()!.getStakeCredential().hash.toString();
-        const networkID = await wallet.getNetworkId();
 
-        return serializePlutusScript(script, stakeCredentialHash, networkID, false).address;
+        const addressFrom = Address.fromBech32(walletFrom);
+        let stakeCredentialHash: string;
+        switch (addressFrom.getType()) {
+            case AddressType.BasePaymentKeyStakeKey:
+            case AddressType.BasePaymentScriptStakeKey:
+                stakeCredentialHash = addressFrom.asBase()!.getStakeCredential().hash.toString();
+                break;
+            case AddressType.RewardKey:
+                stakeCredentialHash = addressFrom.asReward()!.getPaymentCredential().hash.toString();
+                break;
+            default:
+                return Promise.reject('Unsupported address');
+        }
+
+        return wallet
+            .getNetworkId()
+            .then((networkId) => serializePlutusScript(script, stakeCredentialHash, networkId, false).address);
+
     }
 
     public static getSuggestedFees(numPayments: number, amountToSend = 2000000): number {
