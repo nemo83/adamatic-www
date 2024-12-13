@@ -20,6 +20,7 @@ import UserInput from "./UserInput";
 import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
+import HoskyFAQ from "./HoskyFAQ";
 
 export default function SetupRecurringPayment(props: {
     isValidNetwork: boolean,
@@ -206,8 +207,15 @@ export default function SetupRecurringPayment(props: {
                         </Grid2>
 
                         <PaymentsTable version={version} />
+
+
                     </Stack>
                     : null}
+                <Typography variant="h4" marginTop={2}>F.A.Q.</Typography>
+                <Box width={"750px"} maxWidth={"60%"}>
+                    <HoskyFAQ />
+                </Box>
+
             </Stack>
 
         </Box>
