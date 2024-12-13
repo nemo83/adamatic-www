@@ -38,6 +38,7 @@ const HoskyFAQ = () => {
         <Box>
             {faqs.map((faq) => (<Accordion>
                 <AccordionSummary
+                    key={faq.id}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls={faq.aria}
                     id={faq.id}
