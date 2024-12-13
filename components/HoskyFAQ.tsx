@@ -36,19 +36,19 @@ const HoskyFAQ = () => {
 
     return (
         <Box>
-            {faqs.map((faq) => (<Accordion>
-                <AccordionSummary
-                    key={faq.id}
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={faq.aria}
-                    id={faq.id}
-                >
-                    {faq.question}
-                </AccordionSummary>
-                <AccordionDetails>
-                    {faq.answer}
-                </AccordionDetails>
-            </Accordion>))}
+            {faqs.map((faq) => (
+                <Accordion key={faq.id}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls={faq.aria}
+                        id={faq.id}
+                    >
+                        {faq.question}
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {faq.answer}
+                    </AccordionDetails>
+                </Accordion>))}
         </Box>
 
     )
