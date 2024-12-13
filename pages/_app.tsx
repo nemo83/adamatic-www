@@ -6,19 +6,14 @@ import type { AppProps } from "next/app";
 import { MeshProvider } from "@meshsdk/react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { TourProvider } from '@reactour/tour';
 
 const theme = createTheme({
     palette: {
-        primary: {
-            main: '#0033ad'
-        },
-        secondary: {
-            main: '#ffffff'
-        }
-    }
-})
+        mode: 'light',
+    },
+});
 
 const steps = [
     {
@@ -68,6 +63,7 @@ export default function App({ Component, pageProps }: AppProps) {
     return (
         <MeshProvider>
             <ThemeProvider theme={theme}>
+                <CssBaseline />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <TourProvider steps={steps}>
                         <Component {...pageProps} />

@@ -1,6 +1,5 @@
-import { AppBar, Box, Button, CssBaseline, Link, makeStyles, Switch, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import { CardanoWallet, useWallet } from "@meshsdk/react";
-import { BrowserWallet } from "@meshsdk/core";
 import React, { useState } from "react";
 import "@meshsdk/react/styles.css";
 
@@ -12,7 +11,6 @@ export default function Navbar(props: { network: string, isValidNetwork: boolean
     return (
         <Box >
             <AppBar position="static" component="nav">
-                {/*<CssBaseline />*/}
                 <Toolbar
                     sx={{
                         display: { xs: "flex" },
@@ -52,7 +50,7 @@ export default function Navbar(props: { network: string, isValidNetwork: boolean
                         </Typography>
                     </Box>
                     <Box data-tut="step-0">
-                        <CardanoWallet isDark={false} />
+                        <CardanoWallet />
                     </Box>
                 </Toolbar>
             </AppBar>
