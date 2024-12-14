@@ -9,6 +9,9 @@ import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import CheckIcon from '@mui/icons-material/Check';
+import UploadIcon from '@mui/icons-material/Upload';
 import toast from "react-hot-toast";
 
 
@@ -54,7 +57,7 @@ export default function PaymentsTable(props: { version: number }) {
                         endTime: undefined,
                         paymentIntervalHours: 0,
                         maxPaymentDelayHours: 0,
-                        maxFeesLovelace: recurringPayment.max_fees_lovelace
+                        paymentStatus: recurringPayment.payment_status
                     });
                 });
                 setRecurringPaymentDTOs(recurringPaymentDTOs);
@@ -84,7 +87,7 @@ export default function PaymentsTable(props: { version: number }) {
                                 <TableCell>Staking Address</TableCell>
                                 <TableCell>Next run</TableCell>
                                 <TableCell>Balance</TableCell>
-
+                                <TableCell>Status</TableCell>
                                 <TableCell>Cancel</TableCell>
                             </TableRow>
                         </TableHead>
@@ -109,14 +112,27 @@ export default function PaymentsTable(props: { version: number }) {
                                             {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 10)}
                                         </Button>
                                     </TableCell>
-                                    <TableCell>{row.startTime.format("YYYY-MM-DD HH:mm:ss")}</TableCell>
-                                    <TableCell>{(row.balance[0].amount / 1_000_000).toFixed(2)} ADA</TableCell>
-
+                                    <TableCell>{row.paymentStatus == 'SCHEDULED' ? row.startTime.format("YYYY-MM-DD HH:mm:ss") : "-"}</TableCell>
+                                    <TableCell>{row.paymentStatus == 'SCHEDULED' ? (row.balance[0].amount / 1_000_000).toFixed(2) + ` ADA` : "-"}</TableCell>
                                     <TableCell>
-                                        <IconButton aria-label="delete"
-                                            onClick={() => cancelRecurringPayment(row)}>
-                                            <DeleteIcon color="error" />
-                                        </IconButton>
+                                        {row.paymentStatus == 'SCHEDULED' ?
+                                            <Tooltip title="Scheduled">
+                                                <ScheduleIcon />
+                                            </Tooltip> : row.paymentStatus == 'COMPLETED' ?
+                                                <Tooltip title="Completed">
+                                                    <CheckIcon />
+                                                </Tooltip> :
+                                                <Tooltip title="Withdrawn">
+                                                    <UploadIcon />
+                                                </Tooltip>
+                                        }
+                                    </TableCell>
+                                    <TableCell>
+                                        {row.paymentStatus == 'SCHEDULED' ?
+                                            <IconButton aria-label="delete"
+                                                onClick={() => cancelRecurringPayment(row)}>
+                                                <DeleteIcon color="error" />
+                                            </IconButton> : ""}
                                     </TableCell>
                                 </TableRow>
                             ))}

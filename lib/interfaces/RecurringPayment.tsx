@@ -12,5 +12,5 @@ export default interface RecurringPayment {
     endTime: dayjs.Dayjs | undefined;
     paymentIntervalHours: number | undefined;
     maxPaymentDelayHours: number | undefined;
-    maxFeesLovelace: number;
+    paymentStatus: string;
 }
