@@ -11,7 +11,7 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
-import UploadIcon from '@mui/icons-material/Upload';
+import CancelIcon from '@mui/icons-material/Cancel';
 import toast from "react-hot-toast";
 
 
@@ -122,8 +122,8 @@ export default function PaymentsTable(props: { version: number }) {
                                                 <Tooltip title="Completed">
                                                     <CheckIcon />
                                                 </Tooltip> :
-                                                <Tooltip title="Withdrawn">
-                                                    <UploadIcon />
+                                                <Tooltip title="Cancelled">
+                                                    <CancelIcon />
                                                 </Tooltip>
                                         }
                                     </TableCell>
