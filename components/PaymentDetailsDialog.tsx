@@ -337,7 +337,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                             </Grid2>
 
                             <Typography variant="h5" marginTop={2}>
-                                Payments
+                                Payments History
                             </Typography>
 
                             <TableContainer component={Paper}>
