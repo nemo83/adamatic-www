@@ -18,6 +18,7 @@ const DetailPage = () => {
     const router = useRouter()
 
     const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | undefined>(undefined)
+    
     const [from, setFrom] = useState<string | undefined>(undefined)
 
     useEffect(() => {

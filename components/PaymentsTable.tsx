@@ -13,6 +13,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 import toast from "react-hot-toast";
+import PaymentDetailsDialog from "./PaymentDetailsDialog";
 
 
 export default function PaymentsTable(props: { version: number }) {
@@ -22,6 +23,12 @@ export default function PaymentsTable(props: { version: number }) {
     const { wallet, connected } = useWallet();
 
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
+
+    const [txHash, setTxHash] = useState<string | undefined>(undefined);
+
+    const [outputIndex, setOutputIndex] = useState<number | undefined>(undefined);
+
+    const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (connected) {
@@ -75,8 +82,16 @@ export default function PaymentsTable(props: { version: number }) {
         }
     }
 
+    const openPaymentDetails = (txHash: string, outputIndex: number) => {
+        console.log('calles outputIndex')
+        setTxHash(txHash);
+        setOutputIndex(outputIndex);
+        setOpen(true);
+    }
+
     return (
         <>
+            <PaymentDetailsDialog txHash={txHash} outputIndex={outputIndex} open={open} setOpen={setOpen} />
             {connected ?
                 <TableContainer component={Paper}>
                     <Table aria-label="Payments Table">
@@ -99,7 +114,10 @@ export default function PaymentsTable(props: { version: number }) {
 
                                     <TableCell>
                                         <Tooltip title={"coming soon..."}>
-                                            <IconButton href={"/detail-page?tx_hash=" + row.txHash + "&output_index=" + row.output_index} >
+                                            <IconButton
+                                                onClick={() => openPaymentDetails(row.txHash, row.output_index)}
+                                                // href={"/detail-page?tx_hash=" + row.txHash + "&output_index=" + row.output_index}
+                                            >
                                                 <VisibilityIcon />
                                             </IconButton>
                                         </Tooltip>

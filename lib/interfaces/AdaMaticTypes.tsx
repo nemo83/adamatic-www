@@ -16,7 +16,7 @@ export interface HoskyTemplate {
 export interface TransactionDetail {
     timestamp: number;
     transaction_type: string;
-    tx_hash: string;
+    tx_hash: string | undefined;
     balance: AssetAmount;
 }
 
