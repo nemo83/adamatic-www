@@ -29,6 +29,12 @@ const faqs = [{
     question: "I have a small wallet, how can I still make it worth to pull rewards?",
     answer: "Hosky Doggie bowl allows rewards to stack up to a certain amount. Adamatic allows you to set the pull frequency in term of epochs. " +
         "We recommend to make your own calculations to come up with the ideal epoch frequency!"
+}, {
+    aria: "panel5-content",
+    id: "panel5-header",
+    question: "At what time are the Hosky rewards claimed?",
+    answer: "By default, and for the time being, AdaMatic is configured to sent the 2 ada payments to the Hosky doggie bowl about 48 hours from the beginning of the epoch. " +
+        "This gives enough time to Hosky to get their poop together and to users to manually claim rewards in case of issues."
 }]
 
 const HoskyFAQ = () => {
