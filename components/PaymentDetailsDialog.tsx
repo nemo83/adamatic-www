@@ -236,7 +236,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                         fullWidth
                                         id="id-amount"
                                         label="Amount"
-                                        value={paymentDetails ? (paymentDetails.amount.amount / 1_000_00) : "N/A"}
+                                        value={paymentDetails ? (paymentDetails.amount.amount / 1_000_000) : "N/A"}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
