@@ -113,7 +113,7 @@ export default function PaymentsTable(props: { version: number }) {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 
                                     <TableCell>
-                                        <Tooltip title={"coming soon..."}>
+                                        <Tooltip title={"show payment details"}>
                                             <IconButton
                                                 onClick={() => openPaymentDetails(row.txHash, row.output_index)}
                                                 // href={"/detail-page?tx_hash=" + row.txHash + "&output_index=" + row.output_index}
