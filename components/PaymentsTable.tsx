@@ -114,10 +114,7 @@ export default function PaymentsTable(props: { version: number }) {
 
                                     <TableCell>
                                         <Tooltip title={"show payment details"}>
-                                            <IconButton
-                                                onClick={() => openPaymentDetails(row.txHash, row.output_index)}
-                                                // href={"/detail-page?tx_hash=" + row.txHash + "&output_index=" + row.output_index}
-                                            >
+                                            <IconButton onClick={() => openPaymentDetails(row.txHash, row.output_index)}>
                                                 <VisibilityIcon />
                                             </IconButton>
                                         </Tooltip>
@@ -126,7 +123,7 @@ export default function PaymentsTable(props: { version: number }) {
                                         <Button href={"https://cardanoscan.io/stakekey/" + row.staking_address}
                                             target="_blank"
                                             rel="noopener"
-                                            endIcon={<LaunchIcon />}                                        >
+                                            endIcon={<LaunchIcon />}>
                                             {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 10)}
                                         </Button>
                                     </TableCell>
