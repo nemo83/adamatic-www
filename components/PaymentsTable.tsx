@@ -99,7 +99,7 @@ export default function PaymentsTable(props: { version: number }) {
 
                                     <TableCell>
                                         <Tooltip title={"coming soon..."}>
-                                            <IconButton href={"#"} >
+                                            <IconButton href={"/detail-page?tx_hash=" + row.txHash + "&output_index=" + row.output_index} >
                                                 <VisibilityIcon />
                                             </IconButton>
                                         </Tooltip>
