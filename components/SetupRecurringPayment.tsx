@@ -75,7 +75,7 @@ export default function SetupRecurringPayment(props: {
         fetch(ADAMATIC_HOST + '/recurring_payments')
             .then(response => response.json())
             .then((data: []) => {
-                if (data.length >= 20) {
+                if (data.length >= 10) {
                     setShowLimit(true)
                 }
             })
@@ -151,7 +151,7 @@ export default function SetupRecurringPayment(props: {
 
                     <Alert hidden={!showInfo} severity="info" sx={{ my: 2 }}>Welcome to Adamatic BETA.</Alert>
 
-                    <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Limit of payments reached.</Alert>
+                    <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Limit of payments reached. Please try again later</Alert>
 
 
                     <Typography variant="h4" marginTop={2}>Setup New Hosky Auto-pull</Typography>
