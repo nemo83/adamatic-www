@@ -31,10 +31,12 @@ export default function UserInput(props: {
     setAcceptFees: (acceptFees: boolean) => void,
     datumDTO: RecurringPaymentDatum,
     setDatumDTO: (userInput: RecurringPaymentDatum) => void,
+    isDelegatedToHosky: boolean,
+    setIsDelegatedToHosky: (isDelegatedHosky: boolean) => void,
     isHoskyInput: boolean
 }) {
 
-    const { deposit, setDeposit, walletFrom, setWalletFrom, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isHoskyInput } = props;
+    const { deposit, setDeposit, walletFrom, setWalletFrom, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isDelegatedToHosky, setIsDelegatedToHosky, isHoskyInput } = props;
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -54,6 +56,16 @@ export default function UserInput(props: {
 
     const [numPulls, setNumPulls] = React.useState<number>(1);
 
+
+    useEffect(() => {
+
+        if (walletFrom) {
+            fetch(ADAMATIC_HOST + `/hosky/${walletFrom}/is_delegated_to_hosky`)
+                .then(response => response.json())
+                .then((data: boolean) => setIsDelegatedToHosky(data));
+        }
+
+    }, [walletFrom])
 
     useEffect(() => {
 
@@ -142,6 +154,8 @@ export default function UserInput(props: {
         <Stack spacing={1} style={{ paddingTop: "10px" }}>
             <Tooltip title={"Address for which collecting rewards"}>
                 <TextField required={true} label={"Payment or Staking reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
+                    error={!isDelegatedToHosky}
+                    helperText={!isDelegatedToHosky ? "Address not delegated to Hosky Pool" : null}
                     onBlur={(e) => updateWalletFrom(e.target.value)}
                     data-tut="step-1"
                 />

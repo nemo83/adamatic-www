@@ -57,6 +57,7 @@ export default function SetupRecurringPayment(props: {
     const [acceptFees, setAcceptFees] = useState<boolean>(false);
     const [datum, setDatum] = useState<Data>();
 
+    const [isDelegatedToHosky, setIsDelegatedToHosky] = React.useState<boolean>(true);
 
     useEffect(() => {
         if (connected) {
@@ -75,7 +76,7 @@ export default function SetupRecurringPayment(props: {
         fetch(ADAMATIC_HOST + '/recurring_payments')
             .then(response => response.json())
             .then((data: []) => {
-                if (data.length >= 10) {
+                if (data.length >= 25) {
                     setShowLimit(true)
                 }
             })
@@ -167,6 +168,8 @@ export default function SetupRecurringPayment(props: {
                         setAcceptFees={setAcceptFees}
                         datumDTO={datumDTO}
                         setDatumDTO={setDatumDTO}
+                        isDelegatedToHosky={isDelegatedToHosky}
+                        setIsDelegatedToHosky={setIsDelegatedToHosky}
                         isHoskyInput={hoskyInput}
                     />
 
@@ -177,7 +180,7 @@ export default function SetupRecurringPayment(props: {
                         <Button variant="outlined" onClick={() => setIsOpen(true)}>Take a tour</Button>
                     </Grid2>
                     <Grid2>
-                        <Button disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees}
+                        <Button disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky}
                             variant="contained"
                             startIcon={<Send />}
                             onClick={() => signAndSubmit()}>
