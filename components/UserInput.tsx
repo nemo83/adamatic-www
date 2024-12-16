@@ -152,10 +152,10 @@ export default function UserInput(props: {
 
     return (
         <Stack spacing={1} style={{ paddingTop: "10px" }}>
-            <Tooltip title={"Address for which collecting rewards"}>
-                <TextField required={true} label={"Payment or Staking reward address"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
+            <Tooltip title={"Payment or Staking address delegated to a Hosky Pool for which collecting rewards"}>
+                <TextField required={true} label={"Payment or Staking address delegated to a Hosky Pool"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
                     error={!isDelegatedToHosky}
-                    helperText={!isDelegatedToHosky ? "Address not delegated to Hosky Pool" : null}
+                    helperText={!isDelegatedToHosky ? "Address not delegated to any Hosky Pool" : null}
                     onBlur={(e) => updateWalletFrom(e.target.value)}
                     data-tut="step-1"
                 />
