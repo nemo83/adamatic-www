@@ -76,7 +76,7 @@ export default function SetupRecurringPayment(props: {
         fetch(ADAMATIC_HOST + '/recurring_payments')
             .then(response => response.json())
             .then((data: []) => {
-                if (data.length >= 25) {
+                if (data.length >= 50) {
                     setShowLimit(true)
                 }
             })
