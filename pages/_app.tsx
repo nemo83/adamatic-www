@@ -8,6 +8,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { TourProvider } from '@reactour/tour';
+import Navbar from '../components/Navbar';
+import { Toaster } from 'react-hot-toast';
+import Layout from '../components/Layout';
 
 const theme = createTheme({
     palette: {
@@ -18,7 +21,7 @@ const theme = createTheme({
 const steps = [
     {
         selector: '[data-tut="step-0"]',
-        content: 'Hosky pulls payments can be setup with any wallet, not necessarily the one that is delegated to the Rug Pool.',
+        content: 'The wallet to use to pay and manage Hosky automatic pulls. Although any wallet can be used, it is recommended to use a small hot wallet.'
     },
     {
         selector: '[data-tut="step-1"]',
@@ -27,17 +30,17 @@ const steps = [
     },
     {
         selector: '[data-tut="step-2"]',
-        content: 'The amount of ADA, including protocol fees, to be locked in the Smart Contract in order to execute all the planned payments. ' +
-            'For Hosky pulls, this is automatically calculated.',
+        content: 'The amount of ADA, including protocol fees, that need to be locked in the Smart Contract in order to execute all the planned payments. ' +
+            'This is automatically calculated.',
     },
     {
         selector: '[data-tut="step-3"]',
-        content: 'Adamatic protocol fees can change overtime. Users can here specify the MAX amount of fees per pull they want to pay. ' +
+        content: 'MAX amount of fees, per pull, the user is willing to pay. ' +
             'This does not include any Hosky Vending Maching fees and it\'s currently set to the minimum.',
     },
     {
         selector: '[data-tut="step-4"]',
-        content: 'The Hosky rug pool rewards Address',
+        content: 'The Hosky doggie bowl Address',
     },
     {
         selector: '[data-tut="step-5"]',
@@ -66,7 +69,9 @@ export default function App({ Component, pageProps }: AppProps) {
                 <CssBaseline />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <TourProvider steps={steps}>
-                        <Component {...pageProps} />
+                        <Layout>
+                            <Component {...pageProps} />
+                        </Layout>
                     </TourProvider>
                 </LocalizationProvider>
             </ThemeProvider>

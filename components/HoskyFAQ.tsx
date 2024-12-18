@@ -1,9 +1,8 @@
 
 
 import { Accordion, AccordionDetails, AccordionSummary, Box } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
 
 const faqs = [{
     aria: "panel1-content",
@@ -47,8 +46,7 @@ const HoskyFAQ = () => {
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls={faq.aria}
-                        id={faq.id}
-                    >
+                        id={faq.id}>
                         {faq.question}
                     </AccordionSummary>
                     <AccordionDetails>
@@ -56,7 +54,6 @@ const HoskyFAQ = () => {
                     </AccordionDetails>
                 </Accordion>))}
         </Box>
-
     )
 
 }

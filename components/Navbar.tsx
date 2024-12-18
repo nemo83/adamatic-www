@@ -1,15 +1,32 @@
 import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import { CardanoWallet, useWallet } from "@meshsdk/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "@meshsdk/react/styles.css";
+import { NETWORK, NETWORK_ID } from "../lib/util/Constants";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
+
+    const { wallet, connected } = useWallet();
+
+    useEffect(() => {
+        if (connected) {
+            wallet.getNetworkId().then((id) => {
+                const isValidNetwork = String(id) == NETWORK_ID
+                if (isValidNetwork) {
+                    toast.success("Wallet correctly connected");
+                } else {
+                    toast.error("Trying to connect to wrong network, please connect to " + NETWORK);
+                }
+            });
+        }
+    }, [connected]);
 
     return (
         <Box >
             <AppBar position="static" component="nav">
                 <Toolbar
-                
+
                     sx={{
                         display: { xs: "flex" },
                         flexDirection: "row",
