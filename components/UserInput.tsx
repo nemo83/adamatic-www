@@ -98,6 +98,8 @@ export default function UserInput(props: {
 
     const updateStuff = async (maxFees: number, epochStart: number, numPulls: number, epochFrequency: number) => {
 
+        console.log('maxFees: ' + maxFees);
+
         if (maxFees == null || isNaN(maxFees)
             || epochStart == null || isNaN(epochStart)
             || numPulls == null || isNaN(numPulls)
@@ -190,7 +192,7 @@ export default function UserInput(props: {
                         input: {
                             endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
                         },
-                        htmlInput: { min: 0.5, max: 1.5, step: 0.1 }
+                        htmlInput: { min: inputLovelace ? 500_000 : 0.5, max: inputLovelace ? 1_500_000 : 1.5, step: inputLovelace ? 100000 : 0.1 }
                     }}
                     data-tut="step-3"
                     onChange={(event) => { updateStuff(inputLovelace ? Number(event.target.value) : Number(event.target.value) * CONSTANTS.ADA_CONVERSION, epochStart, numPulls, paymentIntervalEpochs) }}
