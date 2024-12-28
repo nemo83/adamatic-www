@@ -6,7 +6,8 @@ import {
     IconButton,
     Stack,
     Tooltip,
-    Typography
+    Typography,
+    Link
 } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
@@ -31,7 +32,7 @@ export default function SetupRecurringPayment(props: {
 
     const { setIsOpen } = useTour();
 
-    const [showInfo, setShowInfo] = useState(true);
+    const [showVoting, setShowVoting] = useState(true);
 
     const [showLimit, setShowLimit] = useState(false);
 
@@ -76,7 +77,7 @@ export default function SetupRecurringPayment(props: {
         fetch(ADAMATIC_HOST + '/recurring_payments')
             .then(response => response.json())
             .then((data: []) => {
-                if (data.length >= 50) {
+                if (data.length >= 100) {
                     setShowLimit(true)
                 }
             })
@@ -150,7 +151,9 @@ export default function SetupRecurringPayment(props: {
                     }}
                 >
 
-                    <Alert hidden={!showInfo} severity="info" sx={{ my: 2 }}>Welcome to Adamatic BETA.</Alert>
+                    <Alert hidden={!showVoting} severity="info" sx={{ my: 2 }}>Support AdaMatic by voting EASY1 Stake Pool as next Hosky Rugpool&nbsp;
+                        <Link href="https://app.summonplatform.io/poll/ecb74b7e-b63a-423b-8b6c-f33b75c2938d" target="_blank" rel="noopener" >here!</Link>
+                    </Alert>
 
                     <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Limit of payments reached. Please try again later</Alert>
 

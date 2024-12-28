@@ -48,15 +48,12 @@ export default function Navbar() {
                             <Typography
                                 component="span"
                                 variant="h1"
-                                sx={(theme) => ({
+                                sx={{
                                     fontSize: 'inherit',
-                                    color: 'primary.dark',
-                                    ...theme.applyStyles('dark', {
-                                        color: 'secondary.light',
-                                    }),
-                                })}
+                                    color: 'secondary.light'
+                                }}
                             >
-                                matic
+                                matic<Typography display="inline" variant="h6">(beta)</Typography>
                             </Typography>
                         </Typography>
                     </Box>
