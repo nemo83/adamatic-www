@@ -20,6 +20,8 @@ import { useWallet } from "@meshsdk/react";
 import { Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
 import { HoskyTemplate } from "../lib/interfaces/AdaMaticTypes";
 
+const MAX_PULLS = 50;
+
 export default function UserInput(props: {
     deposit: number,
     setDeposit: (deposit: number) => void,
@@ -44,7 +46,7 @@ export default function UserInput(props: {
 
     const [owner, setOwner] = React.useState<string>("");
     const [payee, setPayee] = React.useState<string>("");
-    const [maxFeesLovelace, setMaxFeesLovelace] = React.useState<number>(500_000);
+    const [maxFeesLovelace, setMaxFeesLovelace] = React.useState<number>(1_000_000);
     const [startTime, setStartTime] = React.useState<Dayjs | null>(dayjs());
     const [endTime, setEndTime] = React.useState<Dayjs | null>(null);
     const [paymentIntervalEpochs, setPaymentIntervalEpochs] = React.useState<number>(1);
@@ -56,6 +58,7 @@ export default function UserInput(props: {
 
     const [numPulls, setNumPulls] = React.useState<number>(1);
 
+    const [lockEndTime, setLockEndTime] = React.useState<boolean>(false);
 
     useEffect(() => {
 
@@ -93,9 +96,17 @@ export default function UserInput(props: {
         }
     }, [isHoskyInput]);
 
-    const updateStuff = async (epochStart: number, numPulls: number, epochFrequency: number) => {
+    const updateStuff = async (maxFees: number, epochStart: number, numPulls: number, epochFrequency: number) => {
+
+        if (maxFees == null || isNaN(maxFees)
+            || epochStart == null || isNaN(epochStart)
+            || numPulls == null || isNaN(numPulls)
+            || epochFrequency == null || isNaN(epochFrequency)) {
+            return;
+        }
 
         let baseRequest = {
+            max_fees: maxFees.toString(),
             epoch_start: epochStart.toString(),
             num_pulls: numPulls.toString(),
             epoch_frequency: epochFrequency.toString()
@@ -124,6 +135,9 @@ export default function UserInput(props: {
 
         setPaymentIntervalHours(data.payment_interval_hours);
         setPaymentIntervalEpochs(data.epoch_frequency);
+
+        setMaxFeesLovelace(data.max_fee_lovelaces);
+        setLockEndTime(data.lock_end_time);
     }
 
     useEffect(() => {
@@ -134,7 +148,7 @@ export default function UserInput(props: {
             amountToSend: [{ policyId: "", assetName: "", amount: 2000000 }],
             payee,
             startTime: startTime!.valueOf(),
-            endTime: endTime?.valueOf(),
+            endTime: lockEndTime ? endTime?.valueOf() : undefined,
             paymentIntervalHours: paymentIntervalHours,
             maxFeesLovelace: maxFeesLovelace,
         }
@@ -171,15 +185,15 @@ export default function UserInput(props: {
                 />
             </Tooltip>
             <Tooltip title={"The maximum amount of fees ADA spent for the recurring payments"}>
-                <TextField disabled={isHoskyInput} label={"Max Fees"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
+                <TextField label={"Max Fees"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
                     slotProps={{
                         input: {
                             endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
                         },
-                        htmlInput: { min: 0.5 }
+                        htmlInput: { min: 0.5, max: 1.5, step: 0.1 }
                     }}
                     data-tut="step-3"
-                    onChange={(event) => { setMaxFeesLovelace(inputLovelace ? Number(event.target.value) : Number(event.target.value) * CONSTANTS.ADA_CONVERSION) }}
+                    onChange={(event) => { updateStuff(inputLovelace ? Number(event.target.value) : Number(event.target.value) * CONSTANTS.ADA_CONVERSION, epochStart, numPulls, paymentIntervalEpochs) }}
                 />
             </Tooltip>
 
@@ -189,7 +203,7 @@ export default function UserInput(props: {
             {
                 isHoskyInput ?
                     <Tooltip title={"Epoch of the first rewards being pulled."}>
-                        <TextField type={"number"} label={"First Epoch"} value={epochStart} name={"startEpoch"} onChange={(event) => updateStuff(parseInt(event.target.value), Math.floor((epochEnd - epochStart) / paymentIntervalEpochs), paymentIntervalEpochs)}
+                        <TextField type={"number"} label={"First Epoch"} value={epochStart} name={"startEpoch"} onChange={(event) => updateStuff(maxFeesLovelace, parseInt(event.target.value), Math.floor((epochEnd - epochStart) / paymentIntervalEpochs), paymentIntervalEpochs)}
                             slotProps={{
                                 input: {
                                     endAdornment: <InputAdornment position="end">{startTime!.format('DD.MM.YYYY HH:mm')}</InputAdornment>,
@@ -232,10 +246,15 @@ export default function UserInput(props: {
                             label={"Number of Rewards pulls"}
                             type={"number"}
                             // inputProps={{ inputProps: { min: 1, max: 10 } }}
-                            slotProps={{ htmlInput: { min: 1, max: 10 } }}
+                            slotProps={{
+                                input: {
+                                    endAdornment: <Button onClick={() => { updateStuff(maxFeesLovelace, epochStart, MAX_PULLS, paymentIntervalEpochs) }}>MAX</Button>,
+                                },
+                                htmlInput: { min: 1, max: MAX_PULLS }
+                            }}
                             value={numPulls}
                             name={"numPulls"}
-                            onChange={(event) => { setNumPulls(parseInt(event.target.value)); updateStuff(epochStart, parseInt(event.target.value), paymentIntervalEpochs) }}
+                            onChange={(event) => { updateStuff(maxFeesLovelace, epochStart, parseInt(event.target.value), paymentIntervalEpochs) }}
                             data-tut="step-7"
                         />
                     </Tooltip>
@@ -248,7 +267,7 @@ export default function UserInput(props: {
 
                 <Tooltip title={"The interval in epochs between the payments"}>
                     <TextField style={{ width: "50%" }} label={"Payment Interval Epochs"} type={"number"} value={paymentIntervalEpochs} name={"paymentIntervalHours"}
-                        onChange={(event) => { updateStuff(epochStart, numPulls, parseInt(event.target.value)) }}
+                        onChange={(event) => { updateStuff(maxFeesLovelace, epochStart, numPulls, parseInt(event.target.value)) }}
                         data-tut="step-8"
                     />
                 </Tooltip>

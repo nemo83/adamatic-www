@@ -3,9 +3,11 @@ import AssetAmount from "./AssetAmount";
 export interface HoskyTemplate {
     amount_to_send: AssetAmount[];
     suggested_deposit: AssetAmount[];
+    max_fee_lovelaces: number;
     payee_address: string;
     epoch_start: number;
     epoch_end: number;
+    lock_end_time: boolean;
     start_time_timestamp: number;
     end_time_timestamp: number;
     payment_interval_hours: number;

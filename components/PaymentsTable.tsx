@@ -14,7 +14,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 import toast from "react-hot-toast";
 import PaymentDetailsDialog from "./PaymentDetailsDialog";
-
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 export default function PaymentsTable(props: { version: number }) {
 
@@ -89,6 +89,13 @@ export default function PaymentsTable(props: { version: number }) {
         setOpen(true);
     }
 
+    const copyToClipboard = async (stakeAddress: string) => {
+        navigator
+            .clipboard
+            .writeText(stakeAddress)
+            .then(() => toast.success('Stake Address copied to Clipboard'));
+    }
+
     return (
         <>
             <PaymentDetailsDialog txHash={txHash} outputIndex={outputIndex} open={open} setOpen={setOpen} />
@@ -119,12 +126,15 @@ export default function PaymentsTable(props: { version: number }) {
                                             </IconButton>
                                         </Tooltip>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ whiteSpace: "nowrap"}}>
+                                        <IconButton onClick={() => copyToClipboard(row.staking_address)} >
+                                            <ContentCopyIcon />
+                                        </IconButton>
                                         <Button href={"https://cardanoscan.io/stakekey/" + row.staking_address}
                                             target="_blank"
                                             rel="noopener"
                                             endIcon={<LaunchIcon />}>
-                                            {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 10)}
+                                            {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 5)}
                                         </Button>
                                     </TableCell>
                                     <TableCell>{row.paymentStatus == 'SCHEDULED' ? row.startTime.format("YYYY-MM-DD HH:mm:ss") : "-"}</TableCell>

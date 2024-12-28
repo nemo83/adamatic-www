@@ -30,13 +30,12 @@ const steps = [
     },
     {
         selector: '[data-tut="step-2"]',
-        content: 'The amount of ADA, including protocol fees, that need to be locked in the Smart Contract in order to execute all the planned payments. ' +
-            'This is automatically calculated.',
+        content: 'The amount of ADA, including protocol fees, that need to be locked in the Smart Contract in order to execute all the planned payments.',
     },
     {
         selector: '[data-tut="step-3"]',
         content: 'MAX amount of fees, per pull, the user is willing to pay. ' +
-            'This does not include any Hosky Vending Maching fees and it\'s currently set to the minimum.',
+            'This does not include any Hosky Vending Maching fees.',
     },
     {
         selector: '[data-tut="step-4"]',
@@ -52,7 +51,7 @@ const steps = [
     },
     {
         selector: '[data-tut="step-7"]',
-        content: 'The number of total pulls to be executed. Currently maxed to 10',
+        content: 'The number of total pulls to be executed. Currently maxed to 50',
     },
     {
         selector: '[data-tut="step-8"]',
