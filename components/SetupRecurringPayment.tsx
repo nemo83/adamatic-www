@@ -22,6 +22,7 @@ import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
 import HoskyFAQ from "./HoskyFAQ";
+import { Settings } from "../lib/interfaces/AdaMaticTypes";
 
 export default function SetupRecurringPayment(props: {
     isValidNetwork: boolean,
@@ -37,6 +38,8 @@ export default function SetupRecurringPayment(props: {
     const [showLimit, setShowLimit] = useState(false);
 
     const [version, setVersion] = useState(0);
+
+    const [settings, setSettings] = useState<Settings | undefined>(undefined)
 
     useEffect(() => {
         const hoskyTourDisplayed = localStorage.getItem(HOSKY_TOUR_DISPLAYED);
@@ -86,6 +89,15 @@ export default function SetupRecurringPayment(props: {
                 setShowLimit(true)
             })
     }, []);
+
+    useEffect(() => {
+        fetch(ADAMATIC_HOST + '/settings')
+            .then(response => response.json())
+            .then((data: Settings) => {
+                console.log('settings: ' + JSON.stringify(data));
+                setSettings(data);
+            })
+    }, [])
 
     const signAndSubmit = async () => {
 
@@ -139,6 +151,11 @@ export default function SetupRecurringPayment(props: {
                 }),
             })}
         >
+            {settings ?
+                <Typography paddingRight={3} align="right">
+                    Protocol Fee: {settings.operator_fee_lovelace / 1_000_000}
+                </Typography>
+                : null}
 
             <Stack spacing={4} sx={{
                 alignItems: "center",

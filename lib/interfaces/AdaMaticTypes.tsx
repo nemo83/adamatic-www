@@ -34,3 +34,11 @@ export interface PaymentDetails {
     epoch_end: number;  
     transactions: TransactionDetail[];
 }
+
+export interface Settings {
+    settings_adming_pks: string,
+    authorised_operators: string[],
+    operator_fee_exempt_users: string[]
+    operator_fee_lovelace: number;
+    base_fee_lovelaces: number;
+}
