@@ -33,8 +33,6 @@ export default function SetupRecurringPayment(props: {
 
     const { setIsOpen } = useTour();
 
-    const [showVoting, setShowVoting] = useState(true);
-
     const [showLimit, setShowLimit] = useState(false);
 
     const [version, setVersion] = useState(0);
@@ -168,11 +166,7 @@ export default function SetupRecurringPayment(props: {
                     }}
                 >
 
-                    <Alert hidden={!showVoting} severity="info" sx={{ my: 2 }}>Support AdaMatic by voting EASY1 Stake Pool as next Hosky Rugpool&nbsp;
-                        <Link href="https://app.summonplatform.io/poll/ecb74b7e-b63a-423b-8b6c-f33b75c2938d"
-                            target="_blank"
-                            rel="noopener">here!</Link>
-                    </Alert>
+                    <Alert severity="info" sx={{ my: 2 }}>EASY1 Stake Pool is now a Rugpool! Thank you for your support!</Alert>
 
                     <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Limit of payments reached. Please try again later</Alert>
 

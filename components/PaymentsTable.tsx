@@ -15,6 +15,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import toast from "react-hot-toast";
 import PaymentDetailsDialog from "./PaymentDetailsDialog";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ErrorIcon from '@mui/icons-material/Error';
 
 export default function PaymentsTable(props: { version: number }) {
 
@@ -96,6 +97,35 @@ export default function PaymentsTable(props: { version: number }) {
             .then(() => toast.success('Stake Address copied to Clipboard'));
     }
 
+    const getStatus = (paymentStatus: string) => {
+        switch (paymentStatus) {
+            case "SCHEDULED":
+                return (
+                    <Tooltip title="Scheduled">
+                        <ScheduleIcon />
+                    </Tooltip>
+                )
+            case "COMPLETED":
+                return (
+                    <Tooltip title="Completed">
+                        <CheckIcon />
+                    </Tooltip>
+                )
+            case "CANCELLED":
+                return (
+                    <Tooltip title="Cancelled">
+                        <CancelIcon />
+                    </Tooltip>
+                )
+            case "INSUFFICIENT_FUNDS":
+                return (
+                    <Tooltip title="Insufficient Funds">
+                        <ErrorIcon />
+                    </Tooltip>
+                )
+        }
+    }
+
     return (
         <>
             <PaymentDetailsDialog txHash={txHash} outputIndex={outputIndex} open={open} setOpen={setOpen} />
@@ -126,7 +156,7 @@ export default function PaymentsTable(props: { version: number }) {
                                             </IconButton>
                                         </Tooltip>
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "nowrap"}}>
+                                    <TableCell sx={{ whiteSpace: "nowrap" }}>
                                         <IconButton onClick={() => copyToClipboard(row.staking_address)} >
                                             <ContentCopyIcon />
                                         </IconButton>
@@ -138,22 +168,12 @@ export default function PaymentsTable(props: { version: number }) {
                                         </Button>
                                     </TableCell>
                                     <TableCell>{row.paymentStatus == 'SCHEDULED' ? row.startTime.format("YYYY-MM-DD HH:mm:ss") : "-"}</TableCell>
-                                    <TableCell>{row.paymentStatus == 'SCHEDULED' ? (row.balance[0].amount / 1_000_000).toFixed(2) + ` ADA` : "-"}</TableCell>
+                                    <TableCell>{row.paymentStatus == 'SCHEDULED' || row.paymentStatus == 'INSUFFICIENT_FUNDS' ? (row.balance[0].amount / 1_000_000).toFixed(2) + ` ADA` : "-"}</TableCell>
                                     <TableCell>
-                                        {row.paymentStatus == 'SCHEDULED' ?
-                                            <Tooltip title="Scheduled">
-                                                <ScheduleIcon />
-                                            </Tooltip> : row.paymentStatus == 'COMPLETED' ?
-                                                <Tooltip title="Completed">
-                                                    <CheckIcon />
-                                                </Tooltip> :
-                                                <Tooltip title="Cancelled">
-                                                    <CancelIcon />
-                                                </Tooltip>
-                                        }
+                                        {getStatus(row.paymentStatus)}
                                     </TableCell>
                                     <TableCell>
-                                        {row.paymentStatus == 'SCHEDULED' ?
+                                        {row.paymentStatus == 'SCHEDULED' || row.paymentStatus == 'INSUFFICIENT_FUNDS' ?
                                             <IconButton aria-label="delete"
                                                 onClick={() => cancelRecurringPayment(row)}>
                                                 <DeleteIcon color="error" />
