@@ -34,8 +34,7 @@ const steps = [
     },
     {
         selector: '[data-tut="step-3"]',
-        content: 'MAX amount of fees, per pull, the user is willing to pay. ' +
-            'This does not include any Hosky Vending Maching fees.',
+        content: 'Max amount of fees, per pull, the user is willing to pay to cover for AdaMatic and Cardano Transaction fees.',
     },
     {
         selector: '[data-tut="step-4"]',

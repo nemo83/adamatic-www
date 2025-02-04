@@ -186,7 +186,7 @@ export default function UserInput(props: {
                     data-tut="step-2"
                 />
             </Tooltip>
-            <Tooltip title={"The maximum amount of fees ADA spent for the recurring payments"}>
+            <Tooltip title={"Max amount of fees the user is willing to pay to cover for AdaMatic and Cardano Transaction fees."}>
                 <TextField label={"Max Fees"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
                     slotProps={{
                         input: {
