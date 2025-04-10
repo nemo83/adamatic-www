@@ -35,6 +35,8 @@ export default function SetupRecurringPayment(props: {
 
     const [showLimit, setShowLimit] = useState(false);
 
+    const [maintenanceMode, setMaintenanceMode] = useState(true);
+
     const [version, setVersion] = useState(0);
 
     const [settings, setSettings] = useState<Settings | undefined>(undefined)
@@ -170,6 +172,7 @@ export default function SetupRecurringPayment(props: {
 
                     <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Limit of payments reached. Please try again later</Alert>
 
+                    <Alert hidden={!maintenanceMode} severity="warning" sx={{ my: 2 }}>AdaMatic is currently in maintenance mode. Please try again later!</Alert>
 
                     <Typography variant="h4" marginTop={2}>Setup New Hosky Auto-pull</Typography>
 
@@ -196,7 +199,7 @@ export default function SetupRecurringPayment(props: {
                         <Button variant="outlined" onClick={() => setIsOpen(true)}>Take a tour</Button>
                     </Grid2>
                     <Grid2>
-                        <Button disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky}
+                        <Button disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || maintenanceMode}
                             variant="contained"
                             startIcon={<Send />}
                             onClick={() => signAndSubmit()}>
