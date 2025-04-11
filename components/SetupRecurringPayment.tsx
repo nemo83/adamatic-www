@@ -35,7 +35,7 @@ export default function SetupRecurringPayment(props: {
 
     const [showLimit, setShowLimit] = useState(false);
 
-    const [maintenanceMode, setMaintenanceMode] = useState(true);
+    const [maintenanceMode, setMaintenanceMode] = useState(false);
 
     const [version, setVersion] = useState(0);
 
@@ -65,11 +65,13 @@ export default function SetupRecurringPayment(props: {
 
     useEffect(() => {
         if (connected) {
-            TransactionUtil.createDatum(
-                datumDTO
-            ).then((datum) => {
+            try {
+                const datum = TransactionUtil.createDatum(datumDTO);
                 setDatum(datum);
-            });
+            } catch (error) {
+                console.warn('could not build datum: ' + error);
+                setDatum(undefined);
+            }
         } else {
             setDatum(undefined);
         }
@@ -133,6 +135,8 @@ export default function SetupRecurringPayment(props: {
             } catch (error) {
                 toast.error('' + error, { duration: 5000 });
             }
+        } else {
+            toast.error('It was not possible to build the transaction. Please contact support', { duration: 5000 });
         }
     }
 
