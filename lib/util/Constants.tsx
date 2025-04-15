@@ -8,6 +8,9 @@ export const SCRIPT : PlutusScript = {
     version: 'V3'
 }
 
+export const SETTINGS_TX_HASH = "ea7e450d1d4fa17584514f22b06d3fbe25025dd1df2cc1b256767d2a479a55c6";
+export const SETTINGS_OUTPUT_INDEX = 0;
+
 export const CONSTANTS = {
     ADA_CONVERSION: 1000000,
     SUGGESTED_TX_FEE: 200000,
