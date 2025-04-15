@@ -73,8 +73,8 @@ export default function PaymentsTable(props: { version: number }) {
     }
 
     const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
-        const unsignedTx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
         try {
+            const unsignedTx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
             const signedTx = await wallet.signTx(unsignedTx);
             const txHash = await wallet.submitTx(signedTx);
             toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
