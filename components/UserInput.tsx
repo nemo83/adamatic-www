@@ -20,7 +20,7 @@ import { useWallet } from "@meshsdk/react";
 import { Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
 import { HoskyTemplate } from "../lib/interfaces/AdaMaticTypes";
 
-const MAX_PULLS = 50;
+const MAX_PULLS = 10;
 
 export default function UserInput(props: {
     deposit: number,
