@@ -141,7 +141,7 @@ export default class TransactionUtil {
             .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index)
             .txInInlineDatumPresent()
             .txInRedeemerValue(mConStr(0, []))
-            .spendingTxInReference("550afa8f123392a8b2fc515747181d9c512f2a429326fc249a1155e0325e13e7", 0)
+            .spendingTxInReference("ea7e450d1d4fa17584514f22b06d3fbe25025dd1df2cc1b256767d2a479a55c6", 0)
             .changeAddress(walletAddress)
             .txInCollateral(collateralUtxos[0].input.txHash, collateralUtxos[0].input.outputIndex)
             .selectUtxosFrom(walletUtxos)
