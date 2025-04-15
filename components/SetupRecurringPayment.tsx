@@ -174,7 +174,7 @@ export default function SetupRecurringPayment(props: {
 
                     <Alert severity="info" sx={{ my: 2 }}>EASY1 Stake Pool is now a Rugpool! Thank you for your support!</Alert>
 
-                    <Alert severity="info" sx={{ my: 2 }}>As some users have reported some issues, as a precaution, we've reduced the maximum number of pulls to 10</Alert>
+                    <Alert severity="info" sx={{ my: 2 }}>As some users have reported some issues, as a precaution, we&apos;ve reduced the maximum number of pulls to 10</Alert>
 
                     <Alert hidden={!showLimit} severity="warning" sx={{ my: 2 }}>Limit of payments reached. Please try again later</Alert>
 
