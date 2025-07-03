@@ -35,7 +35,7 @@ export default function SetupRecurringPayment(props: {
 
     const [showLimit, setShowLimit] = useState(false);
 
-    const [maintenanceMode, setMaintenanceMode] = useState(false);
+    const [maintenanceMode, setMaintenanceMode] = useState(true);
 
     const [version, setVersion] = useState(0);
 
