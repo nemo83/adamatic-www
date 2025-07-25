@@ -1,4 +1,4 @@
-import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import TransactionUtil from "../lib/util/TransactionUtil";
@@ -12,6 +12,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
+import UploadIcon from '@mui/icons-material/Upload';
 import toast from "react-hot-toast";
 import PaymentDetailsDialog from "./PaymentDetailsDialog";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -25,11 +26,19 @@ export default function PaymentsTable(props: { version: number }) {
 
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
 
+    const [currentPageData, setCurrentPageData] = useState<RecurringPayment[]>([]);
+    
     const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
     const [outputIndex, setOutputIndex] = useState<number | undefined>(undefined);
 
     const [open, setOpen] = useState<boolean>(false);
+
+    const [startIndex, setStartIndex] = useState<number>(0);
+    const [endIndex, setEndIndex] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage] = useState<number>(10);
 
     useEffect(() => {
         if (connected) {
@@ -41,6 +50,22 @@ export default function PaymentsTable(props: { version: number }) {
         console.log('version: ' + version);
         reloadPayments();
     }, [version]);
+
+    useEffect(() => {
+
+        setCurrentPage(1); // Reset to first page when data reloads
+
+        const totalPages = Math.ceil(recurringPaymentDTOs.length / itemsPerPage);
+        setTotalPages(totalPages);
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        setStartIndex(startIndex);
+
+        const endIndex = startIndex + itemsPerPage;
+        setEndIndex(endIndex);
+
+        setCurrentPageData(recurringPaymentDTOs.slice(startIndex, endIndex));
+    }, [recurringPaymentDTOs]);
 
     const reloadPayments = async () => {
         wallet
@@ -111,6 +136,12 @@ export default function PaymentsTable(props: { version: number }) {
                         <CheckIcon />
                     </Tooltip>
                 )
+            case "WITHDRAWN":
+                return (
+                    <Tooltip title="Withdrawn">
+                        <UploadIcon />
+                    </Tooltip>
+                )
             case "CANCELLED":
                 return (
                     <Tooltip title="Cancelled">
@@ -125,6 +156,21 @@ export default function PaymentsTable(props: { version: number }) {
                 )
         }
     }
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        console.log('value: ' + value);
+        setCurrentPage(value);
+        
+        const startIndex = (value - 1) * itemsPerPage;
+        setStartIndex(startIndex);
+        console.log('startIndex: ' + startIndex);
+
+        const endIndex = startIndex + itemsPerPage;
+        setEndIndex(endIndex);
+        console.log('endIndex: ' + endIndex);
+
+        setCurrentPageData(recurringPaymentDTOs.slice(startIndex, endIndex));
+    };
 
     return (
         <>
@@ -144,9 +190,9 @@ export default function PaymentsTable(props: { version: number }) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {recurringPaymentDTOs.map((row) => (
+                            {currentPageData.map((row) => (
                                 <TableRow
-                                    key={row.txHash}
+                                    key={row.txHash + row.output_index}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 
                                     <TableCell>
@@ -183,7 +229,35 @@ export default function PaymentsTable(props: { version: number }) {
                             ))}
                         </TableBody>
                     </Table>
-                </TableContainer> : <></>}
+                </TableContainer>
+                : <></>}
+
+            {connected && recurringPaymentDTOs.length > 0 && (
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mt: 2,
+                    px: 2
+                }}>
+                    <Typography variant="body2" color="text.secondary">
+                        Showing {startIndex + 1}-{Math.min(endIndex, recurringPaymentDTOs.length)} of {recurringPaymentDTOs.length} payments
+                    </Typography>
+
+                    {totalPages > 1 && (
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            onChange={handlePageChange}
+                            color="primary"
+                            showFirstButton
+                            showLastButton
+                            siblingCount={1}
+                            boundaryCount={1}
+                        />
+                    )}
+                </Box>
+            )}
         </>
     );
 }
