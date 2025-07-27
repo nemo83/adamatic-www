@@ -1,0 +1,72 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#21CBF3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#21CBF3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F7931E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="100" cy="100" r="50" fill="rgba(255,255,255,0.1)"/>
+  <circle cx="1100" cy="530" r="80" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="1050" cy="100" r="60" fill="rgba(255,255,255,0.06)"/>
+  
+  <!-- Logo circle -->
+  <circle cx="200" cy="315" r="80" fill="white" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Autorenew icon -->
+  <g transform="translate(200,315)">
+    <!-- Simplified autorenew icon -->
+    <path d="M-30,-15 L-15,-30 L-15,-20 L15,-20 C25,-20 25,-20 15,-20 L15,-10 C20,-10 20,-10 15,-10 L15,0 L30,-15 L15,-30 L15,-20" 
+          fill="url(#logoGradient)" 
+          stroke="url(#logoGradient)" 
+          stroke-width="2"/>
+    <path d="M30,15 L15,30 L15,20 L-15,20 C-25,20 -25,20 -15,20 L-15,10 C-20,10 -20,10 -15,10 L-15,0 L-30,15 L-15,30 L-15,20" 
+          fill="url(#logoGradient)" 
+          stroke="url(#logoGradient)" 
+          stroke-width="2"/>
+  </g>
+  
+  <!-- Main title -->
+  <text x="350" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white">
+    Ada<tspan fill="url(#textGradient)">matic</tspan>
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="350" y="330" font-family="Arial, sans-serif" font-size="32" fill="rgba(255,255,255,0.9)">
+    Automate Your Cardano Payments
+  </text>
+  
+  <!-- Description -->
+  <text x="350" y="380" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.8)">
+    Set up recurring payments with smart contracts
+  </text>
+  
+  <!-- Features -->
+  <g transform="translate(350, 440)">
+    <!-- Feature 1 -->
+    <circle cx="0" cy="0" r="8" fill="#4CAF50"/>
+    <text x="20" y="6" font-family="Arial, sans-serif" font-size="20" fill="white">Automated • Secure • Cost Effective</text>
+  </g>
+  
+  <!-- Beta badge -->
+  <rect x="700" y="240" width="60" height="25" rx="12" fill="rgba(255,255,255,0.2)"/>
+  <text x="730" y="257" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle">BETA</text>
+  
+  <!-- Cardano mention -->
+  <text x="350" y="550" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.7)">
+    Built on Cardano Blockchain • Powered by Smart Contracts
+  </text>
+</svg>
