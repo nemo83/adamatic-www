@@ -6,6 +6,7 @@ import { NETWORK, NETWORK_ID } from "../lib/util/Constants";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import GitHubIcon from '@mui/icons-material/GitHub';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 export default function Navbar() {
 
@@ -38,30 +39,72 @@ export default function Navbar() {
 
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Link href="/" passHref>
-                            <Typography
-                                variant="h1"
-                                sx={{
+                            <Box sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: 1.5,
+                                cursor: 'pointer',
+                                textDecoration: 'none',
+                                color: 'inherit',
+                                '&:hover': {
+                                    transform: 'scale(1.02)',
+                                    transition: 'transform 0.2s ease-in-out'
+                                }
+                            }}>
+                                <Box sx={{
+                                    background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                                    borderRadius: '50%',
+                                    p: 1,
                                     display: 'flex',
-                                    flexDirection: { xs: 'column', sm: 'row' },
                                     alignItems: 'center',
-                                    fontSize: 'clamp(2rem, 8vw, 3rem)',
-                                    cursor: 'pointer',
-                                    textDecoration: 'none',
-                                    color: 'inherit'
-                                }}
-                            >
-                                Ada
+                                    justifyContent: 'center'
+                                }}>
+                                    <AutorenewIcon sx={{ 
+                                        fontSize: { xs: '1.5rem', sm: '2rem' },
+                                        color: 'white'
+                                    }} />
+                                </Box>
                                 <Typography
-                                    component="span"
                                     variant="h1"
                                     sx={{
-                                        fontSize: 'inherit',
-                                        color: 'secondary.light'
+                                        display: 'flex',
+                                        flexDirection: { xs: 'column', sm: 'row' },
+                                        alignItems: 'center',
+                                        fontSize: 'clamp(1.8rem, 6vw, 2.5rem)',
+                                        fontWeight: 700,
+                                        letterSpacing: '-0.02em'
                                     }}
                                 >
-                                    matic<Typography display="inline" variant="h6">(beta)</Typography>
+                                    Ada
+                                    <Typography
+                                        component="span"
+                                        variant="h1"
+                                        sx={{
+                                            fontSize: 'inherit',
+                                            background: 'linear-gradient(45deg, #FF6B35 30%, #F7931E 90%)',
+                                            backgroundClip: 'text',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            fontWeight: 'inherit'
+                                        }}
+                                    >
+                                        matic
+                                    </Typography>
+                                    <Typography 
+                                        display="inline" 
+                                        variant="caption"
+                                        sx={{ 
+                                            fontSize: '0.7rem',
+                                            opacity: 0.7,
+                                            ml: 0.5,
+                                            alignSelf: 'flex-start',
+                                            mt: { xs: 0, sm: 0.5 }
+                                        }}
+                                    >
+                                        beta
+                                    </Typography>
                                 </Typography>
-                            </Typography>
+                            </Box>
                         </Link>
                         
                         <Stack 

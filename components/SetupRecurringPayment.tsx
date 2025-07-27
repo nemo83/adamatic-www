@@ -23,6 +23,19 @@ import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
 import { Settings } from "../lib/interfaces/AdaMaticTypes";
 import NextLink from "next/link";
+import { 
+    Card, 
+    CardContent, 
+    Chip,
+    Container,
+    Divider 
+} from "@mui/material";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import SecurityIcon from '@mui/icons-material/Security';
+import SavingsIcon from '@mui/icons-material/Savings';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import Hero from "./Hero";
 
 export default function SetupRecurringPayment(props: {
     isValidNetwork: boolean,
@@ -172,7 +185,7 @@ export default function SetupRecurringPayment(props: {
                     }}
                 >
 
-                    <Alert severity="info" sx={{ my: 2 }}>EASY1 Stake Pool is now a Rugpool! Thank you for your support!</Alert>
+                    {/* <Alert severity="info" sx={{ my: 2 }}>EASY1 Stake Pool is now a Rugpool! Thank you for your support!</Alert> */}
 
                     <Alert hidden={true} severity="info" sx={{ my: 2 }}>As some users have reported some issues, as a precaution, we&apos;ve reduced the maximum number of pulls to 10</Alert>
 
@@ -180,7 +193,11 @@ export default function SetupRecurringPayment(props: {
 
                     <Alert hidden={!maintenanceMode} severity="warning" sx={{ my: 2 }}>AdaMatic is currently in maintenance mode. Please try again later!</Alert>
 
-                    <Typography variant="h4" marginTop={2}>Setup New Hosky Auto-pull</Typography>
+                    {/* <Hero/>
+
+                    <Divider sx={{ my: 4 }}>
+                        <Chip label="Setup Your Payment" color="primary" />
+                    </Divider> */}
 
                     <UserInput
                         deposit={deposit}
@@ -202,14 +219,57 @@ export default function SetupRecurringPayment(props: {
                 </Box>
                 <Grid2 container width={"60%"} spacing={2} justifyContent={"space-evenly"} >
                     <Grid2 >
-                        <Button variant="outlined" onClick={() => setIsOpen(true)}>Take a tour</Button>
+                        <Button 
+                            variant="outlined" 
+                            onClick={() => setIsOpen(true)}
+                            sx={{
+                                borderRadius: '12px',
+                                fontSize: '1.1rem',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                px: 4,
+                                py: 1.5,
+                                borderWidth: '2px',
+                                transition: 'all 0.3s ease-in-out',
+                                '&:hover': {
+                                    borderWidth: '2px',
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: '0 4px 12px 0 rgba(33, 150, 243, 0.2)',
+                                }
+                            }}
+                        >
+                            Take a Tour
+                        </Button>
                     </Grid2>
                     <Grid2>
-                        <Button disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || maintenanceMode}
+                        <Button 
+                            disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || maintenanceMode}
                             variant="contained"
                             startIcon={<Send />}
-                            onClick={() => signAndSubmit()}>
-                            Sign & Submit
+                            onClick={() => signAndSubmit()}
+                            sx={{
+                                background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                                borderRadius: '12px',
+                                fontSize: '1.1rem',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                px: 4,
+                                py: 1.5,
+                                boxShadow: '0 4px 15px 0 rgba(33, 150, 243, 0.3)',
+                                transition: 'all 0.3s ease-in-out',
+                                '&:hover': {
+                                    background: 'linear-gradient(45deg, #1976d2 30%, #1976d2 90%)',
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: '0 6px 20px 0 rgba(33, 150, 243, 0.4)',
+                                },
+                                '&:disabled': {
+                                    background: 'rgba(0, 0, 0, 0.12)',
+                                    transform: 'none',
+                                    boxShadow: 'none'
+                                }
+                            }}
+                        >
+                            Create Recurring Payment
                         </Button>
                     </Grid2>
                 </Grid2>
@@ -221,12 +281,22 @@ export default function SetupRecurringPayment(props: {
                                 <Typography variant="h4">My Auto-pulls</Typography>
                             </Grid2>
                             <Grid2>
-                                <Tooltip title="Reload auto-pulls">
+                                <Tooltip title="Refresh Payments">
                                     <IconButton
                                         color="primary"
                                         size="large"
                                         aria-label="reload auto pulls"
-                                        onClick={() => setVersion(version + 1)}>
+                                        onClick={() => setVersion(version + 1)}
+                                        sx={{
+                                            background: 'linear-gradient(45deg, rgba(33, 150, 243, 0.1) 30%, rgba(33, 203, 243, 0.1) 90%)',
+                                            borderRadius: '12px',
+                                            transition: 'all 0.3s ease-in-out',
+                                            '&:hover': {
+                                                background: 'linear-gradient(45deg, rgba(33, 150, 243, 0.2) 30%, rgba(33, 203, 243, 0.2) 90%)',
+                                                transform: 'rotate(180deg) scale(1.1)',
+                                            }
+                                        }}
+                                    >
                                         <CachedIcon />
                                     </IconButton>
                                 </Tooltip>
