@@ -176,32 +176,19 @@ export default function UserInput(props: {
                     data-tut="step-1"
                 />
             </Tooltip>
-            <Tooltip title={"The amount of ADA to deposit into the smart contract"}>
-                <TextField disabled={true} label={"Amount To Deposit"} type={"number"} value={inputLovelace ? deposit : deposit / CONSTANTS.ADA_CONVERSION} name={"amountToDeposit"}
-                    slotProps={{
-                        input: {
-                            endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
-                        },
-                    }}
-                    data-tut="step-2"
-                />
-            </Tooltip>
             <Tooltip title={"Max amount of fees the user is willing to pay to cover for AdaMatic and Cardano Transaction fees."}>
                 <TextField label={"Max Fees"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
                     slotProps={{
                         input: {
                             endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
                         },
-                        htmlInput: { min: inputLovelace ? 500_000 : 0.5, max: inputLovelace ? 1_500_000 : 1.5, step: inputLovelace ? 100000 : 0.1 }
+                        htmlInput: { min: inputLovelace ? 200_000 : 0.2, max: inputLovelace ? 1_500_000 : 1.5, step: inputLovelace ? 100000 : 0.1 }
                     }}
                     data-tut="step-3"
                     onChange={(event) => { updateStuff(inputLovelace ? Number(event.target.value) : Number(event.target.value) * CONSTANTS.ADA_CONVERSION, epochStart, numPulls, paymentIntervalEpochs) }}
                 />
             </Tooltip>
 
-            <Tooltip title={"Hosky Dogbowl Address."}>
-                <TextField disabled={isHoskyInput} label={"Payee Address"} value={payee} name={"payAddress"} data-tut="step-4" />
-            </Tooltip>
             {
                 isHoskyInput ?
                     <Tooltip title={"Epoch of the first rewards being pulled."}>
@@ -376,16 +363,6 @@ export default function UserInput(props: {
                         ))}
                     </div>
                 </>}
-            <FormGroup>
-                <FormControlLabel required control={<Checkbox />} label="I accept to use this tool at my own risk"
-                    value={acceptRisk}
-                    onChange={() => setAcceptRisk(!acceptRisk)}
-                />
-                <FormControlLabel required control={<Checkbox />} label={`I accept to pay required transaction and protocol fees to setup my automated payments`}
-                    value={acceptFees}
-                    onChange={() => setAcceptFees(!acceptFees)}
-                />
-            </FormGroup>
 
         </Stack>
 
