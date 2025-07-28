@@ -113,7 +113,7 @@ export default class TransactionUtil {
 
     }
 
-    public static async getUnsignedCancelTx(recurringPaymentDTO: RecurringPayment, wallet: IWallet): Promise<string> {
+    public static async getUnsignedCancelTx(recurringPaymentDTOs: RecurringPayment[], wallet: IWallet): Promise<string> {
 
         const baseAddress = Address.fromBech32((await wallet.getUsedAddresses())[0]);
 
@@ -136,12 +136,15 @@ export default class TransactionUtil {
 
         txBuilder.reset();
 
+        for (const recurringPaymentDTO of recurringPaymentDTOs) {
+            txBuilder.spendingPlutusScriptV3()
+                .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index)
+                .txInInlineDatumPresent()
+                .txInRedeemerValue(mConStr(0, []))
+                .spendingTxInReference(SETTINGS_TX_HASH, SETTINGS_OUTPUT_INDEX);
+        }
+
         return txBuilder
-            .spendingPlutusScriptV3()
-            .txIn(recurringPaymentDTO.txHash, recurringPaymentDTO.output_index)
-            .txInInlineDatumPresent()
-            .txInRedeemerValue(mConStr(0, []))
-            .spendingTxInReference(SETTINGS_TX_HASH, SETTINGS_OUTPUT_INDEX)
             .changeAddress(walletAddress)
             .txInCollateral(collateralUtxos[0].input.txHash, collateralUtxos[0].input.outputIndex)
             .selectUtxosFrom(walletUtxos)
