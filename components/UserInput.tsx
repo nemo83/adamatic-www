@@ -59,9 +59,40 @@ export default function UserInput(props: {
     const [numPulls, setNumPulls] = React.useState<number>(1);
 
     const [lockEndTime, setLockEndTime] = React.useState<boolean>(false);
-    
+
     // Track delegation status for each wallet address
-    const [delegationStatus, setDelegationStatus] = React.useState<{[address: string]: boolean}>({});
+    const [delegationStatus, setDelegationStatus] = React.useState<{ [address: string]: boolean }>({});
+
+    // Track validation status for each wallet address
+    const [validationStatus, setValidationStatus] = React.useState<{ [address: string]: { isValid: boolean, error: string } }>({});
+
+    // Validate Cardano address format
+    const validateCardanoAddress = (address: string): { isValid: boolean, error: string } => {
+
+        if (!address || address.trim() === "") {
+            return { isValid: false, error: "" }; // Empty is not an error, just not valid
+        }
+
+        try {
+            // Use MeshSDK to validate the address format
+            const parsedAddress = Address.fromBech32(address.trim());
+            const addressType = parsedAddress.getType();
+
+            // Check if it's a valid base address or enterprise address (common for staking)
+            if (addressType === AddressType.BasePaymentKeyStakeKey ||
+                addressType === AddressType.BasePaymentScriptStakeKey ||
+                addressType === AddressType.BasePaymentKeyStakeScript ||
+                addressType === AddressType.BasePaymentScriptStakeScript ||
+                addressType === AddressType.RewardKey ||
+                addressType === AddressType.RewardScript) {
+                return { isValid: true, error: "" };
+            } else {
+                return { isValid: false, error: "Unsupported address type" };
+            }
+        } catch (error) {
+            return { isValid: false, error: "Invalid Cardano address format" };
+        }
+    };
 
     // Initialize with at least one empty address field
     useEffect(() => {
@@ -71,14 +102,29 @@ export default function UserInput(props: {
     }, []);
 
     useEffect(() => {
-        // Check delegation status for all wallet addresses
+        // Check validation and delegation status for all wallet addresses
         const checkDelegationForAllAddresses = async () => {
-            const newDelegationStatus: {[address: string]: boolean} = {};
+            const newDelegationStatus: { [address: string]: boolean } = {};
+            const newValidationStatus: { [address: string]: { isValid: boolean, error: string } } = {};
             let allDelegated = true;
+            let allValid = true;
 
             for (const address of walletFromList) {
-                console.log('checking delegation for: ' + address);
-                if (address) {
+                console.log('checking validation and delegation for: ' + address);
+
+                // First validate the address format
+                const validation = validateCardanoAddress(address);
+                newValidationStatus[address] = validation;
+
+                if (!validation.isValid && address !== "") {
+                    allValid = false;
+                    allDelegated = false;
+                    newDelegationStatus[address] = false;
+                    continue;
+                }
+
+                // Only check delegation if address is valid and not empty
+                if (address && validation.isValid) {
                     try {
                         const response = await fetch(ADAMATIC_HOST + `/hosky/${address}/is_delegated_to_hosky`);
                         const isDelegated = await response.json();
@@ -91,11 +137,17 @@ export default function UserInput(props: {
                         newDelegationStatus[address] = false;
                         allDelegated = false;
                     }
+                } else {
+                    newDelegationStatus[address] = false;
+                    if (address !== "") {
+                        allDelegated = false;
+                    }
                 }
             }
 
+            setValidationStatus(newValidationStatus);
             setDelegationStatus(newDelegationStatus);
-            setIsDelegatedToHosky(allDelegated && walletFromList.length > 0);
+            setIsDelegatedToHosky(allDelegated && allValid && walletFromList.length > 0 && walletFromList.some(addr => addr !== ""));
         };
 
         if (walletFromList.length > 0) {
@@ -204,7 +256,13 @@ export default function UserInput(props: {
     const updateWalletAddress = (index: number, newAddress: string) => {
         const currentList = walletFromList.length > 0 ? walletFromList : [""];
         const newList = [...currentList];
-        newList[index] = newAddress || (owner || "");
+
+        // if (index == 0) {
+            // newList[index] = newAddress || (owner || "");
+        // } else {
+            newList[index] = newAddress || "";
+        // }
+
         setWalletFromList(newList);
     };
 
@@ -217,47 +275,66 @@ export default function UserInput(props: {
                         Payment or Staking addresses delegated to Hosky Pools
                     </Typography>
                 </Tooltip>
-                
+
                 {/* Render at least one address field, even if walletFromList is empty */}
-                {(walletFromList.length > 0 ? walletFromList : [""]).map((address, index) => (
-                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                        <TextField
-                            required={true}
-                            fullWidth
-                            label={`Address ${index + 1}`}
-                            value={address}
-                            name={`addressFrom-${index}`}
-                            onChange={(e) => updateWalletAddress(index, e.target.value)}
-                            error={!delegationStatus[address] && address !== ""}
-                            helperText={!delegationStatus[address] && address !== "" ? "Address not delegated to any Hosky Pool" : null}
-                            data-tut={index === 0 ? "step-1" : undefined}
-                            sx={{ flex: 1 }}
-                        />
-                        {walletFromList.length > 1 && (
-                            <Tooltip title="Remove this address">
-                                <IconButton
-                                    onClick={() => removeWalletAddress(index)}
-                                    size="small"
-                                    sx={{
-                                        color: 'error.main',
-                                        '&:hover': { backgroundColor: 'error.light', color: 'white' }
-                                    }}
-                                >
-                                    <Delete />
-                                </IconButton>
-                            </Tooltip>
-                        )}
-                    </Box>
-                ))}
+                {(walletFromList.length > 0 ? walletFromList : [""]).map((address, index) => {
+                    const validation = validationStatus[address];
+                    const isDelegated = delegationStatus[address];
+
+                    // Determine error state and message
+                    let hasError = false;
+                    let errorMessage = "";
+
+                    if (address !== "") {
+                        if (validation && !validation.isValid) {
+                            hasError = true;
+                            errorMessage = validation.error;
+                        } else if (validation && validation.isValid && !isDelegated) {
+                            hasError = true;
+                            errorMessage = "Address not delegated to any Hosky Pool";
+                        }
+                    }
+
+                    return (
+                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                            <TextField
+                                required={true}
+                                fullWidth
+                                label={`Address ${index + 1}`}
+                                value={address}
+                                name={`addressFrom-${index}`}
+                                onChange={(e) => updateWalletAddress(index, e.target.value)}
+                                error={hasError}
+                                helperText={hasError ? errorMessage : null}
+                                data-tut={index === 0 ? "step-1" : undefined}
+                                sx={{ flex: 1 }}
+                            />
+                            {walletFromList.length > 1 && (
+                                <Tooltip title="Remove this address">
+                                    <IconButton
+                                        onClick={() => removeWalletAddress(index)}
+                                        size="small"
+                                        sx={{
+                                            color: 'error.main',
+                                            '&:hover': { backgroundColor: 'error.light', color: 'white' }
+                                        }}
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
+                        </Box>
+                    );
+                })}
 
                 {/* Add Address Section with Divider */}
                 <Box sx={{ mt: 2, mb: 2 }}>
                     <Divider>
                         <Tooltip title="Add another address">
-                            <Box 
-                                sx={{ 
-                                    display: 'flex', 
-                                    alignItems: 'center', 
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
                                     gap: 1,
                                     cursor: 'pointer',
                                     px: 2,
@@ -279,7 +356,7 @@ export default function UserInput(props: {
                                         color: 'white',
                                         width: 24,
                                         height: 24,
-                                        '&:hover': { 
+                                        '&:hover': {
                                             backgroundColor: 'primary.dark',
                                             transform: 'scale(1.1)'
                                         }
@@ -287,9 +364,9 @@ export default function UserInput(props: {
                                 >
                                     <Add fontSize="small" />
                                 </IconButton>
-                                <Typography 
-                                    variant="body2" 
-                                    sx={{ 
+                                <Typography
+                                    variant="body2"
+                                    sx={{
                                         color: 'text.secondary',
                                         fontWeight: 500,
                                         fontSize: '0.875rem'

@@ -21,8 +21,8 @@ The original idea was to support Hosky payments, but the contract and the fronte
 Thus we implemented a fixed Hosky mode to support the upper case scenario and a generic mode to support other use cases.
 
 ### Todo's
-- [ ] Finish hardcoded Hosky values
-- [ ] Clean up code and add comments
+- [ ] Fix tour as fields have been moved around
+- [ ] Fix deleting content of row
 - [ ] Add documentations including a more complet Readme
 
 ## How to run
