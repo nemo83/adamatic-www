@@ -8,10 +8,10 @@ import {
     DialogContentText,
     DialogTitle, FormControlLabel, FormGroup, InputAdornment,
     Stack,
-    TextField, Tooltip
+    TextField, Tooltip, Box, IconButton, Divider, Typography
 } from "@mui/material";
 import React, { useEffect } from "react";
-import { Add } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import AssetAmount from "../lib/interfaces/AssetAmount";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
@@ -25,8 +25,8 @@ const MAX_PULLS = 50;
 export default function UserInput(props: {
     deposit: number,
     setDeposit: (deposit: number) => void,
-    walletFrom: string,
-    setWalletFrom: (walletFrom: string) => void,
+    walletFromList: string[],
+    setWalletFromList: (walletFromList: string[]) => void,
     acceptRisk: boolean,
     setAcceptRisk: (acceptRisk: boolean) => void,
     acceptFees: boolean,
@@ -38,7 +38,7 @@ export default function UserInput(props: {
     isHoskyInput: boolean
 }) {
 
-    const { deposit, setDeposit, walletFrom, setWalletFrom, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isDelegatedToHosky, setIsDelegatedToHosky, isHoskyInput } = props;
+    const { deposit, setDeposit, walletFromList, setWalletFromList, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isDelegatedToHosky, setIsDelegatedToHosky, isHoskyInput } = props;
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -59,33 +59,62 @@ export default function UserInput(props: {
     const [numPulls, setNumPulls] = React.useState<number>(1);
 
     const [lockEndTime, setLockEndTime] = React.useState<boolean>(false);
+    
+    // Track delegation status for each wallet address
+    const [delegationStatus, setDelegationStatus] = React.useState<{[address: string]: boolean}>({});
 
+    // Initialize with at least one empty address field
     useEffect(() => {
-
-        if (walletFrom) {
-            fetch(ADAMATIC_HOST + `/hosky/${walletFrom}/is_delegated_to_hosky`)
-                .then(response => response.json())
-                .then((data: boolean) => setIsDelegatedToHosky(data));
+        if (walletFromList.length === 0) {
+            setWalletFromList([""]);
         }
-
-    }, [walletFrom])
+    }, []);
 
     useEffect(() => {
+        // Check delegation status for all wallet addresses
+        const checkDelegationForAllAddresses = async () => {
+            const newDelegationStatus: {[address: string]: boolean} = {};
+            let allDelegated = true;
 
+            for (const address of walletFromList) {
+                console.log('checking delegation for: ' + address);
+                if (address) {
+                    try {
+                        const response = await fetch(ADAMATIC_HOST + `/hosky/${address}/is_delegated_to_hosky`);
+                        const isDelegated = await response.json();
+                        newDelegationStatus[address] = isDelegated;
+                        if (!isDelegated) {
+                            allDelegated = false;
+                        }
+                    } catch (error) {
+                        console.error(`Error checking delegation for ${address}:`, error);
+                        newDelegationStatus[address] = false;
+                        allDelegated = false;
+                    }
+                }
+            }
+
+            setDelegationStatus(newDelegationStatus);
+            setIsDelegatedToHosky(allDelegated && walletFromList.length > 0);
+        };
+
+        if (walletFromList.length > 0) {
+            checkDelegationForAllAddresses();
+        }
+    }, [walletFromList, setIsDelegatedToHosky])
+
+    useEffect(() => {
         if (connected) {
             wallet.getUsedAddresses().then((addresses) => {
                 const address = Address.fromBech32(addresses[0])
                 const userWallet = address.asBase()!.toAddress().toBech32().toString();
                 setOwner(userWallet);
-                if (!walletFrom) {
-                    setWalletFrom(userWallet);
+                if (walletFromList.length > 0 && walletFromList[0] === "") {
+                    const newWalletFromList = [userWallet, ...walletFromList.slice(1)];
+                    setWalletFromList(newWalletFromList);
                 }
             });
-        } else {
-            setWalletFrom("");
         }
-
-
     }, [connected])
 
     useEffect(() => {
@@ -158,24 +187,121 @@ export default function UserInput(props: {
 
     }, [owner, payee, startTime, endTime, paymentIntervalHours, maxFeesLovelace])
 
-    const updateWalletFrom = (newWalletFrom: string) => {
-        if (newWalletFrom) {
-            setWalletFrom(newWalletFrom);
-        } else {
-            setWalletFrom(owner);
+    const addWalletAddress = () => {
+        console.log('walletFromList: ' + JSON.stringify(walletFromList));
+        const newList = [...walletFromList, ""];
+        console.log('newList: ' + JSON.stringify(newList));
+        setWalletFromList(newList);
+    };
+
+    const removeWalletAddress = (index: number) => {
+        if (walletFromList.length > 1) {
+            const newList = walletFromList.filter((_, i) => i !== index);
+            setWalletFromList(newList);
         }
-    }
+    };
+
+    const updateWalletAddress = (index: number, newAddress: string) => {
+        const currentList = walletFromList.length > 0 ? walletFromList : [""];
+        const newList = [...currentList];
+        newList[index] = newAddress || (owner || "");
+        setWalletFromList(newList);
+    };
 
     return (
         <Stack spacing={1} style={{ paddingTop: "10px" }}>
-            <Tooltip title={"Payment or Staking address delegated to a Hosky Pool for which collecting rewards"}>
-                <TextField required={true} label={"Payment or Staking address delegated to a Hosky Pool"} value={walletFrom} name={"addressFrom"} onChange={(e) => setWalletFrom(e.target.value)}
-                    error={!isDelegatedToHosky}
-                    helperText={!isDelegatedToHosky ? "Address not delegated to any Hosky Pool" : null}
-                    onBlur={(e) => updateWalletFrom(e.target.value)}
-                    data-tut="step-1"
-                />
-            </Tooltip>
+            {/* Multiple Wallet Addresses Section */}
+            <Box>
+                <Tooltip title="Payment or Staking addresses delegated to Hosky Pools for collecting rewards">
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Payment or Staking addresses delegated to Hosky Pools
+                    </Typography>
+                </Tooltip>
+                
+                {/* Render at least one address field, even if walletFromList is empty */}
+                {(walletFromList.length > 0 ? walletFromList : [""]).map((address, index) => (
+                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                        <TextField
+                            required={true}
+                            fullWidth
+                            label={`Address ${index + 1}`}
+                            value={address}
+                            name={`addressFrom-${index}`}
+                            onChange={(e) => updateWalletAddress(index, e.target.value)}
+                            error={!delegationStatus[address] && address !== ""}
+                            helperText={!delegationStatus[address] && address !== "" ? "Address not delegated to any Hosky Pool" : null}
+                            data-tut={index === 0 ? "step-1" : undefined}
+                            sx={{ flex: 1 }}
+                        />
+                        {walletFromList.length > 1 && (
+                            <Tooltip title="Remove this address">
+                                <IconButton
+                                    onClick={() => removeWalletAddress(index)}
+                                    size="small"
+                                    sx={{
+                                        color: 'error.main',
+                                        '&:hover': { backgroundColor: 'error.light', color: 'white' }
+                                    }}
+                                >
+                                    <Delete />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </Box>
+                ))}
+
+                {/* Add Address Section with Divider */}
+                <Box sx={{ mt: 2, mb: 2 }}>
+                    <Divider>
+                        <Tooltip title="Add another address">
+                            <Box 
+                                sx={{ 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    gap: 1,
+                                    cursor: 'pointer',
+                                    px: 2,
+                                    py: 1,
+                                    borderRadius: '16px',
+                                    transition: 'all 0.2s ease-in-out',
+                                    backgroundColor: 'transparent',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(33, 150, 243, 0.08)',
+                                        transform: 'scale(1.02)'
+                                    }
+                                }}
+                                onClick={addWalletAddress}
+                            >
+                                <IconButton
+                                    size="small"
+                                    sx={{
+                                        backgroundColor: 'primary.main',
+                                        color: 'white',
+                                        width: 24,
+                                        height: 24,
+                                        '&:hover': { 
+                                            backgroundColor: 'primary.dark',
+                                            transform: 'scale(1.1)'
+                                        }
+                                    }}
+                                >
+                                    <Add fontSize="small" />
+                                </IconButton>
+                                <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                        color: 'text.secondary',
+                                        fontWeight: 500,
+                                        fontSize: '0.875rem'
+                                    }}
+                                >
+                                    Add Address
+                                </Typography>
+                            </Box>
+                        </Tooltip>
+                    </Divider>
+                </Box>
+            </Box>
             <Tooltip title={"Max amount of fees the user is willing to pay to cover for AdaMatic and Cardano Transaction fees."}>
                 <TextField label={"Max Fees"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
                     slotProps={{

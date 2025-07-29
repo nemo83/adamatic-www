@@ -175,7 +175,4 @@ export default class TransactionUtil {
 
     }
 
-    public static getSuggestedFees(numPayments: number, amountToSend = 2000000): number {
-        return numPayments * (amountToSend + CONSTANTS.SUGGESTED_TX_FEE * CONSTANTS.CUT)
-    }
 }

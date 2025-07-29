@@ -20,8 +20,7 @@ interface PaymentReceiptProps {
     amountPerPayment: number; // in lovelace
     numPayments: number;
     maxFeesLovelace: number;
-    protocolFeeLovelace: number;
-    totalDeposit: number; // Total deposit amount in lovelace
+    walletAddresses?: string[]; // Optional array of wallet addresses
 }
 
 export default function PaymentReceipt({
@@ -29,14 +28,14 @@ export default function PaymentReceipt({
     amountPerPayment,
     numPayments,
     maxFeesLovelace,
-    totalDeposit
+    walletAddresses = []
 }: PaymentReceiptProps) {
 
-    const totalPaymentAmount = amountPerPayment * numPayments;
-    const totalProtocolFees = maxFeesLovelace * numPayments;
+    const totalPaymentAmount = amountPerPayment * numPayments * walletAddresses.length;
+    const totalProtocolFees = maxFeesLovelace * numPayments * walletAddresses.length;
     
     // Use the actual total deposit amount instead of calculating it
-    const grandTotal = totalDeposit;
+    const grandTotal = totalPaymentAmount + totalProtocolFees;
 
     const copyToClipboard = async (text: string) => {
         try {
@@ -92,6 +91,35 @@ export default function PaymentReceipt({
                         </Box>
                     </Box>
 
+                    {/* Wallet Addresses (if multiple) */}
+                    {walletAddresses.length > 1 && (
+                        <Box>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                                Wallet Addresses ({walletAddresses.length})
+                            </Typography>
+                            {walletAddresses.map((address, index) => (
+                                <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                                    <Typography variant="body2" sx={{ 
+                                        fontFamily: 'monospace',
+                                        wordBreak: 'break-all',
+                                        flex: 1,
+                                        fontSize: '0.75rem'
+                                    }}>
+                                        {index + 1}. {address.substring(0, 15)}...{address.substring(address.length - 15)}
+                                    </Typography>
+                                    <Tooltip title="Copy address">
+                                        <IconButton 
+                                            size="small" 
+                                            onClick={() => copyToClipboard(address)}
+                                        >
+                                            <ContentCopyIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                            ))}
+                        </Box>
+                    )}
+
                     <Divider />
 
                     {/* Payment Details */}
@@ -137,15 +165,6 @@ export default function PaymentReceipt({
                     </Box>
 
                     {/* Fees */}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="body2" color="text.secondary">
-                            Total protocol fees
-                        </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {formatAda(totalProtocolFees)}
-                        </Typography>
-                    </Box>
-
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">
                             Total Protocol + Network Fees (max)

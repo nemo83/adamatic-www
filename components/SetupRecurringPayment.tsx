@@ -71,7 +71,7 @@ export default function SetupRecurringPayment(props: {
     const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>({ ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 });
 
     const [deposit, setDeposit] = useState<number>(0);
-    const [walletFrom, setWalletFrom] = useState<string>("");
+    const [walletFromList, setWalletFromList] = useState<string[]>([]);
     const [acceptRisk, setAcceptRisk] = useState<boolean>(false);
     const [acceptFees, setAcceptFees] = useState<boolean>(false);
     const [datum, setDatum] = useState<Data>();
@@ -136,6 +136,10 @@ export default function SetupRecurringPayment(props: {
 
     const signAndSubmit = async () => {
 
+        console.log('per wallet deposit: ' + deposit)
+        console.log('walletFromList: ' + JSON.stringify(walletFromList))
+        console.log('walletFromList.length: ' + walletFromList.length)
+
         const balance = await wallet.getBalance();
         const collateralUtxos = await wallet.getCollateral();
 
@@ -143,24 +147,36 @@ export default function SetupRecurringPayment(props: {
 
         const adaBalance = parseInt(balance.filter((asset) => asset.unit === "lovelace")[0].quantity) + collateralSum;
 
-        const minAdaBalance = deposit + 10_000_000;
+        const minAdaBalance = deposit * walletFromList.length + 10_000_000;
+
         if (adaBalance < minAdaBalance) {
             toast.error(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`, { duration: 5000 })
             return Promise.reject(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`);
         }
 
         if (wallet && datum) {
-            const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
-            const recipient: Recipient = {
-                address: scriptAddress,
-                datum: {
-                    value: datum,
-                    inline: true
-                }
-            };
-
             try {
-                const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
+
+                // initialise tx
+                let tx = new Transaction({ initiator: wallet });
+
+                // Loop through the wallets
+                for (var walletFrom of walletFromList) {
+                    // build script address
+                    const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
+                    // build recipient
+                    const recipient: Recipient = {
+                        address: scriptAddress,
+                        datum: {
+                            value: datum,
+                            inline: true
+                        }
+                    };
+                    // pay to contract
+                    tx = tx.sendLovelace(recipient, String(deposit))
+                }
+
+                const unsignedTx = await tx.build();
                 const signedTx = await wallet.signTx(unsignedTx);
                 const txHash = await wallet.submitTx(signedTx);
                 setTxHash(txHash);
@@ -222,8 +238,8 @@ export default function SetupRecurringPayment(props: {
                     <UserInput
                         deposit={deposit}
                         setDeposit={setDeposit}
-                        walletFrom={walletFrom}
-                        setWalletFrom={setWalletFrom}
+                        walletFromList={walletFromList}
+                        setWalletFromList={setWalletFromList}
                         acceptRisk={acceptRisk}
                         setAcceptRisk={setAcceptRisk}
                         acceptFees={acceptFees}
@@ -242,7 +258,7 @@ export default function SetupRecurringPayment(props: {
                             amountPerPayment={amountPerPayment}
                             numPayments={numPayments}
                             maxFeesLovelace={datumDTO.maxFeesLovelace}
-                            totalDeposit={deposit}
+                            walletAddresses={walletFromList}
                         />
                     )}
 
