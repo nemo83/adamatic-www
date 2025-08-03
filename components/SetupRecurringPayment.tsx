@@ -15,20 +15,22 @@ import { useWallet } from "@meshsdk/react";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import { Data, Recipient, Transaction } from "@meshsdk/core";
 import TransactionUtil from "../lib/util/TransactionUtil";
-import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, SCRIPT } from "../lib/util/Constants";
+import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, SCRIPT, CONSTANTS } from "../lib/util/Constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
+import PaymentReceipt from "./PaymentReceipt";
+import PaymentConfirmation from "./PaymentConfirmation";
 import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
 import { Settings } from "../lib/interfaces/AdaMaticTypes";
 import NextLink from "next/link";
-import { 
-    Card, 
-    CardContent, 
+import {
+    Card,
+    CardContent,
     Chip,
     Container,
-    Divider 
+    Divider
 } from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SecurityIcon from '@mui/icons-material/Security';
@@ -69,18 +71,36 @@ export default function SetupRecurringPayment(props: {
     const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>({ ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 });
 
     const [deposit, setDeposit] = useState<number>(0);
-    const [walletFrom, setWalletFrom] = useState<string>("");
+    const [walletFromList, setWalletFromList] = useState<string[]>([]);
     const [acceptRisk, setAcceptRisk] = useState<boolean>(false);
     const [acceptFees, setAcceptFees] = useState<boolean>(false);
     const [datum, setDatum] = useState<Data>();
 
     const [isDelegatedToHosky, setIsDelegatedToHosky] = React.useState<boolean>(true);
 
+
+    // Receipt section
+    const [payeeAddress, setPayeeAddress] = useState<string>("")
+    const [amountPerPayment, setAmountPerPayment] = useState<number>(0)
+    const [numPayments, setNumPayments] = useState<number>(0)
+
     useEffect(() => {
         if (connected) {
             try {
                 const datum = TransactionUtil.createDatum(datumDTO);
                 setDatum(datum);
+
+                setPayeeAddress(datumDTO.payee);
+
+                const amountPerPayment = datumDTO.amountToSend[0].amount;
+                console.log("amountPerPayment: " + amountPerPayment);
+
+                setAmountPerPayment(amountPerPayment)
+
+                const numPayments = deposit / (amountPerPayment + datumDTO.maxFeesLovelace)
+                console.log("numPayments: " + numPayments);
+
+                setNumPayments(numPayments)
             } catch (error) {
                 console.warn('could not build datum: ' + error);
                 setDatum(undefined);
@@ -116,6 +136,10 @@ export default function SetupRecurringPayment(props: {
 
     const signAndSubmit = async () => {
 
+        console.log('per wallet deposit: ' + deposit)
+        console.log('walletFromList: ' + JSON.stringify(walletFromList))
+        console.log('walletFromList.length: ' + walletFromList.length)
+
         const balance = await wallet.getBalance();
         const collateralUtxos = await wallet.getCollateral();
 
@@ -123,24 +147,36 @@ export default function SetupRecurringPayment(props: {
 
         const adaBalance = parseInt(balance.filter((asset) => asset.unit === "lovelace")[0].quantity) + collateralSum;
 
-        const minAdaBalance = deposit + 10_000_000;
+        const minAdaBalance = deposit * walletFromList.length + 10_000_000;
+
         if (adaBalance < minAdaBalance) {
             toast.error(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`, { duration: 5000 })
             return Promise.reject(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`);
         }
 
         if (wallet && datum) {
-            const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
-            const recipient: Recipient = {
-                address: scriptAddress,
-                datum: {
-                    value: datum,
-                    inline: true
-                }
-            };
-
             try {
-                const unsignedTx = await new Transaction({ initiator: wallet }).sendLovelace(recipient, String(deposit)).build();
+
+                // initialise tx
+                let tx = new Transaction({ initiator: wallet });
+
+                // Loop through the wallets
+                for (var walletFrom of walletFromList) {
+                    // build script address
+                    const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
+                    // build recipient
+                    const recipient: Recipient = {
+                        address: scriptAddress,
+                        datum: {
+                            value: datum,
+                            inline: true
+                        }
+                    };
+                    // pay to contract
+                    tx = tx.sendLovelace(recipient, String(deposit))
+                }
+
+                const unsignedTx = await tx.build();
                 const signedTx = await wallet.signTx(unsignedTx);
                 const txHash = await wallet.submitTx(signedTx);
                 setTxHash(txHash);
@@ -202,8 +238,8 @@ export default function SetupRecurringPayment(props: {
                     <UserInput
                         deposit={deposit}
                         setDeposit={setDeposit}
-                        walletFrom={walletFrom}
-                        setWalletFrom={setWalletFrom}
+                        walletFromList={walletFromList}
+                        setWalletFromList={setWalletFromList}
                         acceptRisk={acceptRisk}
                         setAcceptRisk={setAcceptRisk}
                         acceptFees={acceptFees}
@@ -215,12 +251,33 @@ export default function SetupRecurringPayment(props: {
                         isHoskyInput={hoskyInput}
                     />
 
+                    {/* Payment Receipt Section */}
+                    {settings && datumDTO.payee && datumDTO.amountToSend.length > 0 && connected && (
+                        <PaymentReceipt
+                            payeeAddress={payeeAddress}
+                            amountPerPayment={amountPerPayment}
+                            numPayments={numPayments}
+                            maxFeesLovelace={datumDTO.maxFeesLovelace}
+                            walletAddresses={walletFromList}
+                        />
+                    )}
+
+                    {/* Confirmation Section */}
+                    {connected && (
+                        <PaymentConfirmation
+                            acceptRisk={acceptRisk}
+                            setAcceptRisk={setAcceptRisk}
+                            acceptFees={acceptFees}
+                            setAcceptFees={setAcceptFees}
+                        />
+                    )}
+
 
                 </Box>
                 <Grid2 container width={"60%"} spacing={2} justifyContent={"space-evenly"} >
                     <Grid2 >
-                        <Button 
-                            variant="outlined" 
+                        <Button
+                            variant="outlined"
                             onClick={() => setIsOpen(true)}
                             sx={{
                                 borderRadius: '12px',
@@ -242,7 +299,7 @@ export default function SetupRecurringPayment(props: {
                         </Button>
                     </Grid2>
                     <Grid2>
-                        <Button 
+                        <Button
                             disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || maintenanceMode}
                             variant="contained"
                             startIcon={<Send />}

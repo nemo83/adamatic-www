@@ -1,4 +1,4 @@
-import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography } from "@mui/material";
+import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography, Checkbox } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import TransactionUtil from "../lib/util/TransactionUtil";
@@ -39,6 +39,8 @@ export default function PaymentsTable(props: { version: number }) {
     const [totalPages, setTotalPages] = useState<number>(0);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage] = useState<number>(10);
+
+    const [selectedPayments, setSelectedPayments] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         if (connected) {
@@ -99,12 +101,60 @@ export default function PaymentsTable(props: { version: number }) {
 
     const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
         try {
-            const unsignedTx = await TransactionUtil.getUnsignedCancelTx(recurringPaymentDTO, wallet);
+            const unsignedTx = await TransactionUtil.getUnsignedCancelTx([recurringPaymentDTO], wallet);
             const signedTx = await wallet.signTx(unsignedTx);
             const txHash = await wallet.submitTx(signedTx);
             toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
         } catch (error) {
             toast.error('' + error, { duration: 5000 })
+        }
+    }
+
+    const bulkCancelRecurringPayments = async () => {
+
+        const paymentsToCancel = recurringPaymentDTOs.filter(payment => 
+            selectedPayments.has(payment.txHash + payment.output_index)
+        );
+
+        console.log('num payments to cancel: ' + paymentsToCancel.length);
+
+        try {
+            
+            const unsignedTx = await TransactionUtil.getUnsignedCancelTx(paymentsToCancel, wallet);
+            const signedTx = await wallet.signTx(unsignedTx);
+            const txHash = await wallet.submitTx(signedTx);
+            toast.success(`Payment cancelled: ${txHash.substring(0, 10)}...${txHash.substring(txHash.length - 10)}`, { duration: 3000 });
+            
+            setSelectedPayments(new Set());
+            toast.success(`Successfully cancelled ${paymentsToCancel.length} payments`, { duration: 5000 });
+        } catch (error) {
+            toast.error('Error cancelling payments: ' + error, { duration: 5000 });
+        }
+    }
+
+    const handleSelectPayment = (paymentId: string) => {
+        const newSelected = new Set(selectedPayments);
+        if (newSelected.has(paymentId)) {
+            newSelected.delete(paymentId);
+        } else {
+            newSelected.add(paymentId);
+        }
+        setSelectedPayments(newSelected);
+    }
+
+    const handleSelectAll = () => {
+        const selectablePayments = currentPageData.filter(payment => 
+            payment.paymentStatus === 'SCHEDULED' || payment.paymentStatus === 'INSUFFICIENT_FUNDS'
+        );
+
+        if (selectedPayments.size === selectablePayments.length) {
+            setSelectedPayments(new Set());
+        } else {
+            const newSelected = new Set<string>();
+            selectablePayments.forEach(payment => {
+                newSelected.add(payment.txHash + payment.output_index);
+            });
+            setSelectedPayments(newSelected);
         }
     }
 
@@ -172,30 +222,68 @@ export default function PaymentsTable(props: { version: number }) {
         setCurrentPageData(recurringPaymentDTOs.slice(startIndex, endIndex));
     };
 
+    const selectablePayments = currentPageData.filter(payment => 
+        payment.paymentStatus === 'SCHEDULED' || payment.paymentStatus === 'INSUFFICIENT_FUNDS'
+    );
+
     return (
         <>
             <PaymentDetailsDialog txHash={txHash} outputIndex={outputIndex} open={open} setOpen={setOpen} />
             {connected ?
-                <TableContainer component={Paper}>
-                    <Table aria-label="Payments Table">
-                        <TableHead>
-                            <TableRow>
-
-                                <TableCell>View</TableCell>
-                                <TableCell>Staking Address</TableCell>
-                                <TableCell>Next run</TableCell>
-                                <TableCell>Balance</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Cancel</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {currentPageData.map((row) => (
-                                <TableRow
-                                    key={row.txHash + row.output_index}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-
+                <>
+                    {selectedPayments.size > 0 && (
+                        <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Typography variant="body2">
+                                {selectedPayments.size} payment(s) selected
+                            </Typography>
+                            <Button 
+                                variant="contained" 
+                                color="error" 
+                                onClick={bulkCancelRecurringPayments}
+                                startIcon={<DeleteIcon />}
+                            >
+                                Cancel Selected Payments
+                            </Button>
+                        </Box>
+                    )}
+                    <TableContainer component={Paper}>
+                        <Table aria-label="Payments Table">
+                            <TableHead>
+                                <TableRow>
                                     <TableCell>
+                                        <Checkbox
+                                            indeterminate={selectedPayments.size > 0 && selectedPayments.size < selectablePayments.length}
+                                            checked={selectablePayments.length > 0 && selectedPayments.size === selectablePayments.length}
+                                            onChange={handleSelectAll}
+                                            disabled={selectablePayments.length === 0}
+                                        />
+                                    </TableCell>
+                                    <TableCell>View</TableCell>
+                                    <TableCell>Staking Address</TableCell>
+                                    <TableCell>Next run</TableCell>
+                                    <TableCell>Balance</TableCell>
+                                    <TableCell>Status</TableCell>
+                                    <TableCell>Cancel</TableCell>
+                                </TableRow>
+                            </TableHead>
+                        <TableBody>
+                            {currentPageData.map((row) => {
+                                const paymentId = row.txHash + row.output_index;
+                                const isSelectable = row.paymentStatus === 'SCHEDULED' || row.paymentStatus === 'INSUFFICIENT_FUNDS';
+                                
+                                return (
+                                    <TableRow
+                                        key={paymentId}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+
+                                        <TableCell>
+                                            <Checkbox
+                                                checked={selectedPayments.has(paymentId)}
+                                                onChange={() => handleSelectPayment(paymentId)}
+                                                disabled={!isSelectable}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
                                         <Tooltip title={"show payment details"}>
                                             <IconButton onClick={() => openPaymentDetails(row.txHash, row.output_index)}>
                                                 <VisibilityIcon />
@@ -224,12 +312,14 @@ export default function PaymentsTable(props: { version: number }) {
                                                 onClick={() => cancelRecurringPayment(row)}>
                                                 <DeleteIcon color="error" />
                                             </IconButton> : ""}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                         </TableBody>
                     </Table>
                 </TableContainer>
+                </>
                 : <></>}
 
             {connected && recurringPaymentDTOs.length > 0 && (
