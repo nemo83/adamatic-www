@@ -25,20 +25,13 @@ const steps = [
     },
     {
         selector: '[data-tut="step-1"]',
-        content: 'The Staking or Payment address delegated to a Hosky Rug Pool you want to collect rewards for. ' +
-            'It\'s set by default to the connected wallet',
-    },
-    {
-        selector: '[data-tut="step-2"]',
-        content: 'The amount of ADA, including protocol fees, that need to be locked in the Smart Contract in order to execute all the planned payments.',
+        content: 'The Staking or Payment addresses delegated to a Hosky Rug Pool you want to collect rewards for. ' +
+            'It\'s set by default to the connected wallet. It allows for multi-wallet auto pulls. Just press the + icon ' +
+            'and add more wallets you want to collect rewards for',
     },
     {
         selector: '[data-tut="step-3"]',
         content: 'Max amount of fees, per pull, the user is willing to pay to cover for AdaMatic and Cardano Transaction fees.',
-    },
-    {
-        selector: '[data-tut="step-4"]',
-        content: 'The Hosky doggie bowl Address',
     },
     {
         selector: '[data-tut="step-5"]',

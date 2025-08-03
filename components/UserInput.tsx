@@ -121,6 +121,8 @@ export default function UserInput(props: {
                     allDelegated = false;
                     newDelegationStatus[address] = false;
                     continue;
+                } else if (address.trim() === "") {
+                    allValid = false;
                 }
 
                 // Only check delegation if address is valid and not empty
