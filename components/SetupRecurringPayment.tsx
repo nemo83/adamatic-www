@@ -111,19 +111,19 @@ export default function SetupRecurringPayment(props: {
 
     }, [datumDTO, connected]);
 
-    useEffect(() => {
-        fetch(ADAMATIC_HOST + '/recurring_payments')
-            .then(response => response.json())
-            .then((data: []) => {
-                if (data.length >= 150) {
-                    setShowLimit(true)
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                setShowLimit(true)
-            })
-    }, []);
+    // useEffect(() => {
+    //     fetch(ADAMATIC_HOST + '/recurring_payments')
+    //         .then(response => response.json())
+    //         .then((data: []) => {
+    //             if (data.length >= 150) {
+    //                 setShowLimit(true)
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //             setShowLimit(true)
+    //         })
+    // }, []);
 
     useEffect(() => {
         fetch(ADAMATIC_HOST + '/settings')
