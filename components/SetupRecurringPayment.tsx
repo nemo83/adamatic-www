@@ -221,7 +221,24 @@ export default function SetupRecurringPayment(props: {
                     }}
                 >
 
-                    {/* <Alert severity="info" sx={{ my: 2 }}>EASY1 Stake Pool is now a Rugpool! Thank you for your support!</Alert> */}
+                    <Alert
+                        severity="warning"
+                        sx={{
+                            my: 2,
+                            '& .MuiAlert-message': {
+                                width: '100%',
+                                textAlign: 'center'
+                            }
+                        }}
+                    >
+                        🚨 Hosky Rugpool Hunger Games! 20 pools enter, only 10 survive.
+                        <br />
+                        Vote EASY1 at{' '}
+                        <Link href="https://hosky.io/vote" target="_blank" rel="noopener" sx={{ fontWeight: 'bold' }}>
+                            hosky.io/vote
+                        </Link>
+                        {' '}and if we make it → <strong>FREE auto pulls for 3 months!</strong>
+                    </Alert>
 
                     <Alert hidden={true} severity="info" sx={{ my: 2 }}>As some users have reported some issues, as a precaution, we&apos;ve reduced the maximum number of pulls to 10</Alert>
 
