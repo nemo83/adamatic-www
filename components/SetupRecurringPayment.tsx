@@ -11,11 +11,11 @@ import {
 } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useWallet } from "@meshsdk/react";
+import { useWallet } from "../lib/wallet/useWallet";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
-import { Data, Recipient, Transaction } from "@meshsdk/core";
-import TransactionUtil from "../lib/util/TransactionUtil";
-import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, SCRIPT, CONSTANTS } from "../lib/util/Constants";
+import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, CONSTANTS } from "../lib/util/Constants";
+import { getChainAdapter } from "../lib/cardano/MeshChainAdapter";
+import type { EncodedDatum } from "../lib/cardano/ChainAdapter";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 import PaymentReceipt from "./PaymentReceipt";
@@ -65,7 +65,7 @@ export default function SetupRecurringPayment(props: {
     }, []);
 
     const { isValidNetwork, hoskyInput } = props;
-    const { wallet, connected } = useWallet();
+    const { wallet, connected, walletApi } = useWallet();
 
     const [txHash, setTxHash] = useState<string>("");
     const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>({ ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 });
@@ -74,7 +74,7 @@ export default function SetupRecurringPayment(props: {
     const [walletFromList, setWalletFromList] = useState<string[]>([]);
     const [acceptRisk, setAcceptRisk] = useState<boolean>(false);
     const [acceptFees, setAcceptFees] = useState<boolean>(false);
-    const [datum, setDatum] = useState<Data>();
+    const [datum, setDatum] = useState<EncodedDatum | undefined>();
 
     const [isDelegatedToHosky, setIsDelegatedToHosky] = React.useState<boolean>(true);
 
@@ -87,19 +87,16 @@ export default function SetupRecurringPayment(props: {
     useEffect(() => {
         if (connected) {
             try {
-                const datum = TransactionUtil.createDatum(datumDTO);
+                const chain = getChainAdapter();
+                const datum = chain.encodeSetupDatum(datumDTO);
                 setDatum(datum);
 
                 setPayeeAddress(datumDTO.payee);
 
                 const amountPerPayment = datumDTO.amountToSend[0].amount;
-                console.log("amountPerPayment: " + amountPerPayment);
-
                 setAmountPerPayment(amountPerPayment)
 
                 const numPayments = deposit / (amountPerPayment + datumDTO.maxFeesLovelace)
-                console.log("numPayments: " + numPayments);
-
                 setNumPayments(numPayments)
             } catch (error) {
                 console.warn('could not build datum: ' + error);
@@ -109,7 +106,7 @@ export default function SetupRecurringPayment(props: {
             setDatum(undefined);
         }
 
-    }, [datumDTO, connected]);
+    }, [datumDTO, connected, deposit]);
 
     // useEffect(() => {
     //     fetch(ADAMATIC_HOST + '/recurring_payments')
@@ -156,29 +153,14 @@ export default function SetupRecurringPayment(props: {
 
         if (wallet && datum) {
             try {
-
-                // initialise tx
-                let tx = new Transaction({ initiator: wallet });
-
-                // Loop through the wallets
-                for (var walletFrom of walletFromList) {
-                    // build script address
-                    const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
-                    // build recipient
-                    const recipient: Recipient = {
-                        address: scriptAddress,
-                        datum: {
-                            value: datum,
-                            inline: true
-                        }
-                    };
-                    // pay to contract
-                    tx = tx.sendLovelace(recipient, String(deposit))
-                }
-
-                const unsignedTx = await tx.build();
-                const signedTx = await wallet.signTx(unsignedTx);
-                const txHash = await wallet.submitTx(signedTx);
+                const chain = getChainAdapter();
+                const txHash = await chain.buildAndSubmitSetupTx({
+                    wallet,
+                    walletApi: walletApi ?? undefined,
+                    walletFromList,
+                    depositLovelace: deposit,
+                    datum,
+                });
                 setTxHash(txHash);
                 toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
             } catch (error) {
@@ -265,7 +247,7 @@ export default function SetupRecurringPayment(props: {
                         setDatumDTO={setDatumDTO}
                         isDelegatedToHosky={isDelegatedToHosky}
                         setIsDelegatedToHosky={setIsDelegatedToHosky}
-                        isHoskyInput={hoskyInput}
+                        mode={hoskyInput ? "hosky" : "generic"}
                     />
 
                     {/* Payment Receipt Section */}

@@ -1,7 +1,7 @@
 import { AppBar, Box, Toolbar, Typography, Button, Stack } from "@mui/material";
-import { CardanoWallet, useWallet } from "@meshsdk/react";
+import { useWallet } from "../lib/wallet/useWallet";
+import { WalletButton } from "../lib/wallet/WalletButton";
 import React, { useState, useEffect } from "react";
-import "@meshsdk/react/styles.css";
 import { NETWORK, NETWORK_ID } from "../lib/util/Constants";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -138,7 +138,7 @@ export default function Navbar() {
                         </Stack>
                     </Box>
                     <Box data-tut="step-0">
-                        <CardanoWallet />
+                        <WalletButton />
                     </Box>
                 </Toolbar>
             </AppBar>

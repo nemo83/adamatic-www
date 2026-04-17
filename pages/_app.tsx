@@ -1,15 +1,13 @@
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import "../styles/globals.css";
+import "../design/globals.css";
 import type { AppProps } from "next/app";
 
-import { MeshProvider } from "@meshsdk/react";
+import { WalletProvider } from "../lib/wallet/WalletProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { TourProvider } from '@reactour/tour';
-import Navbar from '../components/Navbar';
-import { Toaster } from 'react-hot-toast';
 import Layout from '../components/Layout';
 
 const theme = createTheme({
@@ -54,8 +52,13 @@ const steps = [
 
 
 export default function App({ Component, pageProps }: AppProps) {
+    // Design-reference pages opt out of the Mesh/Tour/Layout shell so the
+    // Ledger theme preview isn't wrapped by the existing Navbar + Footer.
+    if ((Component as any).standalone) {
+        return <Component {...pageProps} />;
+    }
     return (
-        <MeshProvider>
+        <WalletProvider>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -66,7 +69,7 @@ export default function App({ Component, pageProps }: AppProps) {
                     </TourProvider>
                 </LocalizationProvider>
             </ThemeProvider>
-        </MeshProvider>
+        </WalletProvider>
     );
 }
 

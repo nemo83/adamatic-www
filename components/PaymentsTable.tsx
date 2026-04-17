@@ -1,10 +1,9 @@
 import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography, Checkbox } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
-import TransactionUtil from "../lib/util/TransactionUtil";
-import { useWallet } from "@meshsdk/react";
-import { Address } from "@meshsdk/core-cst";
-import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
+import { useWallet } from "../lib/wallet/useWallet";
+import { ADAMATIC_HOST } from "../lib/util/Constants";
+import { getChainAdapter } from "../lib/cardano/MeshChainAdapter";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -54,28 +53,22 @@ export default function PaymentsTable(props: { version: number }) {
     }, [version]);
 
     useEffect(() => {
-
-        setCurrentPage(1); // Reset to first page when data reloads
-
-        const totalPages = Math.ceil(recurringPaymentDTOs.length / itemsPerPage);
-        setTotalPages(totalPages);
-
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        setStartIndex(startIndex);
-
-        const endIndex = startIndex + itemsPerPage;
-        setEndIndex(endIndex);
-
-        setCurrentPageData(recurringPaymentDTOs.slice(startIndex, endIndex));
-    }, [recurringPaymentDTOs]);
+        // Reset to first page when data reloads, and slice off page 1 directly
+        // (don't read stale `currentPage` from state).
+        setCurrentPage(1);
+        setStartIndex(0);
+        setEndIndex(itemsPerPage);
+        setTotalPages(Math.ceil(recurringPaymentDTOs.length / itemsPerPage));
+        setCurrentPageData(recurringPaymentDTOs.slice(0, itemsPerPage));
+    }, [recurringPaymentDTOs, itemsPerPage]);
 
     const reloadPayments = async () => {
+        const chain = getChainAdapter();
         wallet
             .getUsedAddresses()
             .then((addresses) => {
-                const address = Address.fromBech32(addresses[0])
-                const paymentPubKeyHash = address.asBase()!.getPaymentCredential().hash.toString();
-                return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + paymentPubKeyHash);
+                const parsed = chain.parseAddress(addresses[0]);
+                return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + parsed.paymentCredentialHash);
             })
             .then(response => response.json())
             .then((data: RecurringPayment[]) => {
@@ -101,7 +94,8 @@ export default function PaymentsTable(props: { version: number }) {
 
     const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
         try {
-            const unsignedTx = await TransactionUtil.getUnsignedCancelTx([recurringPaymentDTO], wallet);
+            const chain = getChainAdapter();
+            const unsignedTx = await chain.buildCancelTx({ wallet, payments: [recurringPaymentDTO] });
             const signedTx = await wallet.signTx(unsignedTx);
             const txHash = await wallet.submitTx(signedTx);
             toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
@@ -112,15 +106,13 @@ export default function PaymentsTable(props: { version: number }) {
 
     const bulkCancelRecurringPayments = async () => {
 
-        const paymentsToCancel = recurringPaymentDTOs.filter(payment => 
+        const paymentsToCancel = recurringPaymentDTOs.filter(payment =>
             selectedPayments.has(payment.txHash + payment.output_index)
         );
 
-        console.log('num payments to cancel: ' + paymentsToCancel.length);
-
         try {
-            
-            const unsignedTx = await TransactionUtil.getUnsignedCancelTx(paymentsToCancel, wallet);
+            const chain = getChainAdapter();
+            const unsignedTx = await chain.buildCancelTx({ wallet, payments: paymentsToCancel });
             const signedTx = await wallet.signTx(unsignedTx);
             const txHash = await wallet.submitTx(signedTx);
             toast.success(`Payment cancelled: ${txHash.substring(0, 10)}...${txHash.substring(txHash.length - 10)}`, { duration: 3000 });
@@ -298,7 +290,7 @@ export default function PaymentsTable(props: { version: number }) {
                                             target="_blank"
                                             rel="noopener"
                                             endIcon={<LaunchIcon />}>
-                                            {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 5)}
+                                            {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.staking_address.length - 5)}
                                         </Button>
                                     </TableCell>
                                     <TableCell>{row.paymentStatus == 'SCHEDULED' ? row.startTime.format("YYYY-MM-DD HH:mm:ss") : "-"}</TableCell>

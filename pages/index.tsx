@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useWallet } from "@meshsdk/react";
+import { useWallet } from "../lib/wallet/useWallet";
 import SetupRecurringPayment from "../components/SetupRecurringPayment";
 import { NETWORK_ID } from "../lib/util/Constants";
 
