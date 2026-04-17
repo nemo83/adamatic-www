@@ -8,12 +8,16 @@ import {
 } from "../design/components/PaymentsTable";
 import { Button } from "../design/ui/Button";
 import { useSchedules } from "../lib/features/schedules/useSchedules";
+import { ScheduleDetailsDialog } from "../lib/features/schedules/ScheduleDetailsDialog";
 
 function SchedulesPage() {
     const router = useRouter();
     const { payments, loading, cancelling, reload, cancelOne, cancelMany } =
         useSchedules();
     const [selected, setSelected] = useState<Set<string>>(new Set());
+    const [detail, setDetail] = useState<
+        { txHash: string; outputIndex: number } | null
+    >(null);
 
     const rows: PaymentRow[] = useMemo(
         () =>
@@ -106,9 +110,25 @@ function SchedulesPage() {
                 selected={selected}
                 onSelect={toggle}
                 onSelectAll={toggleAll}
-                onView={() => void 0}
+                onView={(id) => {
+                    const match = payments.find(
+                        (p) => p.txHash + "-" + p.output_index === id,
+                    );
+                    if (match)
+                        setDetail({
+                            txHash: match.txHash,
+                            outputIndex: match.output_index,
+                        });
+                }}
                 onCancel={onCancelRow}
                 onCancelSelected={onCancelSelected}
+            />
+
+            <ScheduleDetailsDialog
+                open={detail !== null}
+                txHash={detail?.txHash}
+                outputIndex={detail?.outputIndex}
+                onClose={() => setDetail(null)}
             />
         </LedgerLayout>
     );
