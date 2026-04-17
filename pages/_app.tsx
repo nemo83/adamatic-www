@@ -1,77 +1,13 @@
-
-import "../styles/globals.css";
 import "../design/globals.css";
 import type { AppProps } from "next/app";
-
+import { Toaster } from "react-hot-toast";
 import { WalletProvider } from "../lib/wallet/WalletProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import { TourProvider } from '@reactour/tour';
-import Layout from '../components/Layout';
-
-const theme = createTheme({
-    palette: {
-        mode: 'light',
-    },
-});
-
-const steps = [
-    {
-        selector: '[data-tut="step-0"]',
-        content: 'The wallet to use to pay and manage Hosky automatic pulls. Although any wallet can be used, it is recommended to use a small hot wallet.'
-    },
-    {
-        selector: '[data-tut="step-1"]',
-        content: 'The Staking or Payment addresses delegated to a Hosky Rug Pool you want to collect rewards for. ' +
-            'It\'s set by default to the connected wallet. It allows for multi-wallet auto pulls. Just press the + icon ' +
-            'and add more wallets you want to collect rewards for',
-    },
-    {
-        selector: '[data-tut="step-3"]',
-        content: 'Max amount of fees, per pull, the user is willing to pay to cover for AdaMatic and Cardano Transaction fees.',
-    },
-    {
-        selector: '[data-tut="step-5"]',
-        content: 'The epoch (and the exact date and time) in which the first pull be made',
-    },
-    {
-        selector: '[data-tut="step-6"]',
-        content: 'The epoch (and the exact date and time) in which the last pull be made',
-    },
-    {
-        selector: '[data-tut="step-7"]',
-        content: 'The number of total pulls to be executed. Currently maxed to 50',
-    },
-    {
-        selector: '[data-tut="step-8"]',
-        content: 'The epoch frequency interval to pull Hosky rewards. Hosky allows to stack rewards which allows smaller wallets to save on fees. ' +
-            'Such wallets should pull less frequently (2 to 3 epochs). While larger wallets should pull each epoch (e.g. 1 epoch).',
-    }
-]
-
 
 export default function App({ Component, pageProps }: AppProps) {
-    // WalletProvider wraps every route so both /* and /design/* share the
-    // same connected-wallet state. The MUI/Tour/Layout shell is limited
-    // to the live Hosky pages (anything not marked `standalone`).
-    const standalone = (Component as any).standalone === true;
-    const page = <Component {...pageProps} />;
     return (
         <WalletProvider>
-            {standalone ? (
-                page
-            ) : (
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <TourProvider steps={steps}>
-                            <Layout>{page}</Layout>
-                        </TourProvider>
-                    </LocalizationProvider>
-                </ThemeProvider>
-            )}
+            <Toaster position="top-right" />
+            <Component {...pageProps} />
         </WalletProvider>
     );
 }
-

@@ -84,8 +84,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     const readWalletState = useCallback(
         async (api: Cip30Api, mesh: IWallet) => {
             const [used, change, net] = await Promise.all([
-                mesh.getUsedAddresses().catch(() => [] as string[]),
-                mesh.getChangeAddress().catch(() => ""),
+                Promise.resolve(mesh.getUsedAddresses()).catch(() => [] as string[]),
+                Promise.resolve(mesh.getChangeAddress()).catch(() => ""),
                 api.getNetworkId().catch(() => -1),
             ]);
             const primary = used[0] || change || null;

@@ -12,9 +12,10 @@ export interface AppShellProps {
 }
 
 const nav: Array<{ label: string; href: string; external?: boolean }> = [
-  { label: "Home", href: "/design" },
-  { label: "Setup", href: "/design/setup" },
-  { label: "Schedules", href: "/design/schedules" },
+  { label: "Home", href: "/" },
+  { label: "Setup", href: "/setup" },
+  { label: "Schedules", href: "/schedules" },
+  { label: "FAQ", href: "/faq" },
   {
     label: "Source",
     href: "https://github.com/easy1staking-com/cardano-recurring-payment",
@@ -44,7 +45,7 @@ export const AppShell: React.FC<AppShellProps> = ({
     <div className="min-h-screen flex flex-col bg-paper">
       <header className="sticky top-0 z-20 bg-paper/90 border-b border-rule backdrop-blur-[2px]">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3 md:gap-6 px-4 md:px-8 py-3 md:py-4">
-          <a href="/design" className="flex items-center gap-3 group">
+          <a href="/" className="flex items-center gap-3 group">
             <span
               aria-hidden
               className={cn(

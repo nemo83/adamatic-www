@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { useWallet } from "../lib/wallet/useWallet";
-import SetupRecurringPayment from "../components/SetupRecurringPayment";
-import { NETWORK_ID } from "../lib/util/Constants";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { LedgerLayout } from "../design/layout";
+import { Landing, type PaymentMode } from "../design/components/Landing";
 
-
-export default function Home() {
-
-    const { wallet, connected } = useWallet();
-
-    const [validNetwork, setValidNetwork] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (connected) {
-            wallet.getNetworkId().then((id) => {
-                const isValidNetwork = String(id) == NETWORK_ID
-                setValidNetwork(isValidNetwork);
-            });
-        }
-    }, [connected]);
+function Home() {
+    const router = useRouter();
+    const initial = (router.query.mode === "generic" ? "generic" : "hosky") as PaymentMode;
+    const [mode, setMode] = useState<PaymentMode>(initial);
 
     return (
-        <SetupRecurringPayment isValidNetwork={validNetwork} hoskyInput={true} />
+        <LedgerLayout currentPath="/">
+            <Landing
+                mode={mode}
+                onModeChange={setMode}
+                onStart={() => router.push(`/setup?mode=${mode}`)}
+            />
+        </LedgerLayout>
     );
 }
+
+(Home as any).standalone = true;
+export default Home;
