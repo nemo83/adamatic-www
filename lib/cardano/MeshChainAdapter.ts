@@ -4,8 +4,6 @@
  * implementation of this same interface.
  */
 import {
-    IWallet,
-    PlutusScript,
     Recipient,
     Transaction,
 } from "@meshsdk/core";
@@ -15,10 +13,12 @@ import type {
     BuildCancelContext,
     BuildSetupContext,
     ChainAdapter,
+    DeriveScriptAddressParams,
     EncodedDatum,
     ParsedAddress,
 } from "./ChainAdapter";
 import type RecurringPaymentDatum from "../interfaces/RecurringPaymentDatum";
+import { deriveScriptAddressBech32 } from "./EvolutionChainAdapter";
 
 const USABLE_BASE_TYPES = new Set<AddressType>([
     AddressType.BasePaymentKeyStakeKey,
@@ -113,16 +113,10 @@ class MeshAdapter implements ChainAdapter {
         }
     }
 
-    deriveScriptAddress(
-        wallet: IWallet,
-        script: PlutusScript,
-        walletFrom: string,
+    async deriveScriptAddress(
+        params: DeriveScriptAddressParams,
     ): Promise<string> {
-        return TransactionUtil.getScriptAddressWithStakeCredential(
-            wallet,
-            script,
-            walletFrom,
-        );
+        return deriveScriptAddressBech32(params);
     }
 
     encodeSetupDatum(dto: RecurringPaymentDatum): EncodedDatum {
@@ -130,20 +124,15 @@ class MeshAdapter implements ChainAdapter {
     }
 
     async buildAndSubmitSetupTx(ctx: BuildSetupContext): Promise<string> {
-        const { wallet, walletFromList, depositLovelace, datum } = ctx;
-
-        // Lazy import to keep the script constant outside the adapter
-        // module — we'll inline the reference once Phase 4 lands.
-        const { SCRIPT } = await import("../util/Constants");
+        const { wallet, walletFromList, depositLovelace, datum, scriptHash } = ctx;
 
         let tx = new Transaction({ initiator: wallet });
 
         for (const walletFrom of walletFromList) {
-            const scriptAddress = await this.deriveScriptAddress(
-                wallet,
-                SCRIPT,
+            const scriptAddress = await this.deriveScriptAddress({
                 walletFrom,
-            );
+                scriptHash,
+            });
             const recipient: Recipient = {
                 address: scriptAddress,
                 datum: { value: datum, inline: true },

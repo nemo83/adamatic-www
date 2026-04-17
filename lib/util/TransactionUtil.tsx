@@ -13,7 +13,7 @@ import {
 import RecurringPaymentDatum from "../interfaces/RecurringPaymentDatum";
 import { Address, AddressType } from "@meshsdk/core-cst";
 import RecurringPayment from "../interfaces/RecurringPayment";
-import { BLOCKFROST_API_KEY, CONSTANTS, NETWORK, SCRIPT, SETTINGS_OUTPUT_INDEX, SETTINGS_TX_HASH } from "./Constants";
+import { BLOCKFROST_API_KEY, CONSTANTS, NETWORK, SETTINGS_OUTPUT_INDEX, SETTINGS_TX_HASH } from "./Constants";
 import { BlockfrostProvider } from "@meshsdk/core";
 
 class BlockfrostProviderSingleton {

@@ -42,12 +42,25 @@ export interface BuildSetupContext {
     depositLovelace: number;
     /** Inline datum (already encoded — produced by `encodeSetupDatum`). */
     datum: EncodedDatum;
+    /** Hex script hash of the automatic_payments validator, from the BE. */
+    scriptHash: string;
 }
 
 export interface BuildCancelContext {
     wallet: IWallet;
     walletApi?: unknown;
     payments: RecurringPayment[];
+    /** Hex script hash of the automatic_payments validator. */
+    scriptHash: string;
+}
+
+export interface DeriveScriptAddressParams {
+    /** Bech32 address whose stake credential is embedded in the output. */
+    walletFrom: string;
+    /** Final (post-parameter-application) script hash, from the BE manifest. */
+    scriptHash: string;
+    /** 0 = testnet/preprod/preview, 1 = mainnet. Defaults to the env value. */
+    networkId?: number;
 }
 
 export interface ChainAdapter {
@@ -55,14 +68,11 @@ export interface ChainAdapter {
     parseAddress(bech32: string): ParsedAddress;
 
     /**
-     * Derive the Plutus V3 script address keyed to a specific stake credential,
-     * so every source wallet pays into its own contract UTxO.
+     * Derive the script address keyed to a specific stake credential, so
+     * every source wallet pays into its own contract UTxO. The script hash
+     * comes from the BE `/scripts` manifest — no client-side hashing.
      */
-    deriveScriptAddress(
-        wallet: IWallet,
-        script: PlutusScript,
-        walletFrom: string,
-    ): Promise<string>;
+    deriveScriptAddress(params: DeriveScriptAddressParams): Promise<string>;
 
     /** Encode the recurring-payment datum for inclusion as an inline datum. */
     encodeSetupDatum(dto: RecurringPaymentDatum): EncodedDatum;

@@ -10,6 +10,7 @@ import dayjs, { type Dayjs } from "dayjs";
 import toast from "react-hot-toast";
 import { useWallet } from "../../wallet/useWallet";
 import { getChainAdapter } from "../../cardano/factory";
+import { useScriptByName } from "../../cardano/ScriptContext";
 import { ADAMATIC_HOST } from "../../util/Constants";
 import type AssetAmount from "../../interfaces/AssetAmount";
 import type RecurringPaymentDatum from "../../interfaces/RecurringPaymentDatum";
@@ -60,6 +61,7 @@ export function usePaymentSetup(
     const { mode } = opts;
     const isHosky = mode === "hosky";
     const { wallet, walletApi, connected, networkId } = useWallet();
+    const automaticPayments = useScriptByName("automatic_payments");
 
     // ------------- state -------------
     const [walletFromList, setWalletFromList] = useState<string[]>([""]);
@@ -386,6 +388,10 @@ export function usePaymentSetup(
     // ------------- submit -------------
     const submit = useCallback(async () => {
         if (!isSubmittable || !wallet) return;
+        if (!automaticPayments?.finalHash) {
+            toast.error("Script manifest not loaded yet — retry in a second");
+            return;
+        }
         setSubmitting(true);
         try {
             const chain = getChainAdapter();
@@ -422,6 +428,7 @@ export function usePaymentSetup(
                 walletFromList,
                 depositLovelace: deposit,
                 datum,
+                scriptHash: automaticPayments.finalHash,
             });
             setTxHash(hash);
             toast.success(
@@ -440,6 +447,7 @@ export function usePaymentSetup(
         walletFromList,
         deposit,
         datumDTO,
+        automaticPayments,
     ]);
 
     return {

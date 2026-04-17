@@ -8,11 +8,13 @@ import dayjs from "dayjs";
 import toast from "react-hot-toast";
 import { useWallet } from "../../wallet/useWallet";
 import { getChainAdapter } from "../../cardano/factory";
+import { useScriptByName } from "../../cardano/ScriptContext";
 import { ADAMATIC_HOST } from "../../util/Constants";
 import type RecurringPayment from "../../interfaces/RecurringPayment";
 
 export function useSchedules() {
     const { wallet, walletApi, connected } = useWallet();
+    const automaticPayments = useScriptByName("automatic_payments");
     const [payments, setPayments] = useState<RecurringPayment[]>([]);
     const [loading, setLoading] = useState(false);
     const [cancelling, setCancelling] = useState(false);
@@ -75,6 +77,12 @@ export function useSchedules() {
     const cancelMany = useCallback(
         async (toCancel: RecurringPayment[]) => {
             if (!wallet || toCancel.length === 0) return;
+            if (!automaticPayments?.finalHash) {
+                toast.error(
+                    "Script manifest not loaded yet — retry in a second",
+                );
+                return;
+            }
             setCancelling(true);
             try {
                 const chain = getChainAdapter();
@@ -82,6 +90,7 @@ export function useSchedules() {
                     wallet,
                     walletApi: walletApi ?? undefined,
                     payments: toCancel,
+                    scriptHash: automaticPayments.finalHash,
                 });
                 const signed = await wallet.signTx(unsigned);
                 const hash = await wallet.submitTx(signed);
@@ -96,7 +105,7 @@ export function useSchedules() {
                 setCancelling(false);
             }
         },
-        [wallet, walletApi, reload],
+        [wallet, walletApi, automaticPayments, reload],
     );
 
     return {
