@@ -86,14 +86,23 @@ export function useSchedules() {
             setCancelling(true);
             try {
                 const chain = getChainAdapter();
-                const unsigned = await chain.buildCancelTx({
+                const result = await chain.buildCancelTx({
                     wallet,
                     walletApi: walletApi ?? undefined,
                     payments: toCancel,
                     scriptHash: automaticPayments.finalHash,
+                    scriptRawCode: automaticPayments.rawCompiledCode,
+                    scriptParameters: automaticPayments.parameters,
+                    scriptVersion: automaticPayments.plutusVersion,
                 });
-                const signed = await wallet.signTx(unsigned);
-                const hash = await wallet.submitTx(signed);
+                // Mesh adapter returns unsigned CBOR (caller signs + submits).
+                // Evolution adapter returns a tx hash directly.
+                const looksLikeTxHash =
+                    typeof result === "string" &&
+                    /^[0-9a-f]{64}$/i.test(result);
+                const hash = looksLikeTxHash
+                    ? result
+                    : await wallet.submitTx(await wallet.signTx(result));
                 toast.success(
                     `Cancelled ${toCancel.length} schedule${toCancel.length === 1 ? "" : "s"}: ${hash.slice(0, 10)}…`,
                     { duration: 5000 },

@@ -52,6 +52,12 @@ export interface BuildCancelContext {
     payments: RecurringPayment[];
     /** Hex script hash of the automatic_payments validator. */
     scriptHash: string;
+    /** Raw (pre-param-application) UPLC hex, for inline-script spend. */
+    scriptRawCode?: string;
+    /** Param CBOR-hex values, applied client-side to reach the final script. */
+    scriptParameters?: Array<{ cborHex: string }>;
+    /** "V1" | "V2" | "V3" — needed to build the right Plutus wrapper. */
+    scriptVersion?: "V1" | "V2" | "V3";
 }
 
 export interface DeriveScriptAddressParams {

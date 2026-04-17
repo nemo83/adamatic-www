@@ -12,9 +12,15 @@ import {
     Data,
     InlineDatum,
     KeyHash,
+    PlutusV1,
+    PlutusV2,
+    PlutusV3,
     ScriptHash,
+    TransactionHash,
+    TransactionInput,
     Client,
     Assets,
+    UPLC,
     type Chain,
     mainnet,
     preprod,
@@ -260,10 +266,79 @@ class EvolutionAdapter implements ChainAdapter {
         return TransactionHash.toHex(hash);
     }
 
-    async buildCancelTx(_ctx: BuildCancelContext): Promise<string> {
-        throw new Error(
-            "Evolution buildCancelTx: pending reference-script UTxO from the BE `/scripts` endpoint",
+    async buildCancelTx(ctx: BuildCancelContext): Promise<string> {
+        if (!ctx.walletApi) {
+            throw new Error(
+                "Evolution adapter requires a CIP-30 walletApi",
+            );
+        }
+        if (!ctx.scriptRawCode || !ctx.scriptParameters || !ctx.scriptVersion) {
+            throw new Error(
+                "Evolution buildCancelTx needs scriptRawCode + scriptParameters + scriptVersion (inline-script path)",
+            );
+        }
+
+        const client = buildClient(ctx.walletApi);
+
+        // Apply params to reach the final UPLC bytes.
+        const params = ctx.scriptParameters.map((p) =>
+            Data.fromCBORHex(p.cborHex),
         );
+        const appliedHex = UPLC.applyParamsToScript(
+            ctx.scriptRawCode,
+            params,
+        );
+        const appliedBytes = Bytes.fromHex(appliedHex);
+
+        const script =
+            ctx.scriptVersion === "V3"
+                ? new PlutusV3.PlutusV3({ bytes: appliedBytes })
+                : ctx.scriptVersion === "V2"
+                  ? new PlutusV2.PlutusV2({ bytes: appliedBytes })
+                  : new PlutusV1.PlutusV1({ bytes: appliedBytes });
+
+        // Fetch the script UTxOs we want to cancel by their out-refs.
+        const inputs = ctx.payments.map(
+            (p) =>
+                new TransactionInput.TransactionInput({
+                    transactionId: TransactionHash.fromHex(p.txHash),
+                    index: BigInt(p.output_index),
+                }),
+        );
+        const scriptUtxos = await (client as any).getUtxosByOutRef(inputs);
+        if (!scriptUtxos || scriptUtxos.length === 0) {
+            throw new Error(
+                "Couldn't fetch any of the target script UTxOs (backend / Blockfrost reachable?)",
+            );
+        }
+
+        // Required signer = the connected wallet's payment key.
+        const walletAddr = await (client as any).address();
+        const walletAddrBech32 =
+            typeof walletAddr === "string"
+                ? walletAddr
+                : Address.toBech32(walletAddr);
+        const ownerParsed = this.parseAddress(walletAddrBech32);
+        if (!ownerParsed.isValid) {
+            throw new Error("Can't parse connected wallet address");
+        }
+        const signerKeyHash = new KeyHash.KeyHash({
+            hash: Bytes.fromHex(ownerParsed.paymentCredentialHash),
+        });
+
+        const builder = client
+            .newTx()
+            .collectFrom({
+                inputs: scriptUtxos,
+                redeemer: Data.constr(0n, []),
+            })
+            .attachScript({ script })
+            .addSigner({ keyHash: signerKeyHash });
+
+        const signBuilder = await builder.build();
+        const submitBuilder = await signBuilder.sign();
+        const hash = await submitBuilder.submit();
+        return TransactionHash.toHex(hash);
     }
 }
 
