@@ -18,7 +18,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { ADAMATIC_HOST, CONSTANTS } from "../lib/util/Constants";
 import { useWallet } from "../lib/wallet/useWallet";
 import { HoskyTemplate } from "../lib/interfaces/AdaMaticTypes";
-import { getChainAdapter } from "../lib/cardano/MeshChainAdapter";
+import { getChainAdapter } from "../lib/cardano/factory";
 import type { PaymentMode } from "../lib/cardano/PaymentMode";
 
 const MAX_PULLS = 50;
@@ -61,6 +61,14 @@ export default function UserInput(props: {
     const [numPulls, setNumPulls] = React.useState<number>(1);
 
     const [lockEndTime, setLockEndTime] = React.useState<boolean>(false);
+
+    // Asset(s) to send per payment. Defaults to 2 ADA (Hosky's historical
+    // behaviour). Populated from the Hosky template's `amount_to_send` when
+    // that endpoint responds, so any future change on the BE flows through
+    // without a FE release.
+    const [amountToSend, setAmountToSend] = React.useState<AssetAmount[]>([
+        { policyId: "", assetName: "", amount: 2_000_000 },
+    ]);
 
     // Track delegation status for each wallet address
     const [delegationStatus, setDelegationStatus] = React.useState<{ [address: string]: boolean }>({});
@@ -165,8 +173,13 @@ export default function UserInput(props: {
     useEffect(() => {
         if (isHoskyInput) {
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky')
-                .then(response => response.json())
-                .then((data: HoskyTemplate) => updateForm(data));
+                .then(response => (response.ok ? response.json() : null))
+                .then((data: HoskyTemplate | null) => {
+                    if (data) updateForm(data);
+                })
+                .catch((err) => {
+                    console.warn('Hosky template fetch failed (backend down?):', err);
+                });
         }
     }, [isHoskyInput]);
 
@@ -192,8 +205,13 @@ export default function UserInput(props: {
 
         if (isHoskyInput) {
             fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky?' + new URLSearchParams(baseRequest).toString())
-                .then(response => response.json())
-                .then((data: HoskyTemplate) => updateForm(data));
+                .then(response => (response.ok ? response.json() : null))
+                .then((data: HoskyTemplate | null) => {
+                    if (data) updateForm(data);
+                })
+                .catch((err) => {
+                    console.warn('Hosky template fetch failed:', err);
+                });
         }
     }
 
@@ -214,6 +232,12 @@ export default function UserInput(props: {
 
         setMaxFeesLovelace(data.max_fee_lovelaces);
         setLockEndTime(data.lock_end_time);
+
+        // Pick up the asset to pay per pull from the BE template. Falls back
+        // to the historical 2 ADA default if the BE response is empty.
+        if (data.amount_to_send && data.amount_to_send.length > 0) {
+            setAmountToSend(data.amount_to_send);
+        }
     }
 
     useEffect(() => {
@@ -225,7 +249,7 @@ export default function UserInput(props: {
             ownerPaymentPubKeyHash: ownerParsed?.isValid
                 ? ownerParsed.paymentCredentialHash
                 : "",
-            amountToSend: [{ policyId: "", assetName: "", amount: 2000000 }],
+            amountToSend,
             payee,
             startTime: startTime!.valueOf(),
             endTime: lockEndTime ? endTime?.valueOf() : undefined,
@@ -234,7 +258,7 @@ export default function UserInput(props: {
         }
         setDatumDTO(newDatumDTO);
 
-    }, [owner, payee, startTime, endTime, paymentIntervalHours, maxFeesLovelace])
+    }, [owner, payee, startTime, endTime, paymentIntervalHours, maxFeesLovelace, amountToSend])
 
     const addWalletAddress = () => {
         console.log('walletFromList: ' + JSON.stringify(walletFromList));
@@ -484,9 +508,7 @@ export default function UserInput(props: {
                                     assetName: formJson.assetName ? formJson.assetName : "lovelace",
                                     amount: inputLovelace ? Number(formJson.amount) : Number(formJson.amount) * 1000000
                                 };
-                                const arr = datumDTO.amountToSend;
-                                arr.push(asset);
-                                setDatumDTO({ ...datumDTO, amountToSend: arr });
+                                setAmountToSend([...amountToSend, asset]);
                                 setDialogOpen(false);
                             },
                         }}>
@@ -536,8 +558,8 @@ export default function UserInput(props: {
                         </DialogActions>
                     </Dialog>
                     <div style={{ minHeight: "100px" }}>
-                        {datumDTO.amountToSend.map((asset, index) => (
-                            <Chip key={asset.policyId} disabled={isHoskyInput} variant={"outlined"} color={"primary"} style={{ height: "100%", maxWidth: "fit-content" }}
+                        {amountToSend.map((asset, index) => (
+                            <Chip key={`${asset.policyId}-${asset.assetName}-${index}`} disabled={isHoskyInput} variant={"outlined"} color={"primary"} style={{ height: "100%", maxWidth: "fit-content" }}
                                 avatar={<Avatar src={"/img/cardano-starburst-white.svg"} />}
                                 label={(
                                     <section>
@@ -554,9 +576,7 @@ export default function UserInput(props: {
                                 )}
                                 onDelete={() => {
                                     if (!isHoskyInput) {
-                                        const arr = datumDTO.amountToSend;
-                                        arr.splice(index, 1);
-                                        setDatumDTO({ ...datumDTO, amountToSend: arr });
+                                        setAmountToSend(amountToSend.filter((_, i) => i !== index));
                                     }
                                 }}
                             />

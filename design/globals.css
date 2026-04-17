@@ -71,13 +71,23 @@
     margin: 0;
 }
 
-/* Only neutralise typography + cursor on native buttons.
-   Background, border, and padding are set by the Button component (or Tailwind
-   utilities) — don't reset them here or we fight the utility classes. */
-.ledger-root button {
+/* Reset native button styling inside the Ledger root. :where() has zero
+   specificity so any Tailwind utility class (bg-ink, border-ink, px-*, etc.)
+   applied directly on a button trivially wins. */
+:where(.ledger-root button) {
     font-family: inherit;
     font-size: inherit;
     cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 0;
+}
+
+/* Strip default list-marker padding inside the Ledger root too. */
+:where(.ledger-root ul, .ledger-root ol) {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
 }
 
 .ledger-root input,
@@ -89,6 +99,14 @@
     background: transparent;
     border: none;
     outline: none;
+}
+
+/* Kill the default visited-link purple — colour is set by each link's class. */
+.ledger-root a,
+.ledger-root a:visited,
+.ledger-root a:hover,
+.ledger-root a:active {
+    color: inherit;
 }
 
 .ledger-root ::selection {

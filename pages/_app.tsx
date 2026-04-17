@@ -52,23 +52,25 @@ const steps = [
 
 
 export default function App({ Component, pageProps }: AppProps) {
-    // Design-reference pages opt out of the Mesh/Tour/Layout shell so the
-    // Ledger theme preview isn't wrapped by the existing Navbar + Footer.
-    if ((Component as any).standalone) {
-        return <Component {...pageProps} />;
-    }
+    // WalletProvider wraps every route so both /* and /design/* share the
+    // same connected-wallet state. The MUI/Tour/Layout shell is limited
+    // to the live Hosky pages (anything not marked `standalone`).
+    const standalone = (Component as any).standalone === true;
+    const page = <Component {...pageProps} />;
     return (
         <WalletProvider>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TourProvider steps={steps}>
-                        <Layout>
-                            <Component {...pageProps} />
-                        </Layout>
-                    </TourProvider>
-                </LocalizationProvider>
-            </ThemeProvider>
+            {standalone ? (
+                page
+            ) : (
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TourProvider steps={steps}>
+                            <Layout>{page}</Layout>
+                        </TourProvider>
+                    </LocalizationProvider>
+                </ThemeProvider>
+            )}
         </WalletProvider>
     );
 }

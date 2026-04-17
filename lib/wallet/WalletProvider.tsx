@@ -24,7 +24,6 @@ import type { Cip30Api, WalletInfo } from "./types";
 import { getExtension, listInstalledWallets } from "./cip30";
 
 const STORAGE_KEY = "adamatic.wallet";
-const POLL_MS = 3000;
 
 interface WalletState {
     /** Installed CIP-30 wallets in window.cardano (refreshed on connect). */
@@ -72,7 +71,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     const [connecting, setConnecting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const prevAddrRef = useRef<string | null>(null);
     const prevNetRef = useRef<number | null>(null);
 
@@ -80,19 +78,23 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         setInstalled(listInstalledWallets());
     }, []);
 
-    // Pull current address + networkId from a live walletApi.
-    const readWalletState = useCallback(async (api: Cip30Api) => {
-        const [addrs, net] = await Promise.all([
-            api.getUsedAddresses().catch(() => [] as string[]),
-            api.getNetworkId().catch(() => -1),
-        ]);
-        // CIP-30 returns hex-encoded addresses; Mesh's BrowserWallet.getUsedAddresses
-        // returns bech32. We normalise downstream via the adapter.
-        const primary = addrs[0] ?? null;
-        setAddress(primary);
-        setNetworkId(net >= 0 ? net : null);
-        return { address: primary, networkId: net >= 0 ? net : null };
-    }, []);
+    // Pull bech32 address + networkId. Uses Mesh BrowserWallet because
+    // CIP-30's getUsedAddresses returns hex. Falls back to getChangeAddress
+    // for wallets with no transaction history yet (fresh accounts).
+    const readWalletState = useCallback(
+        async (api: Cip30Api, mesh: IWallet) => {
+            const [used, change, net] = await Promise.all([
+                mesh.getUsedAddresses().catch(() => [] as string[]),
+                mesh.getChangeAddress().catch(() => ""),
+                api.getNetworkId().catch(() => -1),
+            ]);
+            const primary = used[0] || change || null;
+            setAddress(primary);
+            setNetworkId(net >= 0 ? net : null);
+            return { address: primary, networkId: net >= 0 ? net : null };
+        },
+        [],
+    );
 
     // Connect flow — shared by user-initiated and auto-reconnect paths.
     const doConnect = useCallback(
@@ -110,7 +112,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
                 setWalletId(id);
                 setWallet(meshWallet);
                 setWalletApi(api);
-                await readWalletState(api);
+                await readWalletState(api, meshWallet);
                 localStorage.setItem(STORAGE_KEY, id);
             } catch (e: any) {
                 if (!silent) {
@@ -168,22 +170,38 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
             });
     }, [doConnect, refreshInstalled]);
 
-    // Change detection: experimental.on when supported, polling fallback
-    // while the tab is visible. Runs only while a wallet is connected.
+    // Change detection via window 'focus' + document 'visibilitychange'.
+    // On each event we re-enable the wallet (both CIP-30 api and the Mesh
+    // wrapper) because they pin to the account that was active at connect
+    // time — if the user switches account inside the extension, the old
+    // handles go stale. Re-enabling returns fresh handles bound to the
+    // currently-active account without prompting the user (the site is
+    // already authorised). Drops the experimental.on subscription path;
+    // focus events cover the same scenarios more reliably.
     useEffect(() => {
-        if (!walletApi) return;
+        if (!walletId) return;
 
         let cancelled = false;
         prevAddrRef.current = address;
         prevNetRef.current = networkId;
 
-        const handleChange = async () => {
-            if (cancelled || !walletApi) return;
+        const refresh = async () => {
+            if (cancelled) return;
+            const ext = getExtension(walletId);
+            if (!ext) return;
             try {
+                const api = (await ext.enable()) as Cip30Api;
+                const meshWallet = await BrowserWallet.enable(walletId);
+                if (cancelled) return;
+                setWallet(meshWallet);
+                setWalletApi(api);
                 const { address: next, networkId: nextNet } =
-                    await readWalletState(walletApi);
-                if (next !== prevAddrRef.current && prevAddrRef.current !== null) {
-                    // Account changed inside the wallet — user switched address/account.
+                    await readWalletState(api, meshWallet);
+                if (cancelled) return;
+                if (
+                    next !== prevAddrRef.current &&
+                    prevAddrRef.current !== null
+                ) {
                     prevAddrRef.current = next;
                     console.info("[wallet] account changed");
                 }
@@ -195,47 +213,24 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
                     console.info("[wallet] network changed");
                 }
             } catch {
-                /* swallow — transient wallet errors */
+                /* transient wallet errors — ignore */
             }
         };
 
-        const attemptEventSubscribe = (): (() => void) | undefined => {
-            const on = walletApi.experimental?.on;
-            const off = walletApi.experimental?.off;
-            if (!on || !off) return undefined;
-            try {
-                on("accountChange", handleChange);
-                on("networkChange", handleChange);
-                return () => {
-                    try {
-                        off("accountChange", handleChange);
-                        off("networkChange", handleChange);
-                    } catch {
-                        /* some wallets throw on off() — harmless */
-                    }
-                };
-            } catch {
-                return undefined;
-            }
+        const onFocus = () => void refresh();
+        const onVisibility = () => {
+            if (document.visibilityState === "visible") void refresh();
         };
-
-        const unsub = attemptEventSubscribe();
-
-        const poll = () => {
-            if (document.visibilityState === "visible") {
-                void handleChange();
-            }
-        };
-        pollRef.current = setInterval(poll, POLL_MS);
+        window.addEventListener("focus", onFocus);
+        document.addEventListener("visibilitychange", onVisibility);
 
         return () => {
             cancelled = true;
-            unsub?.();
-            if (pollRef.current) clearInterval(pollRef.current);
-            pollRef.current = null;
+            window.removeEventListener("focus", onFocus);
+            document.removeEventListener("visibilitychange", onVisibility);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [walletApi]);
+    }, [walletId]);
 
     const value = useMemo<WalletState>(
         () => ({

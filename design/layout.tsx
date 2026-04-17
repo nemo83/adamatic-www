@@ -1,33 +1,76 @@
 /**
- * Shared layout wrapper for every /design/* page.
- * Adds the ledger-root class and the AppShell (navbar + footer).
+ * Shared layout for every /design/* page.
+ *
+ * Wires the design-shell AppShell + WalletPicker to the real `useWallet()`
+ * hook so the preview reflects actual wallet state — connect, persisted
+ * reconnect, sign out, account-change detection all work the same as on /.
  */
 import React from "react";
 import { AppShell } from "./components/AppShell";
 import { WalletPicker } from "./components/WalletPicker";
+import type { WalletInfo as DesignWalletInfo } from "./components/WalletPicker";
+import { useWallet } from "../lib/wallet/useWallet";
 
 export interface LedgerLayoutProps {
   children: React.ReactNode;
   currentPath: string;
 }
 
-const sampleConnection = {
-  id: "eternl" as const,
-  address:
-    "addr1q9x2kd28nq8ac5prwg32hhvudlwggpgfp8utlyqxu6wqgz62f79qsdmm5dsknt9ecr5w468r9ey0fxwkdrwh08ly3tu9sy0f4qd",
-};
-
 export const LedgerLayout: React.FC<LedgerLayoutProps> = ({
   children,
   currentPath,
-}) => (
-  <div className="ledger-root">
-    <AppShell
-      network="preprod"
-      currentPath={currentPath}
-      walletSlot={<WalletPicker connected={sampleConnection} />}
-    >
-      {children}
-    </AppShell>
-  </div>
-);
+}) => {
+  const {
+    wallet,
+    walletId,
+    address,
+    networkId,
+    installedWallets,
+    connect,
+    disconnect,
+  } = useWallet();
+
+  const wallets: DesignWalletInfo[] = installedWallets.map((w) => ({
+    id: w.id,
+    label: w.label,
+    available: true,
+    initials: (w.label.slice(0, 2) || w.id.slice(0, 2)).toUpperCase(),
+    icon: w.icon,
+  }));
+
+  const connectedIcon = walletId
+    ? installedWallets.find((w) => w.id === walletId)?.icon
+    : undefined;
+
+  const connected =
+    wallet && walletId
+      ? { id: walletId, address: address ?? "", icon: connectedIcon }
+      : null;
+
+  const network: "mainnet" | "preprod" | "mismatch" | "disconnected" = !wallet
+    ? "disconnected"
+    : networkId === 1
+      ? "mainnet"
+      : networkId === 0
+        ? "preprod"
+        : "mismatch";
+
+  return (
+    <div className="ledger-root">
+      <AppShell
+        network={network}
+        currentPath={currentPath}
+        walletSlot={
+          <WalletPicker
+            wallets={wallets}
+            connected={connected}
+            onConnect={(id) => connect(id)}
+            onDisconnect={disconnect}
+          />
+        }
+      >
+        {children}
+      </AppShell>
+    </div>
+  );
+};

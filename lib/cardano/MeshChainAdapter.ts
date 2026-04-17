@@ -161,16 +161,7 @@ class MeshAdapter implements ChainAdapter {
     }
 }
 
-/** Singleton factory. Flip to Evolution via NEXT_PUBLIC_CHAIN_ADAPTER=evolution. */
-let instance: ChainAdapter | null = null;
-export function getChainAdapter(): ChainAdapter {
-    if (!instance) {
-        if (process.env.NEXT_PUBLIC_CHAIN_ADAPTER === "evolution") {
-            const mod = require("./EvolutionChainAdapter");
-            instance = mod.getEvolutionChainAdapter();
-        } else {
-            instance = new MeshAdapter();
-        }
-    }
-    return instance!;
+/** Mesh implementation — exported so the factory can pick between it and Evolution. */
+export function getMeshChainAdapter(): ChainAdapter {
+    return new MeshAdapter();
 }

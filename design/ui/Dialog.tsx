@@ -58,7 +58,7 @@ export const Dialog: React.FC<DialogProps> = ({
             <D.Close asChild>
               <button
                 aria-label="Close"
-                className="text-marginalia hover:text-ink p-1 rounded-sharp hover:bg-paper-raised transition-colors"
+                className="bg-transparent border-0 text-marginalia hover:text-ink p-1 rounded-sharp hover:bg-paper-raised transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>

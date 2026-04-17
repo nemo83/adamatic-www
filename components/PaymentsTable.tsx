@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import RecurringPayment from "../lib/interfaces/RecurringPayment";
 import { useWallet } from "../lib/wallet/useWallet";
 import { ADAMATIC_HOST } from "../lib/util/Constants";
-import { getChainAdapter } from "../lib/cardano/MeshChainAdapter";
+import { getChainAdapter } from "../lib/cardano/factory";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -70,26 +70,27 @@ export default function PaymentsTable(props: { version: number }) {
                 const parsed = chain.parseAddress(addresses[0]);
                 return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + parsed.paymentCredentialHash);
             })
-            .then(response => response.json())
+            .then(response => (response.ok ? response.json() : []))
             .then((data: RecurringPayment[]) => {
-                let recurringPaymentDTOs: RecurringPayment[] = [];
-                data.forEach((recurringPayment: any) => {
-                    recurringPaymentDTOs.push({
-                        txHash: recurringPayment.tx_hash,
-                        output_index: recurringPayment.output_index,
-                        staking_address: recurringPayment.staking_address,
-                        balance: recurringPayment.balance,
-                        amountToSend: [],
-                        payee: recurringPayment.payee,
-                        startTime: dayjs(recurringPayment.start_time_timestamp),
-                        endTime: undefined,
-                        paymentIntervalHours: 0,
-                        maxPaymentDelayHours: 0,
-                        paymentStatus: recurringPayment.payment_status
-                    });
-                });
+                const recurringPaymentDTOs: RecurringPayment[] = (data ?? []).map((recurringPayment: any) => ({
+                    txHash: recurringPayment.tx_hash,
+                    output_index: recurringPayment.output_index,
+                    staking_address: recurringPayment.staking_address,
+                    balance: recurringPayment.balance,
+                    amountToSend: [],
+                    payee: recurringPayment.payee,
+                    startTime: dayjs(recurringPayment.start_time_timestamp),
+                    endTime: undefined,
+                    paymentIntervalHours: 0,
+                    maxPaymentDelayHours: 0,
+                    paymentStatus: recurringPayment.payment_status,
+                }));
                 setRecurringPaymentDTOs(recurringPaymentDTOs);
             })
+            .catch((err) => {
+                console.warn('Recurring payments fetch failed (backend down?):', err);
+                setRecurringPaymentDTOs([]);
+            });
     }
 
     const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {

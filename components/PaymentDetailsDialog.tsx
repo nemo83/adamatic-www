@@ -58,14 +58,15 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
             console.log('baseRequest: ' + JSON.stringify(baseRequest));
 
             fetch(ADAMATIC_HOST + '/recurring_payments/details?' + new URLSearchParams(baseRequest).toString())
-                .then(data => data.json())
-                .then((data: PaymentDetails) => {
-                    console.log('data: ' + JSON.stringify(data));
+                .then(response => (response.ok ? response.json() : null))
+                .then((data: PaymentDetails | null) => {
+                    if (!data) return;
                     setPaymentDetails(data);
-                    const from = data.from;
-                    console.log('from: ' + from);
                     setFrom(data.from);
                 })
+                .catch((err) => {
+                    console.warn('Payment details fetch failed:', err);
+                });
 
         }
 

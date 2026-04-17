@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useWallet } from "../lib/wallet/useWallet";
 import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
 import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, CONSTANTS } from "../lib/util/Constants";
-import { getChainAdapter } from "../lib/cardano/MeshChainAdapter";
+import { getChainAdapter } from "../lib/cardano/factory";
 import type { EncodedDatum } from "../lib/cardano/ChainAdapter";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
@@ -124,11 +124,13 @@ export default function SetupRecurringPayment(props: {
 
     useEffect(() => {
         fetch(ADAMATIC_HOST + '/settings')
-            .then(response => response.json())
-            .then((data: Settings) => {
-                console.log('settings: ' + JSON.stringify(data));
-                setSettings(data);
+            .then(response => (response.ok ? response.json() : null))
+            .then((data: Settings | null) => {
+                if (data) setSettings(data);
             })
+            .catch((err) => {
+                console.warn('Settings fetch failed (backend down?):', err);
+            });
     }, [])
 
     const signAndSubmit = async () => {

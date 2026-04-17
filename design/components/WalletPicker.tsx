@@ -3,18 +3,20 @@ import { Button } from "../ui/Button";
 import { Dialog } from "../ui/Dialog";
 import { cn } from "../lib/cn";
 
-export type WalletId = "nami" | "eternl" | "lace" | "flint" | "typhon";
+export type WalletId = string;
 
 export interface WalletInfo {
   id: WalletId;
   label: string;
   available: boolean;
   initials: string;
+  /** CIP-30 wallet icon — typically a data: URI from window.cardano.*.icon. */
+  icon?: string;
 }
 
 export interface WalletPickerProps {
   wallets?: WalletInfo[];
-  connected?: { id: WalletId; address: string } | null;
+  connected?: { id: WalletId; address: string; icon?: string } | null;
   onConnect?: (id: WalletId) => void;
   onDisconnect?: () => void;
 }
@@ -40,10 +42,18 @@ export const WalletPicker: React.FC<WalletPickerProps> = ({
 
   if (connected) {
     return (
-      <div className="inline-flex items-center gap-2 border border-ink rounded-sharp px-3 py-1.5 bg-paper">
-        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-marginalia">
-          {connected.id}
-        </span>
+      <div className="inline-flex items-center gap-2 border border-ink rounded-sharp px-2 py-1 bg-paper">
+        {connected.icon ? (
+          <img
+            src={connected.icon}
+            alt=""
+            className="w-5 h-5 rounded-sharp object-contain"
+          />
+        ) : (
+          <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-marginalia">
+            {connected.id}
+          </span>
+        )}
         <span aria-hidden className="w-px h-4 bg-rule" />
         <span className="font-mono text-[13px] text-ink">
           {short(connected.address)}
@@ -72,9 +82,9 @@ export const WalletPicker: React.FC<WalletPickerProps> = ({
         size="sm"
       >
         <div className="px-5 py-2">
-          <ul className="divide-y divide-rule">
+          <ul className="list-none pl-0 m-0 divide-y divide-rule">
             {wallets.map((w) => (
-              <li key={w.id}>
+              <li key={w.id} className="list-none">
                 <button
                   type="button"
                   disabled={!w.available}
@@ -89,12 +99,20 @@ export const WalletPicker: React.FC<WalletPickerProps> = ({
                     !w.available && "opacity-50 cursor-not-allowed hover:bg-transparent",
                   )}
                 >
-                  <span
-                    aria-hidden
-                    className="shrink-0 w-9 h-9 border border-ink rounded-sharp grid place-items-center font-mono text-[12px] tracking-[0.1em] font-medium"
-                  >
-                    {w.initials}
-                  </span>
+                  {w.icon ? (
+                    <img
+                      src={w.icon}
+                      alt=""
+                      className="shrink-0 w-9 h-9 rounded-sharp object-contain bg-paper-raised"
+                    />
+                  ) : (
+                    <span
+                      aria-hidden
+                      className="shrink-0 w-9 h-9 border border-ink rounded-sharp grid place-items-center font-mono text-[12px] tracking-[0.1em] font-medium"
+                    >
+                      {w.initials}
+                    </span>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="font-medium">{w.label}</div>
                     <div className="font-mono text-[10px] uppercase tracking-[0.1em] text-marginalia mt-0.5">

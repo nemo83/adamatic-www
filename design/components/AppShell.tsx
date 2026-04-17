@@ -11,11 +11,15 @@ export interface AppShellProps {
   currentPath?: string;
 }
 
-const nav = [
+const nav: Array<{ label: string; href: string; external?: boolean }> = [
   { label: "Home", href: "/design" },
   { label: "Setup", href: "/design/setup" },
   { label: "Schedules", href: "/design/schedules" },
-  { label: "Source", href: "https://github.com/easy1staking-com/cardano-recurring-payment" },
+  {
+    label: "Source",
+    href: "https://github.com/easy1staking-com/cardano-recurring-payment",
+    external: true,
+  },
 ];
 
 const networkMeta: Record<
@@ -65,6 +69,9 @@ export const AppShell: React.FC<AppShellProps> = ({
                   <a
                     key={item.href}
                     href={item.href}
+                    {...(item.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
                     className={cn(
                       "relative text-sm font-medium transition-opacity",
                       active ? "opacity-100" : "opacity-60 hover:opacity-100",
@@ -111,12 +118,15 @@ export const AppShell: React.FC<AppShellProps> = ({
             </div>
           </div>
 
-          <nav className="flex flex-wrap gap-4">
+          <nav className="flex flex-wrap gap-6">
             {nav.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="text-sm text-marginalia hover:text-ink transition-colors"
+                {...(item.external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+                className="text-sm font-medium opacity-60 hover:opacity-100 transition-opacity"
               >
                 {item.label}
               </a>
