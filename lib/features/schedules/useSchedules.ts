@@ -1,7 +1,6 @@
 /**
  * useSchedules — fetch + cancel for recurring payments, consumed by
- * pages/schedules.tsx. Wraps the BE list endpoint with a per-wallet filter
- * via the payment pubkey hash, and cancels through the chain adapter.
+ * pages/schedules.tsx. Post-Mesh-removal: raw CIP-30 walletApi only.
  */
 import { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -13,7 +12,7 @@ import { ADAMATIC_HOST } from "../../util/Constants";
 import type RecurringPayment from "../../interfaces/RecurringPayment";
 
 export function useSchedules() {
-    const { wallet, walletApi, connected } = useWallet();
+    const { walletApi, address, connected } = useWallet();
     const automaticPayments = useScriptByName("automatic_payments");
     const [payments, setPayments] = useState<RecurringPayment[]>([]);
     const [loading, setLoading] = useState(false);
@@ -23,7 +22,7 @@ export function useSchedules() {
     const reload = useCallback(() => setVersion((v) => v + 1), []);
 
     useEffect(() => {
-        if (!connected || !wallet) {
+        if (!connected || !address) {
             setPayments([]);
             return;
         }
@@ -32,9 +31,7 @@ export function useSchedules() {
         (async () => {
             try {
                 const chain = getChainAdapter();
-                const addrs = await wallet.getUsedAddresses();
-                if (!addrs[0]) return;
-                const parsed = chain.parseAddress(addrs[0]);
+                const parsed = chain.parseAddress(address);
                 if (!parsed.isValid) return;
                 const resp = await fetch(
                     ADAMATIC_HOST +
@@ -72,11 +69,11 @@ export function useSchedules() {
         return () => {
             cancelled = true;
         };
-    }, [connected, wallet, version]);
+    }, [connected, address, version]);
 
     const cancelMany = useCallback(
         async (toCancel: RecurringPayment[]) => {
-            if (!wallet || toCancel.length === 0) return;
+            if (!walletApi || toCancel.length === 0) return;
             if (!automaticPayments?.finalHash) {
                 toast.error(
                     "Script manifest not loaded yet — retry in a second",
@@ -86,23 +83,14 @@ export function useSchedules() {
             setCancelling(true);
             try {
                 const chain = getChainAdapter();
-                const result = await chain.buildCancelTx({
-                    wallet,
-                    walletApi: walletApi ?? undefined,
+                const hash = await chain.buildCancelTx({
+                    walletApi,
                     payments: toCancel,
                     scriptHash: automaticPayments.finalHash,
                     scriptRawCode: automaticPayments.rawCompiledCode,
                     scriptParameters: automaticPayments.parameters,
                     scriptVersion: automaticPayments.plutusVersion,
                 });
-                // Mesh adapter returns unsigned CBOR (caller signs + submits).
-                // Evolution adapter returns a tx hash directly.
-                const looksLikeTxHash =
-                    typeof result === "string" &&
-                    /^[0-9a-f]{64}$/i.test(result);
-                const hash = looksLikeTxHash
-                    ? result
-                    : await wallet.submitTx(await wallet.signTx(result));
                 toast.success(
                     `Cancelled ${toCancel.length} schedule${toCancel.length === 1 ? "" : "s"}: ${hash.slice(0, 10)}…`,
                     { duration: 5000 },
@@ -114,7 +102,7 @@ export function useSchedules() {
                 setCancelling(false);
             }
         },
-        [wallet, walletApi, automaticPayments, reload],
+        [walletApi, automaticPayments, reload],
     );
 
     return {

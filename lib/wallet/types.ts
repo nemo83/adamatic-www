@@ -31,12 +31,9 @@ export interface Cip30Extension {
     isEnabled?: () => Promise<boolean>;
 }
 
-// Augment Mesh's existing `Window['cardano']` declaration so we can index into
-// it with a string id. Mesh types the extensions with a narrower shape, but at
-// runtime every CIP-30 extension we care about matches `Cip30Extension`.
 declare global {
-    interface Cardano {
-        [key: string]: Cip30Extension;
+    interface Window {
+        cardano?: Record<string, Cip30Extension>;
     }
 }
 

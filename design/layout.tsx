@@ -21,7 +21,7 @@ export const LedgerLayout: React.FC<LedgerLayoutProps> = ({
   currentPath,
 }) => {
   const {
-    wallet,
+    connected,
     walletId,
     address,
     networkId,
@@ -42,12 +42,12 @@ export const LedgerLayout: React.FC<LedgerLayoutProps> = ({
     ? installedWallets.find((w) => w.id === walletId)?.icon
     : undefined;
 
-  const connected =
-    wallet && walletId
+  const connectedPill =
+    connected && walletId
       ? { id: walletId, address: address ?? "", icon: connectedIcon }
       : null;
 
-  const network: "mainnet" | "preprod" | "mismatch" | "disconnected" = !wallet
+  const network: "mainnet" | "preprod" | "mismatch" | "disconnected" = !connected
     ? "disconnected"
     : networkId === 1
       ? "mainnet"
@@ -63,7 +63,7 @@ export const LedgerLayout: React.FC<LedgerLayoutProps> = ({
         walletSlot={
           <WalletPicker
             wallets={wallets}
-            connected={connected}
+            connected={connectedPill}
             onConnect={(id) => connect(id)}
             onDisconnect={disconnect}
           />

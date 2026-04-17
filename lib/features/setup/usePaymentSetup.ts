@@ -1,9 +1,7 @@
 /**
- * usePaymentSetup — ports the state + side-effect logic from the retired
- * UserInput / SetupRecurringPayment MUI pair into a headless hook.
- *
- * Consumers: the Ledger stepper pages/steps (pages/setup.tsx +
- * lib/features/setup/steps/*). Nothing here renders UI.
+ * usePaymentSetup — headless hook backing the /setup stepper.
+ * Ports the state + BE-fetch logic from the retired UserInput /
+ * SetupRecurringPayment MUI pair into a single hook.
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dayjs, { type Dayjs } from "dayjs";
@@ -34,12 +32,10 @@ export interface UsePaymentSetupResult {
     submitting: boolean;
     txHash: string | null;
 
-    // wallet list
     addWallet(): void;
     removeWallet(index: number): void;
     updateWallet(index: number, value: string): void;
 
-    // primary fields
     setPayee(value: string): void;
     setAmountToSend(value: AssetAmount[]): void;
     setStartTime(value: Dayjs | null): void;
@@ -48,7 +44,6 @@ export interface UsePaymentSetupResult {
     setNumPulls(value: number): void;
     setPaymentIntervalEpochs(value: number): void;
 
-    // consent
     setAcceptRisk(value: boolean): void;
     setAcceptFees(value: boolean): void;
 
@@ -60,7 +55,7 @@ export function usePaymentSetup(
 ): UsePaymentSetupResult {
     const { mode } = opts;
     const isHosky = mode === "hosky";
-    const { wallet, walletApi, connected, networkId } = useWallet();
+    const { walletApi, address, networkId, connected } = useWallet();
     const automaticPayments = useScriptByName("automatic_payments");
 
     // ------------- state -------------
@@ -95,21 +90,14 @@ export function usePaymentSetup(
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [txHash, setTxHash] = useState<string | null>(null);
 
-    // ------------- seed initial wallet-from list from the connected wallet -------------
+    // ------------- seed source-wallet list from connected wallet address -------------
     useEffect(() => {
-        if (!connected || !wallet) return;
-        wallet
-            .getUsedAddresses()
-            .then((addrs) => {
-                const chain = getChainAdapter();
-                const parsed = chain.parseAddress(addrs[0] ?? "");
-                if (!parsed.isValid) return;
-                if (walletFromList.length > 0 && walletFromList[0] === "") {
-                    setWalletFromList([parsed.bech32]);
-                }
-            })
-            .catch(() => void 0);
-    }, [connected, wallet]); // eslint-disable-line react-hooks/exhaustive-deps
+        if (!connected || !address) return;
+        if (walletFromList.length > 0 && walletFromList[0] === "") {
+            setWalletFromList([address]);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [connected, address]);
 
     // ------------- settings -------------
     useEffect(() => {
@@ -123,7 +111,7 @@ export function usePaymentSetup(
             });
     }, []);
 
-    // ------------- Hosky template (initial load + param updates) -------------
+    // ------------- Hosky template -------------
     const updateFormFromTemplate = useCallback((data: HoskyTemplate) => {
         setEpochStart(data.epoch_start);
         setEpochEnd(data.epoch_end);
@@ -147,7 +135,6 @@ export function usePaymentSetup(
             setAmountToSend(data.amount_to_send);
     }, []);
 
-    // Initial Hosky template fetch.
     useEffect(() => {
         if (!isHosky) return;
         fetch(ADAMATIC_HOST + "/recurring_payments/template/hosky")
@@ -160,7 +147,6 @@ export function usePaymentSetup(
             });
     }, [isHosky, updateFormFromTemplate]);
 
-    // Re-fetch template when the user adjusts a param the BE cares about.
     const reCompute = useCallback(
         (nextMaxFees: number, nextEpochStart: number, nextNumPulls: number, nextFreq: number) => {
             if (!isHosky) return;
@@ -242,16 +228,16 @@ export function usePaymentSetup(
             let anyInvalid = false;
             let anyNotDelegated = false;
 
-            for (const address of walletFromList) {
-                if (!address || !address.trim()) {
-                    rows.push({ address, status: "empty" });
+            for (const addr of walletFromList) {
+                if (!addr || !addr.trim()) {
+                    rows.push({ address: addr, status: "empty" });
                     anyInvalid = true;
                     continue;
                 }
-                const parsed = chain.parseAddress(address);
+                const parsed = chain.parseAddress(addr);
                 if (!parsed.isValid) {
                     rows.push({
-                        address,
+                        address: addr,
                         status: "invalid",
                         message: parsed.error ?? "Invalid address",
                     });
@@ -260,7 +246,7 @@ export function usePaymentSetup(
                 }
                 if (parsed.kind === "enterprise") {
                     rows.push({
-                        address,
+                        address: addr,
                         status: "invalid",
                         message:
                             "Enterprise addresses can't stake — use a base or reward address",
@@ -269,22 +255,21 @@ export function usePaymentSetup(
                     continue;
                 }
                 if (!isHosky) {
-                    rows.push({ address, status: "valid" });
+                    rows.push({ address: addr, status: "valid" });
                     continue;
                 }
-                // Hosky mode: also verify delegation against BE.
                 try {
                     const resp = await fetch(
                         ADAMATIC_HOST +
-                            `/hosky/${address}/is_delegated_to_hosky`,
+                            `/hosky/${addr}/is_delegated_to_hosky`,
                     );
                     if (!resp.ok) throw new Error("be error");
                     const isDelegated = (await resp.json()) as boolean;
                     if (isDelegated) {
-                        rows.push({ address, status: "valid" });
+                        rows.push({ address: addr, status: "valid" });
                     } else {
                         rows.push({
-                            address,
+                            address: addr,
                             status: "not-delegated",
                             message: "Address not delegated to any Hosky Pool",
                         });
@@ -292,7 +277,7 @@ export function usePaymentSetup(
                     }
                 } catch {
                     rows.push({
-                        address,
+                        address: addr,
                         status: "not-delegated",
                         message: "Couldn't verify delegation (backend down?)",
                     });
@@ -387,7 +372,7 @@ export function usePaymentSetup(
 
     // ------------- submit -------------
     const submit = useCallback(async () => {
-        if (!isSubmittable || !wallet) return;
+        if (!isSubmittable || !walletApi) return;
         if (!automaticPayments?.finalHash) {
             toast.error("Script manifest not loaded yet — retry in a second");
             return;
@@ -395,36 +380,9 @@ export function usePaymentSetup(
         setSubmitting(true);
         try {
             const chain = getChainAdapter();
-
-            // Balance pre-check (matches the pre-refactor UX).
-            const balance = await wallet.getBalance();
-            const collateralUtxos = await wallet.getCollateral();
-            const collateralSum = collateralUtxos
-                .map(
-                    (u: any) =>
-                        u.output.amount.filter(
-                            (a: any) => a.unit === "lovelace",
-                        )[0]?.quantity ?? "0",
-                )
-                .reduce((a: number, b: string) => a + parseInt(b, 10), 0);
-            const adaBalance =
-                parseInt(
-                    balance.filter((a: any) => a.unit === "lovelace")[0]
-                        ?.quantity ?? "0",
-                    10,
-                ) + collateralSum;
-            const minAda = deposit * walletFromList.length + 10_000_000;
-            if (adaBalance < minAda) {
-                const msg = `Insufficient balance — need at least ${minAda / LOVELACE_PER_ADA} ADA`;
-                toast.error(msg, { duration: 5000 });
-                setSubmitting(false);
-                return;
-            }
-
             const datum = chain.encodeSetupDatum(datumDTO);
             const hash = await chain.buildAndSubmitSetupTx({
-                wallet,
-                walletApi: walletApi ?? undefined,
+                walletApi,
                 walletFromList,
                 depositLovelace: deposit,
                 datum,
@@ -442,7 +400,6 @@ export function usePaymentSetup(
         }
     }, [
         isSubmittable,
-        wallet,
         walletApi,
         walletFromList,
         deposit,

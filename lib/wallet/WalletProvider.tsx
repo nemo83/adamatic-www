@@ -1,13 +1,14 @@
 /**
- * Custom wallet provider — replaces @meshsdk/react's MeshProvider.
+ * Custom wallet provider.
  *
- * Manages:
- *   - Which CIP-30 wallet is connected (single selection at a time)
- *   - Persisted selection in localStorage (auto-reconnect on mount)
- *   - Account + network change detection (experimental.on + polling fallback)
- *   - Both a Mesh `BrowserWallet` (IWallet) AND the raw CIP-30 api are
- *     exposed via context, so existing code keeps working *and* the
- *     upcoming Evolution adapter can grab the raw api directly.
+ *   - Which CIP-30 wallet is connected (single selection at a time).
+ *   - Persisted selection in localStorage; auto-reconnect on mount.
+ *   - Account + network change detection on window focus / tab visibility
+ *     (+ experimental.on subscription when the wallet supports it).
+ *
+ * Exposes only the raw CIP-30 api + decoded bech32 address. No Mesh
+ * wrapper — the Evolution adapter consumes CIP-30 directly, and CIP-30
+ * response decoding uses Evolution's address helpers.
  */
 import React, {
     createContext,
@@ -18,25 +19,21 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { BrowserWallet } from "@meshsdk/core";
-import type { IWallet } from "@meshsdk/core";
+import { Address } from "@evolution-sdk/evolution";
 import type { Cip30Api, WalletInfo } from "./types";
 import { getExtension, listInstalledWallets } from "./cip30";
 
 const STORAGE_KEY = "adamatic.wallet";
 
 interface WalletState {
-    /** Installed CIP-30 wallets in window.cardano (refreshed on connect). */
     installedWallets: WalletInfo[];
     /** Currently-connected wallet id, or null. */
     walletId: string | null;
-    /** Mesh-shaped wallet, null when disconnected. */
-    wallet: IWallet | null;
     /** Raw CIP-30 api, null when disconnected. */
     walletApi: Cip30Api | null;
-    /** Primary used address, or null. */
+    /** Primary used address, bech32-decoded, or null. */
     address: string | null;
-    /** Reported network id (0 = testnet/preprod/preview, 1 = mainnet). */
+    /** Reported network id (0 = testnet, 1 = mainnet), or null. */
     networkId: number | null;
     /** Connection is in-flight. */
     connecting: boolean;
@@ -59,12 +56,26 @@ export const useWalletContext = (): WalletState => {
     return v;
 };
 
+/**
+ * CIP-30 `getUsedAddresses` + `getChangeAddress` return hex-encoded
+ * addresses. Decode via Evolution's Address.fromHex/toBech32.
+ * Returns null when the hex is invalid or empty.
+ */
+function hexAddressToBech32(hex: string | null | undefined): string | null {
+    if (!hex) return null;
+    try {
+        const addr = Address.fromHex(hex);
+        return Address.toBech32(addr);
+    } catch {
+        return null;
+    }
+}
+
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [installedWallets, setInstalled] = useState<WalletInfo[]>([]);
     const [walletId, setWalletId] = useState<string | null>(null);
-    const [wallet, setWallet] = useState<IWallet | null>(null);
     const [walletApi, setWalletApi] = useState<Cip30Api | null>(null);
     const [address, setAddress] = useState<string | null>(null);
     const [networkId, setNetworkId] = useState<number | null>(null);
@@ -78,25 +89,21 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         setInstalled(listInstalledWallets());
     }, []);
 
-    // Pull bech32 address + networkId. Uses Mesh BrowserWallet because
-    // CIP-30's getUsedAddresses returns hex. Falls back to getChangeAddress
-    // for wallets with no transaction history yet (fresh accounts).
-    const readWalletState = useCallback(
-        async (api: Cip30Api, mesh: IWallet) => {
-            const [used, change, net] = await Promise.all([
-                Promise.resolve(mesh.getUsedAddresses()).catch(() => [] as string[]),
-                Promise.resolve(mesh.getChangeAddress()).catch(() => ""),
-                api.getNetworkId().catch(() => -1),
-            ]);
-            const primary = used[0] || change || null;
-            setAddress(primary);
-            setNetworkId(net >= 0 ? net : null);
-            return { address: primary, networkId: net >= 0 ? net : null };
-        },
-        [],
-    );
+    // Pull bech32 address + networkId from a CIP-30 api. Falls back to
+    // the change address for fresh wallets with no tx history yet.
+    const readWalletState = useCallback(async (api: Cip30Api) => {
+        const [used, change, net] = await Promise.all([
+            api.getUsedAddresses().catch(() => [] as string[]),
+            api.getChangeAddress().catch(() => ""),
+            api.getNetworkId().catch(() => -1),
+        ]);
+        const primary =
+            hexAddressToBech32(used[0]) ?? hexAddressToBech32(change) ?? null;
+        setAddress(primary);
+        setNetworkId(net >= 0 ? net : null);
+        return { address: primary, networkId: net >= 0 ? net : null };
+    }, []);
 
-    // Connect flow — shared by user-initiated and auto-reconnect paths.
     const doConnect = useCallback(
         async (id: string, silent: boolean) => {
             setConnecting(true);
@@ -104,26 +111,20 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
             try {
                 const ext = getExtension(id);
                 if (!ext) throw new Error(`Wallet "${id}" is not installed`);
-                // Raw CIP-30 handle for the Evolution adapter.
                 const api = (await ext.enable()) as Cip30Api;
-                // Mesh wrapper for existing code.
-                const meshWallet = await BrowserWallet.enable(id);
 
                 setWalletId(id);
-                setWallet(meshWallet);
                 setWalletApi(api);
-                await readWalletState(api, meshWallet);
+                await readWalletState(api);
                 localStorage.setItem(STORAGE_KEY, id);
             } catch (e: any) {
                 if (!silent) {
                     setError(e?.message ?? String(e));
                 }
-                // On silent failures, clear the stored id so we don't loop on it.
                 if (silent) {
                     localStorage.removeItem(STORAGE_KEY);
                 }
                 setWalletId(null);
-                setWallet(null);
                 setWalletApi(null);
                 setAddress(null);
                 setNetworkId(null);
@@ -141,7 +142,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const disconnect = useCallback(() => {
         setWalletId(null);
-        setWallet(null);
         setWalletApi(null);
         setAddress(null);
         setNetworkId(null);
@@ -149,7 +149,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.removeItem(STORAGE_KEY);
     }, []);
 
-    // On mount: enumerate installed wallets, then try to auto-reconnect.
+    // Auto-reconnect on mount if the wallet is still enabled.
     useEffect(() => {
         refreshInstalled();
         const stored =
@@ -161,23 +161,14 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!ext) return;
         (ext.isEnabled ? ext.isEnabled() : Promise.resolve(false))
             .then((enabled) => {
-                if (enabled) {
-                    doConnect(stored, /* silent */ true);
-                }
+                if (enabled) doConnect(stored, true);
             })
-            .catch(() => {
-                // Extension reported error on isEnabled — ignore, let user reconnect.
-            });
+            .catch(() => void 0);
     }, [doConnect, refreshInstalled]);
 
-    // Change detection via window 'focus' + document 'visibilitychange'.
-    // On each event we re-enable the wallet (both CIP-30 api and the Mesh
-    // wrapper) because they pin to the account that was active at connect
-    // time — if the user switches account inside the extension, the old
-    // handles go stale. Re-enabling returns fresh handles bound to the
-    // currently-active account without prompting the user (the site is
-    // already authorised). Drops the experimental.on subscription path;
-    // focus events cover the same scenarios more reliably.
+    // Change detection: focus + visibility + experimental.on.
+    // On each event we re-enable the wallet (fresh api handle bound to
+    // the currently-active account) and re-read state.
     useEffect(() => {
         if (!walletId) return;
 
@@ -191,12 +182,10 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
             if (!ext) return;
             try {
                 const api = (await ext.enable()) as Cip30Api;
-                const meshWallet = await BrowserWallet.enable(walletId);
                 if (cancelled) return;
-                setWallet(meshWallet);
                 setWalletApi(api);
                 const { address: next, networkId: nextNet } =
-                    await readWalletState(api, meshWallet);
+                    await readWalletState(api);
                 if (cancelled) return;
                 if (
                     next !== prevAddrRef.current &&
@@ -236,7 +225,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         () => ({
             installedWallets,
             walletId,
-            wallet,
             walletApi,
             address,
             networkId,
@@ -249,7 +237,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         [
             installedWallets,
             walletId,
-            wallet,
             walletApi,
             address,
             networkId,
