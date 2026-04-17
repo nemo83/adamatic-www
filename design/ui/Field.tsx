@@ -37,8 +37,8 @@ export const Field: React.FC<FieldProps> = ({
     )}
     <div
       className={cn(
-        "group flex items-center gap-2 border-b transition-colors ease-quill",
-        error ? "border-rust" : "border-ink/60 focus-within:border-ink",
+        "group flex items-center gap-2 border-b-[1.5px] transition-colors ease-quill",
+        error ? "border-rust" : "border-ink/80 focus-within:border-ink",
       )}
     >
       <div className="flex-1 min-w-0">{children}</div>
@@ -57,7 +57,7 @@ export const Field: React.FC<FieldProps> = ({
 );
 
 export const inputCls =
-  "w-full bg-transparent font-mono text-[16px] text-ink placeholder:text-marginalia/60 outline-none pt-4 pb-2 disabled:opacity-60 disabled:cursor-not-allowed";
+  "w-full bg-transparent font-mono text-[16px] text-ink placeholder:text-marginalia outline-none pt-4 pb-2 disabled:opacity-60 disabled:cursor-not-allowed";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 

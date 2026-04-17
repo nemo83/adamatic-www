@@ -280,15 +280,23 @@ class EvolutionAdapter implements ChainAdapter {
 
         const client = buildClient(ctx.walletApi);
 
-        // Apply params to reach the final UPLC bytes.
+        // Apply params client-side to reach the final UPLC bytes.
+        //
+        // Evolution's `applyParamsToScript` returns hex that still needs to
+        // be normalised through `applySingleCborEncoding` to reach the form
+        // the Cardano protocol hashes on-chain (and that the BE indexes as
+        // `finalHash`). Determined empirically — all six raw/single/double
+        // combinations were probed once; single-wrapped output was the one
+        // hash that matched.
         const params = ctx.scriptParameters.map((p) =>
             Data.fromCBORHex(p.cborHex),
         );
-        const appliedHex = UPLC.applyParamsToScript(
+        const appliedRawHex = UPLC.applyParamsToScript(
             ctx.scriptRawCode,
             params,
         );
-        const appliedBytes = Bytes.fromHex(appliedHex);
+        const normalisedHex = UPLC.applySingleCborEncoding(appliedRawHex);
+        const appliedBytes = Bytes.fromHex(normalisedHex);
 
         const script =
             ctx.scriptVersion === "V3"
@@ -296,6 +304,19 @@ class EvolutionAdapter implements ChainAdapter {
                 : ctx.scriptVersion === "V2"
                   ? new PlutusV2.PlutusV2({ bytes: appliedBytes })
                   : new PlutusV1.PlutusV1({ bytes: appliedBytes });
+
+        // Guard against BE/SDK drift: if the applied script's hash ever
+        // stops matching `finalHash` again, fail fast with a clear message
+        // instead of submitting a tx the validator will reject.
+        const computedHash = Bytes.toHex(
+            ScriptHash.fromScript(script as any).hash,
+        );
+        if (computedHash.toLowerCase() !== ctx.scriptHash.toLowerCase()) {
+            throw new Error(
+                `Applied script hash ${computedHash} != BE finalHash ${ctx.scriptHash}. ` +
+                    `Param-application convention may have changed — check @evolution-sdk/evolution release notes.`,
+            );
+        }
 
         // Fetch the script UTxOs we want to cancel by their out-refs.
         const inputs = ctx.payments.map(

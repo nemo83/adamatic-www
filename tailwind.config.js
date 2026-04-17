@@ -12,8 +12,8 @@ module.exports = {
       colors: {
         ink: { DEFAULT: "#0F0E0B", soft: "#1F1D18" },
         paper: { DEFAULT: "#F4EEE4", raised: "#E8DFD1" },
-        rule: "rgba(15, 14, 11, 0.12)",
-        marginalia: "rgba(15, 14, 11, 0.55)",
+        rule: "rgba(15, 14, 11, 0.22)",
+        marginalia: "rgba(15, 14, 11, 0.65)",
         amber: { DEFAULT: "#C44A1A", ink: "#7A2A0F", soft: "#F0C9B4" },
         jade: { DEFAULT: "#2F6B4A", soft: "#CFE0D6" },
         rust: { DEFAULT: "#8B2C1C", soft: "#EFD0C9" },

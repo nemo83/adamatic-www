@@ -32,15 +32,17 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         checked={checked}
         onCheckedChange={(v) => onCheckedChange(v === true)}
         className={cn(
-          "flex items-center justify-center shrink-0 w-[18px] h-[18px] mt-0.5",
-          "border border-ink rounded-sharp",
+          "flex items-center justify-center shrink-0 w-5 h-5 mt-0.5",
+          "border-2 border-ink rounded-sharp bg-paper",
           "data-[state=checked]:bg-ink",
+          "hover:border-ink hover:bg-paper-raised",
+          "data-[state=checked]:hover:bg-ink-soft",
           "transition-colors ease-quill",
           "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber",
         )}
       >
         <C.Indicator className="text-paper">
-          <Check className="w-3 h-3" strokeWidth={3} />
+          <Check className="w-3.5 h-3.5" strokeWidth={3} />
         </C.Indicator>
       </C.Root>
       {label && <span className="text-sm leading-relaxed">{label}</span>}
