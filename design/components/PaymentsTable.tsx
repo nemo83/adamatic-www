@@ -49,8 +49,11 @@ const short = (a: string) =>
 const isCancellable = (s: PaymentStatus) =>
   s === "SCHEDULED" || s === "INSUFFICIENT_FUNDS";
 
+const isFinalised = (s: PaymentStatus) =>
+  s === "COMPLETED" || s === "WITHDRAWN" || s === "CANCELLED";
+
 export const PaymentsTable: React.FC<PaymentsTableProps> = ({
-  rows,
+  rows: allRows,
   selected,
   onSelect,
   onSelectAll,
@@ -58,6 +61,11 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({
   onCancel,
   onCancelSelected,
 }) => {
+  const [showHistory, setShowHistory] = React.useState(false);
+  const finalisedCount = allRows.filter((r) => isFinalised(r.status)).length;
+  const rows = showHistory
+    ? allRows
+    : allRows.filter((r) => !isFinalised(r.status));
   const cancellable = rows.filter((r) => isCancellable(r.status));
   const allSelected =
     cancellable.length > 0 && cancellable.every((r) => selected.has(r.id));
@@ -67,9 +75,22 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({
     <section className="px-4 md:px-8 py-8 md:py-10">
       <div className="max-w-[1200px] mx-auto flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2 min-h-[36px]">
-          <p className="text-marginalia text-[13px]">
-            {rows.length} entries · {cancellable.length} active
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-marginalia text-[13px]">
+              {rows.length} active
+              {finalisedCount > 0 && !showHistory &&
+                ` · ${finalisedCount} hidden`}
+            </p>
+            {finalisedCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowHistory((v) => !v)}
+                className="text-[13px] text-marginalia hover:text-ink underline-offset-4 hover:underline transition-colors"
+              >
+                {showHistory ? "Hide history" : "Show history"}
+              </button>
+            )}
+          </div>
           {selected.size > 0 && (
             <Button variant="danger" size="sm" onClick={onCancelSelected}>
               <Trash2 className="w-4 h-4" />
@@ -164,14 +185,15 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({
                       <IconBtn label="View details" onClick={() => onView(row.id)}>
                         <Eye className="w-4 h-4" />
                       </IconBtn>
-                      <IconBtn
-                        label="Cancel"
-                        onClick={() => onCancel(row.id)}
-                        disabled={!isCancellable(row.status)}
-                        tone="rust"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </IconBtn>
+                      {isCancellable(row.status) && (
+                        <IconBtn
+                          label="Cancel"
+                          onClick={() => onCancel(row.id)}
+                          tone="rust"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </IconBtn>
+                      )}
                     </div>
                   </Td>
                 </tr>
@@ -240,14 +262,15 @@ export const PaymentsTable: React.FC<PaymentsTableProps> = ({
                 <IconBtn label="View" onClick={() => onView(row.id)}>
                   <Eye className="w-4 h-4" />
                 </IconBtn>
-                <IconBtn
-                  label="Cancel"
-                  onClick={() => onCancel(row.id)}
-                  disabled={!isCancellable(row.status)}
-                  tone="rust"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </IconBtn>
+                {isCancellable(row.status) && (
+                  <IconBtn
+                    label="Cancel"
+                    onClick={() => onCancel(row.id)}
+                    tone="rust"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </IconBtn>
+                )}
               </div>
             </div>
           ))}
