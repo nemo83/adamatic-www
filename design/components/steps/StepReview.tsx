@@ -46,11 +46,17 @@ export const StepReview: React.FC<{
         state.walletRows.filter((r) => r.status === "valid").length,
     );
 
+    // The deposit is what actually gets locked at the script address per
+    // source wallet. For Hosky mode it comes from the BE template; for
+    // generic it's computed FE-side as numPulls * (amount + maxFee).
+    const totalDepositLovelace = state.deposit * walletCount;
+    const totalDepositPretty = fmt(totalDepositLovelace / LOVELACE_PER_ADA, 2);
+
+    const totalFees = state.maxFeesLovelace * state.numPulls * walletCount;
     const totalPayments = amount * state.numPulls * walletCount;
     const totalPaymentsPretty = isLovelace
         ? fmt(totalPayments / LOVELACE_PER_ADA, 2)
         : fmt(totalPayments, 0);
-    const totalFees = state.maxFeesLovelace * state.numPulls * walletCount;
 
     const copy = (text: string) => {
         if (typeof navigator !== "undefined")
@@ -146,16 +152,16 @@ export const StepReview: React.FC<{
                             Total to deposit
                         </div>
                         <div className="mt-1 font-display text-[32px] md:text-[40px] font-semibold leading-none num">
-                            {totalPaymentsPretty}
+                            {totalDepositPretty}
                             <span className="ml-2 font-mono text-[14px] text-marginalia">
-                                {assetUnit}
+                                ADA
                             </span>
                         </div>
-                        {totalFees > 0 && (
-                            <div className="mt-1.5 font-mono text-[12px] text-marginalia">
-                                up to {fmt(totalFees / LOVELACE_PER_ADA)} ADA in fees
-                            </div>
-                        )}
+                        <div className="mt-1.5 font-mono text-[12px] text-marginalia">
+                            {totalPaymentsPretty} {assetUnit} for payments
+                            {" + "}
+                            up to {fmt(totalFees / LOVELACE_PER_ADA)} ADA in fees
+                        </div>
                     </div>
                 </div>
             </section>

@@ -14,7 +14,6 @@ export const StepCadence: React.FC<{
         setNumPulls,
         setPaymentIntervalEpochs,
         setStartTime,
-        setEndTime,
     } = setup;
     const isHosky = mode === "hosky";
 
@@ -127,78 +126,72 @@ export const StepCadence: React.FC<{
                 </>
             ) : (
                 <>
+                    <Field
+                        id="start"
+                        label="Start (UTC)"
+                        helper="The first payment fires at or shortly after this time."
+                        className="max-w-md"
+                    >
+                        <Input
+                            id="start"
+                            placeholder="YYYY-MM-DD HH:MM"
+                            value={
+                                state.startTime
+                                    ? state.startTime.format(
+                                          "YYYY-MM-DD HH:mm",
+                                      )
+                                    : ""
+                            }
+                            onChange={(e) => {
+                                const dayjs = require("dayjs");
+                                const d = dayjs(e.target.value);
+                                setStartTime(d.isValid() ? d : null);
+                            }}
+                        />
+                    </Field>
+
                     <div className="grid gap-6 md:grid-cols-2">
                         <Field
-                            id="start"
-                            label="Start (UTC)"
-                            helper="The first payment fires at or shortly after this time."
+                            id="numpulls"
+                            label="Number of pulls"
+                            helper="Total payments the schedule will fire."
+                            adornment={<span>pulls</span>}
                         >
                             <Input
-                                id="start"
-                                placeholder="YYYY-MM-DD HH:MM"
-                                value={
-                                    state.startTime
-                                        ? state.startTime.format(
-                                              "YYYY-MM-DD HH:mm",
-                                          )
-                                        : ""
+                                id="numpulls"
+                                type="number"
+                                min={1}
+                                max={50}
+                                value={state.numPulls}
+                                onChange={(e) =>
+                                    setNumPulls(Number(e.target.value) || 1)
                                 }
-                                onChange={(e) => {
-                                    const dayjs = require("dayjs");
-                                    const d = dayjs(e.target.value);
-                                    setStartTime(d.isValid() ? d : null);
-                                }}
                             />
                         </Field>
                         <Field
-                            id="end"
-                            label="End (optional)"
-                            helper="Leave empty to run until balance is exhausted."
+                            id="frequency"
+                            label="Every N epochs"
+                            helper="1 epoch = 5 days on Preprod / Mainnet."
+                            adornment={<span>epoch{state.paymentIntervalEpochs === 1 ? "" : "s"}</span>}
                         >
                             <Input
-                                id="end"
-                                placeholder="YYYY-MM-DD HH:MM"
-                                value={
-                                    state.endTime
-                                        ? state.endTime.format(
-                                              "YYYY-MM-DD HH:mm",
-                                          )
-                                        : ""
+                                id="frequency"
+                                type="number"
+                                min={1}
+                                value={state.paymentIntervalEpochs}
+                                onChange={(e) =>
+                                    setPaymentIntervalEpochs(
+                                        Number(e.target.value) || 1,
+                                    )
                                 }
-                                onChange={(e) => {
-                                    if (!e.target.value) {
-                                        setEndTime(null);
-                                        return;
-                                    }
-                                    const dayjs = require("dayjs");
-                                    const d = dayjs(e.target.value);
-                                    setEndTime(d.isValid() ? d : null);
-                                }}
                             />
                         </Field>
                     </div>
-                    <Field
-                        id="frequency"
-                        label="Every N epochs"
-                        helper="1 epoch = 5 days on mainnet."
-                        adornment={<span>epoch{state.paymentIntervalEpochs === 1 ? "" : "s"}</span>}
-                        className="max-w-sm"
-                    >
-                        <Input
-                            id="frequency"
-                            type="number"
-                            min={1}
-                            value={state.paymentIntervalEpochs}
-                            onChange={(e) =>
-                                setPaymentIntervalEpochs(
-                                    Number(e.target.value) || 1,
-                                )
-                            }
-                        />
-                    </Field>
+
                     <Field
                         id="maxfee"
                         label="Max fee per pull"
+                        helper="Ceiling for protocol + network fees per pull. Adds to the deposit."
                         adornment={<span>ADA</span>}
                         className="max-w-sm"
                     >

@@ -147,6 +147,44 @@ export function usePaymentSetup(
             });
     }, [isHosky, updateFormFromTemplate]);
 
+    // ------------- generic-mode derivations (ADA-only, FE-owned math) -------------
+    //
+    // Deposit for each UTxO locked at the script address must cover every
+    // future pull from that UTxO. Each pull drains:
+    //   - amountPerPayment (→ payee)
+    //   - up to maxFeesLovelace (→ operator)
+    // so we lock: numPulls * (amountPerPayment + maxFeesLovelace).
+    //
+    // End time is derived as start + numPulls * frequencyEpochs * 5 days.
+    // Interval hours follows the epoch length convention used by Hosky
+    // (1 epoch = 120 hours on mainnet + preprod).
+    const GENERIC_EPOCH_HOURS = 120;
+    useEffect(() => {
+        if (isHosky) return;
+        const amount = amountToSend[0]?.amount ?? 0;
+        if (numPulls > 0 && amount >= 0 && maxFeesLovelace >= 0) {
+            setDeposit(numPulls * (amount + maxFeesLovelace));
+        } else {
+            setDeposit(0);
+        }
+        setPaymentIntervalHours(paymentIntervalEpochs * GENERIC_EPOCH_HOURS);
+        if (startTime && numPulls > 0 && paymentIntervalEpochs > 0) {
+            const end = startTime.add(
+                numPulls * paymentIntervalEpochs * GENERIC_EPOCH_HOURS,
+                "hour",
+            );
+            setEndTime(end);
+            setLockEndTime(true);
+        }
+    }, [
+        isHosky,
+        amountToSend,
+        numPulls,
+        maxFeesLovelace,
+        paymentIntervalEpochs,
+        startTime,
+    ]);
+
     const reCompute = useCallback(
         (nextMaxFees: number, nextEpochStart: number, nextNumPulls: number, nextFreq: number) => {
             if (!isHosky) return;
