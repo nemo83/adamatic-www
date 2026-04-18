@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArrowLeft, ArrowRight, PenLine } from "lucide-react";
 import { Button } from "../ui/Button";
+import { Segmented } from "../ui/Segmented";
 import { Stepper } from "./Stepper";
 import { StepPayeeAmount } from "./steps/StepPayeeAmount";
 import { StepWallets } from "./steps/StepWallets";
@@ -15,8 +16,14 @@ const stepsDef = [
     { key: "review", title: "Review & sign" },
 ];
 
-export const PaymentSetup: React.FC<{ mode: "hosky" | "generic" }> = ({
+export interface PaymentSetupProps {
+    mode: "hosky" | "generic";
+    onModeChange?: (mode: "hosky" | "generic") => void;
+}
+
+export const PaymentSetup: React.FC<PaymentSetupProps> = ({
     mode,
+    onModeChange,
 }) => {
     const setup = usePaymentSetup({ mode });
     const [step, setStep] = useState(0);
@@ -48,10 +55,30 @@ export const PaymentSetup: React.FC<{ mode: "hosky" | "generic" }> = ({
     return (
         <section className="px-4 md:px-8 py-10 md:py-16">
             <div className="max-w-[860px] mx-auto flex flex-col gap-8 md:gap-10">
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-3">
                     <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-marginalia">
-                        Setup · {mode === "hosky" ? "Hosky Doggie Bowl" : "Generic schedule"}
+                        Setup
                     </div>
+                    {onModeChange && (
+                        <Segmented
+                            ariaLabel="Payment mode"
+                            value={mode}
+                            onChange={onModeChange}
+                            size="sm"
+                            options={[
+                                {
+                                    value: "hosky",
+                                    label: "Hosky Doggie Bowl",
+                                    caption: "Fixed · 2 ₳ every 5 days",
+                                },
+                                {
+                                    value: "generic",
+                                    label: "Generic schedule",
+                                    caption: "Any asset · any cadence",
+                                },
+                            ]}
+                        />
+                    )}
                     <Stepper
                         steps={stepsDef}
                         current={step}

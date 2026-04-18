@@ -7,9 +7,21 @@ function SetupPage() {
     const router = useRouter();
     const mode = router.query.mode === "generic" ? "generic" : "hosky";
 
+    const onModeChange = (next: "hosky" | "generic") => {
+        router.replace({ pathname: "/setup", query: { mode: next } }, undefined, {
+            shallow: true,
+        });
+    };
+
     return (
         <LedgerLayout currentPath="/setup">
-            <PaymentSetup mode={mode as "hosky" | "generic"} />
+            {/* `key={mode}` remounts the stepper so mode-specific form
+                state (Hosky template vs blank generic) is reset cleanly. */}
+            <PaymentSetup
+                key={mode}
+                mode={mode as "hosky" | "generic"}
+                onModeChange={onModeChange}
+            />
         </LedgerLayout>
     );
 }
