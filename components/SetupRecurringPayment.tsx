@@ -15,7 +15,9 @@ import { useWallet } from "../src/lib/wallet/useWallet";
 import type { RecurringPaymentDatum } from "../src/types/RecurringPaymentDatum";
 import type { EncodedDatum } from "../src/lib/cardano/ChainAdapter";
 import { getChainAdapter } from "../src/lib/cardano/factory";
-import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED } from "../src/lib/cardano/constants";
+import { useScriptByName } from "../src/lib/cardano/ScriptContext";
+import { fetchSettings } from "../src/lib/api/adamatic";
+import { HOSKY_TOUR_DISPLAYED } from "../src/lib/cardano/constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 import PaymentReceipt from "./PaymentReceipt";
@@ -77,6 +79,7 @@ export default function SetupRecurringPayment(props: {
     const [datum, setDatum] = useState<EncodedDatum>();
 
     const chainAdapter = getChainAdapter();
+    const automaticPayments = useScriptByName("automatic_payments");
 
     const [isDelegatedToHosky, setIsDelegatedToHosky] = React.useState<boolean>(true);
 
@@ -128,12 +131,12 @@ export default function SetupRecurringPayment(props: {
     // }, []);
 
     useEffect(() => {
-        fetch(ADAMATIC_HOST + '/settings')
-            .then(response => response.json())
-            .then((data: Settings) => {
+        fetchSettings().then((data) => {
+            if (data) {
                 console.log('settings: ' + JSON.stringify(data));
                 setSettings(data);
-            })
+            }
+        });
     }, [])
 
     const signAndSubmit = async () => {
@@ -156,6 +159,10 @@ export default function SetupRecurringPayment(props: {
             return Promise.reject(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`);
         }
 
+        if (!automaticPayments?.finalHash) {
+            toast.error("Scripts manifest not loaded yet. Please retry shortly.", { duration: 5000 });
+            return;
+        }
         if (wallet && datum) {
             try {
                 const txHash = await chainAdapter.buildAndSubmitSetupTx({
@@ -163,10 +170,7 @@ export default function SetupRecurringPayment(props: {
                     walletFromList,
                     depositLovelace: deposit,
                     datum,
-                    // Phase B: Mesh adapter computes the script address from the
-                    // hardcoded SCRIPT and ignores `scriptHash`. Phase C will pass
-                    // the BE manifest's `finalHash` here.
-                    scriptHash: "",
+                    scriptHash: automaticPayments.finalHash,
                 });
                 setTxHash(txHash);
                 toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });

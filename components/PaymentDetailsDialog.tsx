@@ -14,7 +14,7 @@ import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import UploadIcon from '@mui/icons-material/Upload';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Box, Button, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
-import { ADAMATIC_HOST } from "../src/lib/cardano/constants";
+import { fetchPaymentDetails } from "../src/lib/api/adamatic";
 import type { PaymentDetails, TransactionDetail } from "../src/types/AdaMaticTypes";
 import dayjs from "dayjs";
 
@@ -49,24 +49,11 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
         console.log('outputIndex: ' + outputIndex);
 
         if (open && txHash && outputIndex != undefined) {
-
-            let baseRequest = {
-                tx_hash: txHash.toString(),
-                output_index: outputIndex.toString(),
-            };
-
-            console.log('baseRequest: ' + JSON.stringify(baseRequest));
-
-            fetch(ADAMATIC_HOST + '/recurring_payments/details?' + new URLSearchParams(baseRequest).toString())
-                .then(data => data.json())
-                .then((data: PaymentDetails) => {
-                    console.log('data: ' + JSON.stringify(data));
-                    setPaymentDetails(data);
-                    const from = data.from;
-                    console.log('from: ' + from);
-                    setFrom(data.from);
-                })
-
+            fetchPaymentDetails(txHash, outputIndex).then((data) => {
+                if (!data) return;
+                setPaymentDetails(data);
+                setFrom(data.from);
+            });
         }
 
 

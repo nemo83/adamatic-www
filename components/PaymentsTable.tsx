@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import type { RecurringPayment } from "../src/types/RecurringPayment";
 import { useWallet } from "../src/lib/wallet/useWallet";
 import { getChainAdapter } from "../src/lib/cardano/factory";
-import { ADAMATIC_HOST } from "../src/lib/cardano/constants";
+import { useScriptByName } from "../src/lib/cardano/ScriptContext";
+import { fetchRecurringPaymentsByPkh } from "../src/lib/api/adamatic";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -24,6 +25,7 @@ export default function PaymentsTable(props: { version: number }) {
     const { wallet, connected } = useWallet();
 
     const chainAdapter = getChainAdapter();
+    const automaticPayments = useScriptByName("automatic_payments");
 
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
 
@@ -65,44 +67,43 @@ export default function PaymentsTable(props: { version: number }) {
     }, [recurringPaymentDTOs, itemsPerPage]);
 
     const reloadPayments = async () => {
-        wallet
-            .getUsedAddresses()
-            .then((addresses: string[]) => {
-                const parsed = chainAdapter.parseAddress(addresses[0]);
-                if (!parsed.isValid) {
-                    throw new Error("Could not parse wallet address");
-                }
-                return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + parsed.paymentCredentialHash);
-            })
-            .then((response: Response) => response.json())
-            .then((data: RecurringPayment[]) => {
-                let recurringPaymentDTOs: RecurringPayment[] = [];
-                data.forEach((recurringPayment: any) => {
-                    recurringPaymentDTOs.push({
-                        txHash: recurringPayment.tx_hash,
-                        output_index: recurringPayment.output_index,
-                        staking_address: recurringPayment.staking_address,
-                        balance: recurringPayment.balance,
-                        amountToSend: [],
-                        payee: recurringPayment.payee,
-                        startTime: dayjs(recurringPayment.start_time_timestamp),
-                        endTime: undefined,
-                        paymentIntervalHours: 0,
-                        maxPaymentDelayHours: 0,
-                        paymentStatus: recurringPayment.payment_status
-                    });
-                });
-                setRecurringPaymentDTOs(recurringPaymentDTOs);
-            })
+        const addresses = await wallet.getUsedAddresses();
+        const parsed = chainAdapter.parseAddress(addresses[0]);
+        if (!parsed.isValid) return;
+        const data = await fetchRecurringPaymentsByPkh(parsed.paymentCredentialHash);
+        const dtos: RecurringPayment[] = data.map((rp: any) => ({
+            txHash: rp.tx_hash,
+            output_index: rp.output_index,
+            staking_address: rp.staking_address,
+            balance: rp.balance,
+            amountToSend: [],
+            payee: rp.payee,
+            startTime: dayjs(rp.start_time_timestamp),
+            endTime: undefined,
+            paymentIntervalHours: 0,
+            maxPaymentDelayHours: 0,
+            paymentStatus: rp.payment_status,
+        }));
+        setRecurringPaymentDTOs(dtos);
+    }
+
+    const buildCancelCtx = (payments: RecurringPayment[]) => {
+        if (!automaticPayments?.finalHash) {
+            throw new Error("Scripts manifest not loaded yet. Please retry shortly.");
+        }
+        return {
+            wallet,
+            payments,
+            scriptHash: automaticPayments.finalHash,
+            scriptRawCode: automaticPayments.rawCompiledCode,
+            scriptParameters: automaticPayments.parameters,
+            scriptVersion: automaticPayments.plutusVersion,
+        };
     }
 
     const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
         try {
-            const txHash = await chainAdapter.buildAndSubmitCancelTx({
-                wallet,
-                payments: [recurringPaymentDTO],
-                scriptHash: "",
-            });
+            const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx([recurringPaymentDTO]));
             toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
         } catch (error) {
             toast.error('' + error, { duration: 5000 })
@@ -118,11 +119,7 @@ export default function PaymentsTable(props: { version: number }) {
         console.log('num payments to cancel: ' + paymentsToCancel.length);
 
         try {
-            const txHash = await chainAdapter.buildAndSubmitCancelTx({
-                wallet,
-                payments: paymentsToCancel,
-                scriptHash: "",
-            });
+            const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx(paymentsToCancel));
             toast.success(`Payment cancelled: ${txHash.substring(0, 10)}...${txHash.substring(txHash.length - 10)}`, { duration: 3000 });
 
             setSelectedPayments(new Set());

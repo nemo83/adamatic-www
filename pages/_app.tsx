@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 
 import { WalletProvider } from "../src/lib/wallet/WalletProvider";
+import { ScriptProvider } from "../src/lib/cardano/ScriptContext";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
@@ -59,16 +60,18 @@ const steps = [
 export default function App({ Component, pageProps }: AppProps) {
     return (
         <WalletProvider>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <TourProvider steps={steps}>
-                        <Layout>
-                            <Component {...pageProps} />
-                        </Layout>
-                    </TourProvider>
-                </LocalizationProvider>
-            </ThemeProvider>
+            <ScriptProvider>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TourProvider steps={steps}>
+                            <Layout>
+                                <Component {...pageProps} />
+                            </Layout>
+                        </TourProvider>
+                    </LocalizationProvider>
+                </ThemeProvider>
+            </ScriptProvider>
         </WalletProvider>
     );
 }

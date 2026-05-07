@@ -1,10 +1,10 @@
 /**
- * Returns the active ChainAdapter. Phase B → Mesh; Phase C → Evolution.
- * Single source of truth so the SDK swap is a one-line change.
+ * Returns the active ChainAdapter. Phase C → Evolution.
+ * Single source of truth so the SDK can be swapped via a one-line change.
  */
 import type { ChainAdapter } from "./ChainAdapter";
-import { getMeshChainAdapter } from "./MeshChainAdapter";
+import { getEvolutionChainAdapter } from "./EvolutionChainAdapter";
 
 export function getChainAdapter(): ChainAdapter {
-    return getMeshChainAdapter();
+    return getEvolutionChainAdapter();
 }

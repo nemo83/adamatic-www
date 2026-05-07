@@ -15,9 +15,13 @@ import { Add, Delete } from "@mui/icons-material";
 import type { AssetAmount } from "../src/types/AssetAmount";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { ADAMATIC_HOST, CONSTANTS } from "../src/lib/cardano/constants";
+import { CONSTANTS } from "../src/lib/cardano/constants";
 import { useWallet } from "../src/lib/wallet/useWallet";
 import { getChainAdapter } from "../src/lib/cardano/factory";
+import {
+    fetchHoskyTemplate,
+    fetchIsDelegatedToHosky,
+} from "../src/lib/api/adamatic";
 import type { HoskyTemplate } from "../src/types/AdaMaticTypes";
 
 const MAX_PULLS = 50;
@@ -117,16 +121,9 @@ export default function UserInput(props: {
 
                 // Only check delegation if address is valid and not empty
                 if (address && validation.isValid) {
-                    try {
-                        const response = await fetch(ADAMATIC_HOST + `/hosky/${address}/is_delegated_to_hosky`);
-                        const isDelegated = await response.json();
-                        newDelegationStatus[address] = isDelegated;
-                        if (!isDelegated) {
-                            allDelegated = false;
-                        }
-                    } catch (error) {
-                        console.error(`Error checking delegation for ${address}:`, error);
-                        newDelegationStatus[address] = false;
+                    const isDelegated = await fetchIsDelegatedToHosky(address);
+                    newDelegationStatus[address] = isDelegated;
+                    if (!isDelegated) {
                         allDelegated = false;
                     }
                 } else {
@@ -164,9 +161,9 @@ export default function UserInput(props: {
 
     useEffect(() => {
         if (isHoskyInput) {
-            fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky')
-                .then(response => response.json())
-                .then((data: HoskyTemplate) => updateForm(data));
+            fetchHoskyTemplate().then((data) => {
+                if (data) updateForm(data);
+            });
         }
     }, [isHoskyInput]);
 
@@ -191,9 +188,9 @@ export default function UserInput(props: {
         console.log('baseRequest: ' + JSON.stringify(baseRequest));
 
         if (isHoskyInput) {
-            fetch(ADAMATIC_HOST + '/recurring_payments/template/hosky?' + new URLSearchParams(baseRequest).toString())
-                .then(response => response.json())
-                .then((data: HoskyTemplate) => updateForm(data));
+            fetchHoskyTemplate(baseRequest).then((data) => {
+                if (data) updateForm(data);
+            });
         }
     }
 
