@@ -14,8 +14,8 @@ import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import UploadIcon from '@mui/icons-material/Upload';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Box, Button, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
-import { ADAMATIC_HOST } from "../lib/util/Constants";
-import { PaymentDetails, TransactionDetail } from "../lib/interfaces/AdaMaticTypes";
+import { ADAMATIC_HOST } from "../src/lib/cardano/constants";
+import type { PaymentDetails, TransactionDetail } from "../src/types/AdaMaticTypes";
 import dayjs from "dayjs";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({

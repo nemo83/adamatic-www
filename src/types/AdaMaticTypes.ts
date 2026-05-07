@@ -1,4 +1,4 @@
-import AssetAmount from "./AssetAmount";
+import type { AssetAmount } from "./AssetAmount";
 
 export interface HoskyTemplate {
     amount_to_send: AssetAmount[];
@@ -13,7 +13,6 @@ export interface HoskyTemplate {
     payment_interval_hours: number;
     epoch_frequency: number;
 }
-
 
 export interface TransactionDetail {
     timestamp: number;
@@ -31,14 +30,14 @@ export interface PaymentDetails {
     initial_deposit: AssetAmount;
     max_fee: number;
     epoch_start: number;
-    epoch_end: number;  
+    epoch_end: number;
     transactions: TransactionDetail[];
 }
 
 export interface Settings {
-    settings_adming_pks: string,
-    authorised_operators: string[],
-    operator_fee_exempt_users: string[]
+    settings_adming_pks: string;
+    authorised_operators: string[];
+    operator_fee_exempt_users: string[];
     operator_fee_lovelace: number;
     base_fee_lovelace: number;
 }

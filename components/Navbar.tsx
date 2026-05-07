@@ -1,8 +1,8 @@
 import { AppBar, Box, Toolbar, Typography, Button, Stack } from "@mui/material";
-import { CardanoWallet, useWallet } from "@meshsdk/react";
+import { useWallet } from "../src/lib/wallet/useWallet";
+import { WalletButton } from "../src/lib/wallet/WalletButton";
 import React, { useState, useEffect } from "react";
-import "@meshsdk/react/styles.css";
-import { NETWORK, NETWORK_ID } from "../lib/util/Constants";
+import { NETWORK, NETWORK_ID } from "../src/lib/cardano/constants";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -14,7 +14,7 @@ export default function Navbar() {
 
     useEffect(() => {
         if (connected) {
-            wallet.getNetworkId().then((id) => {
+            wallet.getNetworkId().then((id: number) => {
                 const isValidNetwork = String(id) == NETWORK_ID
                 if (isValidNetwork) {
                     toast.success("Wallet correctly connected");
@@ -138,7 +138,7 @@ export default function Navbar() {
                         </Stack>
                     </Box>
                     <Box data-tut="step-0">
-                        <CardanoWallet />
+                        <WalletButton />
                     </Box>
                 </Toolbar>
             </AppBar>

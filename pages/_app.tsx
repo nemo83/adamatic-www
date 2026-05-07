@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 
-import { MeshProvider } from "@meshsdk/react";
+import { WalletProvider } from "../src/lib/wallet/WalletProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
@@ -58,7 +58,7 @@ const steps = [
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
-        <MeshProvider>
+        <WalletProvider>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -69,6 +69,6 @@ export default function App({ Component, pageProps }: AppProps) {
                     </TourProvider>
                 </LocalizationProvider>
             </ThemeProvider>
-        </MeshProvider>
+        </WalletProvider>
     );
 }

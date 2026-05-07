@@ -1,10 +1,9 @@
 import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography, Checkbox } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import RecurringPayment from "../lib/interfaces/RecurringPayment";
-import TransactionUtil from "../lib/util/TransactionUtil";
-import { useWallet } from "@meshsdk/react";
-import { Address } from "@meshsdk/core-cst";
-import { ADAMATIC_HOST, SCRIPT } from "../lib/util/Constants";
+import type { RecurringPayment } from "../src/types/RecurringPayment";
+import { useWallet } from "../src/lib/wallet/useWallet";
+import { getChainAdapter } from "../src/lib/cardano/factory";
+import { ADAMATIC_HOST } from "../src/lib/cardano/constants";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -23,6 +22,8 @@ export default function PaymentsTable(props: { version: number }) {
     const { version } = props;
 
     const { wallet, connected } = useWallet();
+
+    const chainAdapter = getChainAdapter();
 
     const [recurringPaymentDTOs, setRecurringPaymentDTOs] = useState<RecurringPayment[]>([]);
 
@@ -66,12 +67,14 @@ export default function PaymentsTable(props: { version: number }) {
     const reloadPayments = async () => {
         wallet
             .getUsedAddresses()
-            .then((addresses) => {
-                const address = Address.fromBech32(addresses[0])
-                const paymentPubKeyHash = address.asBase()!.getPaymentCredential().hash.toString();
-                return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + paymentPubKeyHash);
+            .then((addresses: string[]) => {
+                const parsed = chainAdapter.parseAddress(addresses[0]);
+                if (!parsed.isValid) {
+                    throw new Error("Could not parse wallet address");
+                }
+                return fetch(ADAMATIC_HOST + '/recurring_payments/public_key_hash/' + parsed.paymentCredentialHash);
             })
-            .then(response => response.json())
+            .then((response: Response) => response.json())
             .then((data: RecurringPayment[]) => {
                 let recurringPaymentDTOs: RecurringPayment[] = [];
                 data.forEach((recurringPayment: any) => {
@@ -95,9 +98,11 @@ export default function PaymentsTable(props: { version: number }) {
 
     const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
         try {
-            const unsignedTx = await TransactionUtil.getUnsignedCancelTx([recurringPaymentDTO], wallet);
-            const signedTx = await wallet.signTx(unsignedTx);
-            const txHash = await wallet.submitTx(signedTx);
+            const txHash = await chainAdapter.buildAndSubmitCancelTx({
+                wallet,
+                payments: [recurringPaymentDTO],
+                scriptHash: "",
+            });
             toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
         } catch (error) {
             toast.error('' + error, { duration: 5000 })
@@ -106,19 +111,20 @@ export default function PaymentsTable(props: { version: number }) {
 
     const bulkCancelRecurringPayments = async () => {
 
-        const paymentsToCancel = recurringPaymentDTOs.filter(payment => 
+        const paymentsToCancel = recurringPaymentDTOs.filter(payment =>
             selectedPayments.has(payment.txHash + payment.output_index)
         );
 
         console.log('num payments to cancel: ' + paymentsToCancel.length);
 
         try {
-            
-            const unsignedTx = await TransactionUtil.getUnsignedCancelTx(paymentsToCancel, wallet);
-            const signedTx = await wallet.signTx(unsignedTx);
-            const txHash = await wallet.submitTx(signedTx);
+            const txHash = await chainAdapter.buildAndSubmitCancelTx({
+                wallet,
+                payments: paymentsToCancel,
+                scriptHash: "",
+            });
             toast.success(`Payment cancelled: ${txHash.substring(0, 10)}...${txHash.substring(txHash.length - 10)}`, { duration: 3000 });
-            
+
             setSelectedPayments(new Set());
             toast.success(`Successfully cancelled ${paymentsToCancel.length} payments`, { duration: 5000 });
         } catch (error) {

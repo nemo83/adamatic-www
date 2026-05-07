@@ -11,11 +11,11 @@ import {
 } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useWallet } from "@meshsdk/react";
-import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
-import { Data, Recipient, Transaction } from "@meshsdk/core";
-import TransactionUtil from "../lib/util/TransactionUtil";
-import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED, SCRIPT, CONSTANTS } from "../lib/util/Constants";
+import { useWallet } from "../src/lib/wallet/useWallet";
+import type { RecurringPaymentDatum } from "../src/types/RecurringPaymentDatum";
+import type { EncodedDatum } from "../src/lib/cardano/ChainAdapter";
+import { getChainAdapter } from "../src/lib/cardano/factory";
+import { ADAMATIC_HOST, HOSKY_TOUR_DISPLAYED } from "../src/lib/cardano/constants";
 import PaymentsTable from "./PaymentsTable";
 import UserInput from "./UserInput";
 import PaymentReceipt from "./PaymentReceipt";
@@ -23,7 +23,7 @@ import PaymentConfirmation from "./PaymentConfirmation";
 import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
-import { Settings } from "../lib/interfaces/AdaMaticTypes";
+import type { Settings } from "../src/types/AdaMaticTypes";
 import NextLink from "next/link";
 import {
     Card,
@@ -74,7 +74,9 @@ export default function SetupRecurringPayment(props: {
     const [walletFromList, setWalletFromList] = useState<string[]>([]);
     const [acceptRisk, setAcceptRisk] = useState<boolean>(false);
     const [acceptFees, setAcceptFees] = useState<boolean>(false);
-    const [datum, setDatum] = useState<Data>();
+    const [datum, setDatum] = useState<EncodedDatum>();
+
+    const chainAdapter = getChainAdapter();
 
     const [isDelegatedToHosky, setIsDelegatedToHosky] = React.useState<boolean>(true);
 
@@ -87,7 +89,7 @@ export default function SetupRecurringPayment(props: {
     useEffect(() => {
         if (connected) {
             try {
-                const datum = TransactionUtil.createDatum(datumDTO);
+                const datum = chainAdapter.encodeSetupDatum(datumDTO);
                 setDatum(datum);
 
                 setPayeeAddress(datumDTO.payee);
@@ -143,9 +145,9 @@ export default function SetupRecurringPayment(props: {
         const balance = await wallet.getBalance();
         const collateralUtxos = await wallet.getCollateral();
 
-        const collateralSum = collateralUtxos.map((utxo) => utxo.output.amount.filter((asset) => asset.unit === "lovelace")[0].quantity).reduce((a, b) => a + parseInt(b), 0);
+        const collateralSum = collateralUtxos.map((utxo: any) => utxo.output.amount.filter((asset: any) => asset.unit === "lovelace")[0].quantity).reduce((a: number, b: string) => a + parseInt(b), 0);
 
-        const adaBalance = parseInt(balance.filter((asset) => asset.unit === "lovelace")[0].quantity) + collateralSum;
+        const adaBalance = parseInt(balance.filter((asset: any) => asset.unit === "lovelace")[0].quantity) + collateralSum;
 
         const minAdaBalance = deposit * walletFromList.length + 10_000_000;
 
@@ -156,29 +158,16 @@ export default function SetupRecurringPayment(props: {
 
         if (wallet && datum) {
             try {
-
-                // initialise tx
-                let tx = new Transaction({ initiator: wallet });
-
-                // Loop through the wallets
-                for (var walletFrom of walletFromList) {
-                    // build script address
-                    const scriptAddress = await TransactionUtil.getScriptAddressWithStakeCredential(wallet, SCRIPT, walletFrom);
-                    // build recipient
-                    const recipient: Recipient = {
-                        address: scriptAddress,
-                        datum: {
-                            value: datum,
-                            inline: true
-                        }
-                    };
-                    // pay to contract
-                    tx = tx.sendLovelace(recipient, String(deposit))
-                }
-
-                const unsignedTx = await tx.build();
-                const signedTx = await wallet.signTx(unsignedTx);
-                const txHash = await wallet.submitTx(signedTx);
+                const txHash = await chainAdapter.buildAndSubmitSetupTx({
+                    wallet,
+                    walletFromList,
+                    depositLovelace: deposit,
+                    datum,
+                    // Phase B: Mesh adapter computes the script address from the
+                    // hardcoded SCRIPT and ignores `scriptHash`. Phase C will pass
+                    // the BE manifest's `finalHash` here.
+                    scriptHash: "",
+                });
                 setTxHash(txHash);
                 toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
             } catch (error) {

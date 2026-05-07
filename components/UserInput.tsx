@@ -1,4 +1,4 @@
-import RecurringPaymentDatum from "../lib/interfaces/RecurringPaymentDatum";
+import type { RecurringPaymentDatum } from "../src/types/RecurringPaymentDatum";
 import {
     Avatar,
     Button, Checkbox, Chip,
@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { Add, Delete } from "@mui/icons-material";
-import AssetAmount from "../lib/interfaces/AssetAmount";
+import type { AssetAmount } from "../src/types/AssetAmount";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { ADAMATIC_HOST, CONSTANTS } from "../lib/util/Constants";
-import { useWallet } from "@meshsdk/react";
-import { Address, AddressType, NetworkId, Credential } from "@meshsdk/core-cst";
-import { HoskyTemplate } from "../lib/interfaces/AdaMaticTypes";
+import { ADAMATIC_HOST, CONSTANTS } from "../src/lib/cardano/constants";
+import { useWallet } from "../src/lib/wallet/useWallet";
+import { getChainAdapter } from "../src/lib/cardano/factory";
+import type { HoskyTemplate } from "../src/types/AdaMaticTypes";
 
 const MAX_PULLS = 50;
 
@@ -66,32 +66,22 @@ export default function UserInput(props: {
     // Track validation status for each wallet address
     const [validationStatus, setValidationStatus] = React.useState<{ [address: string]: { isValid: boolean, error: string } }>({});
 
-    // Validate Cardano address format
+    const chainAdapter = getChainAdapter();
+
+    // Validate Cardano address format via the chain adapter (Mesh in Phase B,
+    // Evolution in Phase C). UI accepts base + reward addresses for staking.
     const validateCardanoAddress = (address: string): { isValid: boolean, error: string } => {
-
         if (!address || address.trim() === "") {
-            return { isValid: false, error: "" }; // Empty is not an error, just not valid
+            return { isValid: false, error: "" };
         }
-
-        try {
-            // Use MeshSDK to validate the address format
-            const parsedAddress = Address.fromBech32(address.trim());
-            const addressType = parsedAddress.getType();
-
-            // Check if it's a valid base address or enterprise address (common for staking)
-            if (addressType === AddressType.BasePaymentKeyStakeKey ||
-                addressType === AddressType.BasePaymentScriptStakeKey ||
-                addressType === AddressType.BasePaymentKeyStakeScript ||
-                addressType === AddressType.BasePaymentScriptStakeScript ||
-                addressType === AddressType.RewardKey ||
-                addressType === AddressType.RewardScript) {
-                return { isValid: true, error: "" };
-            } else {
-                return { isValid: false, error: "Unsupported address type" };
-            }
-        } catch (error) {
-            return { isValid: false, error: "Invalid Cardano address format" };
+        const parsed = chainAdapter.parseAddress(address.trim());
+        if (!parsed.isValid) {
+            return { isValid: false, error: parsed.error ?? "Invalid Cardano address format" };
         }
+        if (parsed.kind === "enterprise") {
+            return { isValid: false, error: "Unsupported address type" };
+        }
+        return { isValid: true, error: "" };
     };
 
     // Initialize with at least one empty address field
@@ -159,9 +149,10 @@ export default function UserInput(props: {
 
     useEffect(() => {
         if (connected) {
-            wallet.getUsedAddresses().then((addresses) => {
-                const address = Address.fromBech32(addresses[0])
-                const userWallet = address.asBase()!.toAddress().toBech32().toString();
+            wallet.getUsedAddresses().then((addresses: string[]) => {
+                const parsed = chainAdapter.parseAddress(addresses[0]);
+                if (!parsed.isValid) return;
+                const userWallet = parsed.bech32;
                 setOwner(userWallet);
                 if (walletFromList.length > 0 && walletFromList[0] === "") {
                     const newWalletFromList = [userWallet, ...walletFromList.slice(1)];
@@ -227,9 +218,10 @@ export default function UserInput(props: {
 
     useEffect(() => {
 
+        const ownerPkh = owner ? chainAdapter.parseAddress(owner).paymentCredentialHash : "";
         const newDatumDTO = {
             ...datumDTO,
-            ownerPaymentPubKeyHash: owner ? Address.fromBech32(owner).asBase()!.getPaymentCredential().hash.toString() : "",
+            ownerPaymentPubKeyHash: ownerPkh,
             amountToSend: [{ policyId: "", assetName: "", amount: 2000000 }],
             payee,
             startTime: startTime!.valueOf(),
