@@ -1,4 +1,4 @@
-import type { RecurringPaymentDatum } from "../src/types/RecurringPaymentDatum";
+import type { RecurringPaymentDatum } from "../../../types/RecurringPaymentDatum";
 import {
     Avatar,
     Button, Checkbox, Chip,
@@ -12,21 +12,22 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { Add, Delete } from "@mui/icons-material";
-import type { AssetAmount } from "../src/types/AssetAmount";
+import type { AssetAmount } from "../../../types/AssetAmount";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
-import { CONSTANTS } from "../src/lib/cardano/constants";
-import { useWallet } from "../src/lib/wallet/useWallet";
-import { getChainAdapter } from "../src/lib/cardano/factory";
+import { CONSTANTS } from "../../../lib/cardano/constants";
+import { useWallet } from "../../../lib/wallet/useWallet";
+import { getChainAdapter } from "../../../lib/cardano/factory";
 import {
     fetchHoskyTemplate,
     fetchIsDelegatedToHosky,
-} from "../src/lib/api/adamatic";
-import type { HoskyTemplate } from "../src/types/AdaMaticTypes";
+} from "../../../lib/api/adamatic";
+import type { HoskyTemplate } from "../../../types/AdaMaticTypes";
+import type { PaymentMode } from "../mode";
 
 const MAX_PULLS = 50;
 
-export default function UserInput(props: {
+export default function PaymentForm(props: {
     deposit: number,
     setDeposit: (deposit: number) => void,
     walletFromList: string[],
@@ -39,10 +40,11 @@ export default function UserInput(props: {
     setDatumDTO: (userInput: RecurringPaymentDatum) => void,
     isDelegatedToHosky: boolean,
     setIsDelegatedToHosky: (isDelegatedHosky: boolean) => void,
-    isHoskyInput: boolean
+    mode: PaymentMode
 }) {
 
-    const { deposit, setDeposit, walletFromList, setWalletFromList, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isDelegatedToHosky, setIsDelegatedToHosky, isHoskyInput } = props;
+    const { deposit, setDeposit, walletFromList, setWalletFromList, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isDelegatedToHosky, setIsDelegatedToHosky, mode } = props;
+    const isHoskyInput = mode === "hosky";
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 

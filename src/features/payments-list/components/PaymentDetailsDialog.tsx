@@ -14,8 +14,8 @@ import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 import UploadIcon from '@mui/icons-material/Upload';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Box, Button, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
-import { fetchPaymentDetails } from "../src/lib/api/adamatic";
-import type { PaymentDetails, TransactionDetail } from "../src/types/AdaMaticTypes";
+import { fetchPaymentDetails } from "../../../lib/api/adamatic";
+import type { PaymentDetails, TransactionDetail } from "../../../types/AdaMaticTypes";
 import dayjs from "dayjs";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({

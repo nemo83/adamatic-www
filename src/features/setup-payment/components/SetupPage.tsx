@@ -11,21 +11,22 @@ import {
 } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useWallet } from "../src/lib/wallet/useWallet";
-import type { RecurringPaymentDatum } from "../src/types/RecurringPaymentDatum";
-import type { EncodedDatum } from "../src/lib/cardano/ChainAdapter";
-import { getChainAdapter } from "../src/lib/cardano/factory";
-import { useScriptByName } from "../src/lib/cardano/ScriptContext";
-import { fetchSettings } from "../src/lib/api/adamatic";
-import { HOSKY_TOUR_DISPLAYED } from "../src/lib/cardano/constants";
-import PaymentsTable from "./PaymentsTable";
-import UserInput from "./UserInput";
+import { useWallet } from "../../../lib/wallet/useWallet";
+import type { RecurringPaymentDatum } from "../../../types/RecurringPaymentDatum";
+import type { EncodedDatum } from "../../../lib/cardano/ChainAdapter";
+import { getChainAdapter } from "../../../lib/cardano/factory";
+import { useScriptByName } from "../../../lib/cardano/ScriptContext";
+import { fetchSettings } from "../../../lib/api/adamatic";
+import { HOSKY_TOUR_DISPLAYED } from "../../../lib/cardano/constants";
+import type { PaymentMode } from "../mode";
+import PaymentsTable from "../../payments-list/components/PaymentsTable";
+import PaymentForm from "./PaymentForm";
 import PaymentReceipt from "./PaymentReceipt";
-import PaymentConfirmation from "./PaymentConfirmation";
+import SubmitPanel from "./SubmitPanel";
 import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
-import type { Settings } from "../src/types/AdaMaticTypes";
+import type { Settings } from "../../../types/AdaMaticTypes";
 import NextLink from "next/link";
 import {
     Card,
@@ -39,11 +40,11 @@ import SecurityIcon from '@mui/icons-material/Security';
 import SavingsIcon from '@mui/icons-material/Savings';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import Hero from "./Hero";
+import Hero from "../../../../components/Hero";
 
-export default function SetupRecurringPayment(props: {
+export default function SetupPage(props: {
     isValidNetwork: boolean,
-    hoskyInput: boolean,
+    mode: PaymentMode,
 }) {
 
     const isDebugMode = false;
@@ -66,7 +67,7 @@ export default function SetupRecurringPayment(props: {
         }
     }, []);
 
-    const { isValidNetwork, hoskyInput } = props;
+    const { isValidNetwork, mode } = props;
     const { wallet, connected } = useWallet();
 
     const [txHash, setTxHash] = useState<string>("");
@@ -231,7 +232,7 @@ export default function SetupRecurringPayment(props: {
                         <Chip label="Setup Your Payment" color="primary" />
                     </Divider> */}
 
-                    <UserInput
+                    <PaymentForm
                         deposit={deposit}
                         setDeposit={setDeposit}
                         walletFromList={walletFromList}
@@ -244,7 +245,7 @@ export default function SetupRecurringPayment(props: {
                         setDatumDTO={setDatumDTO}
                         isDelegatedToHosky={isDelegatedToHosky}
                         setIsDelegatedToHosky={setIsDelegatedToHosky}
-                        isHoskyInput={hoskyInput}
+                        mode={mode}
                     />
 
                     {/* Payment Receipt Section */}
@@ -260,7 +261,7 @@ export default function SetupRecurringPayment(props: {
 
                     {/* Confirmation Section */}
                     {connected && (
-                        <PaymentConfirmation
+                        <SubmitPanel
                             acceptRisk={acceptRisk}
                             setAcceptRisk={setAcceptRisk}
                             acceptFees={acceptFees}

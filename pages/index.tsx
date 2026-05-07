@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useWallet } from "../src/lib/wallet/useWallet";
-import SetupRecurringPayment from "../components/SetupRecurringPayment";
+import SetupPage from "../src/features/setup-payment/components/SetupPage";
 import { NETWORK_ID } from "../src/lib/cardano/constants";
 
 
@@ -17,6 +17,6 @@ export default function Home() {
     }, [connected, networkId]);
 
     return (
-        <SetupRecurringPayment isValidNetwork={validNetwork} hoskyInput={true} />
+        <SetupPage isValidNetwork={validNetwork} mode="hosky" />
     );
 }

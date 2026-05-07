@@ -1,10 +1,10 @@
 import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography, Checkbox } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import type { RecurringPayment } from "../src/types/RecurringPayment";
-import { useWallet } from "../src/lib/wallet/useWallet";
-import { getChainAdapter } from "../src/lib/cardano/factory";
-import { useScriptByName } from "../src/lib/cardano/ScriptContext";
-import { fetchRecurringPaymentsByPkh } from "../src/lib/api/adamatic";
+import type { RecurringPayment } from "../../../types/RecurringPayment";
+import { useWallet } from "../../../lib/wallet/useWallet";
+import { getChainAdapter } from "../../../lib/cardano/factory";
+import { useScriptByName } from "../../../lib/cardano/ScriptContext";
+import { fetchRecurringPaymentsByPkh } from "../../../lib/api/adamatic";
 import dayjs from "dayjs";
 import DeleteIcon from '@mui/icons-material/Delete';
 import LaunchIcon from '@mui/icons-material/Launch';

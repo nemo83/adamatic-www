@@ -13,7 +13,7 @@ import {
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import toast from 'react-hot-toast';
-import { CONSTANTS } from '../src/lib/cardano/constants';
+import { CONSTANTS } from '../../../lib/cardano/constants';
 
 interface PaymentReceiptProps {
     payeeAddress: string;
