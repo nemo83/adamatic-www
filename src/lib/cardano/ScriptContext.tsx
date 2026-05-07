@@ -23,6 +23,8 @@ import React, {
     useState,
 } from "react";
 import { fetchScripts } from "../api/adamatic";
+import { fallbackForNetwork } from "./scriptManifestFallback";
+import { NETWORK } from "./constants";
 
 export interface ScriptParameter {
     title: string;
@@ -76,9 +78,22 @@ export const ScriptProvider: React.FC<{ children: React.ReactNode }> = ({
         setError(null);
         fetchScripts()
             .then((data) => {
-                if (!cancelled) {
-                    if (data) setManifest(data);
-                    else setError("Failed to fetch scripts manifest");
+                if (cancelled) return;
+                if (data) {
+                    setManifest(data);
+                    return;
+                }
+                // BE unreachable / 404 → fall back to the bundled manifest
+                // so the FE keeps working until the BE catches up.
+                const fb = fallbackForNetwork(NETWORK);
+                if (fb) {
+                    console.warn(
+                        "Scripts manifest fetch failed — using bundled fallback for network",
+                        NETWORK,
+                    );
+                    setManifest(fb);
+                } else {
+                    setError("Failed to fetch scripts manifest");
                 }
             })
             .finally(() => {
