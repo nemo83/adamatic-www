@@ -54,20 +54,14 @@ export default function PaymentsTable(props: { version: number }) {
     }, [version]);
 
     useEffect(() => {
-
-        setCurrentPage(1); // Reset to first page when data reloads
-
-        const totalPages = Math.ceil(recurringPaymentDTOs.length / itemsPerPage);
-        setTotalPages(totalPages);
-
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        setStartIndex(startIndex);
-
-        const endIndex = startIndex + itemsPerPage;
-        setEndIndex(endIndex);
-
-        setCurrentPageData(recurringPaymentDTOs.slice(startIndex, endIndex));
-    }, [recurringPaymentDTOs]);
+        // Reset to first page when data reloads. Slice off page 1 directly
+        // — don't read stale `currentPage` from the closure.
+        setCurrentPage(1);
+        setStartIndex(0);
+        setEndIndex(itemsPerPage);
+        setTotalPages(Math.ceil(recurringPaymentDTOs.length / itemsPerPage));
+        setCurrentPageData(recurringPaymentDTOs.slice(0, itemsPerPage));
+    }, [recurringPaymentDTOs, itemsPerPage]);
 
     const reloadPayments = async () => {
         wallet
@@ -298,7 +292,7 @@ export default function PaymentsTable(props: { version: number }) {
                                             target="_blank"
                                             rel="noopener"
                                             endIcon={<LaunchIcon />}>
-                                            {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.payee.length - 5)}
+                                            {row.staking_address.substring(0, 10) + "..." + row.staking_address.substring(row.staking_address.length - 5)}
                                         </Button>
                                     </TableCell>
                                     <TableCell>{row.paymentStatus == 'SCHEDULED' ? row.startTime.format("YYYY-MM-DD HH:mm:ss") : "-"}</TableCell>

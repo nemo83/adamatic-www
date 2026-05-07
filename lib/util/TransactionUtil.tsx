@@ -43,9 +43,13 @@ class TxBuilderSingleton {
         if (!TxBuilderSingleton.instance) {
             TxBuilderSingleton.instance = new MeshTxBuilder({
                 fetcher: blockchainProvider,
-                evaluator: blockchainProvider
+                evaluator: blockchainProvider,
             });
-            TxBuilderSingleton.instance.setNetwork("mainnet");
+            // Respect NEXT_PUBLIC_CARDANO_NETWORK so Preprod doesn't silently
+            // submit to mainnet. Removed in Phase D when we drop Mesh.
+            const net = (process.env.NEXT_PUBLIC_CARDANO_NETWORK ??
+                "mainnet") as "mainnet" | "preprod" | "preview" | "testnet";
+            TxBuilderSingleton.instance.setNetwork(net);
         }
         return TxBuilderSingleton.instance;
     }
