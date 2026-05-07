@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { useWallet } from "./useWallet";
+import { useTranslations } from "../i18n/I18nProvider";
 
 function shortBech32(addr: string): string {
     if (addr.length <= 16) return addr;
@@ -34,6 +35,7 @@ export function WalletButton() {
         connecting,
         walletId,
     } = useWallet();
+    const t = useTranslations();
     const [open, setOpen] = useState(false);
 
     const handleConnect = async (id: string) => {
@@ -79,16 +81,14 @@ export function WalletButton() {
                         "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
                 }}
             >
-                Connect Wallet
+                {t("wallet.connect")}
             </Button>
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
-                <DialogTitle>Connect a Cardano Wallet</DialogTitle>
+                <DialogTitle>{t("wallet.pickerTitle")}</DialogTitle>
                 <DialogContent dividers>
                     {installedWallets.length === 0 ? (
                         <Typography variant="body2" color="text.secondary">
-                            No CIP-30 wallets detected. Install Eternl, Lace,
-                            Nami, Typhon, or another Cardano wallet extension
-                            and reload the page.
+                            {t("wallet.noExtensions")}
                         </Typography>
                     ) : (
                         <List>

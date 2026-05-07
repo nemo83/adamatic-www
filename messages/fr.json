@@ -1,0 +1,54 @@
+{
+  "app": {
+    "title": "AdaMatic",
+    "tagline": "Paiements récurrents automatisés sur Cardano",
+    "beta": "bêta"
+  },
+  "nav": {
+    "payments": "Paiements",
+    "faq": "FAQ",
+    "github": "GitHub"
+  },
+  "wallet": {
+    "connect": "Connecter le portefeuille",
+    "connected": "Portefeuille correctement connecté",
+    "networkMismatch": "Tentative de connexion au mauvais réseau — veuillez vous connecter à {network}",
+    "noExtensions": "Aucun portefeuille CIP-30 détecté. Installez Eternl, Lace, Nami, Typhon, ou une autre extension de portefeuille Cardano puis rechargez la page.",
+    "pickerTitle": "Connecter un portefeuille Cardano"
+  },
+  "tx": {
+    "submitted": "Transaction soumise : {hash}",
+    "failed": "Échec de la transaction",
+    "scriptsNotLoaded": "Le manifeste des scripts n’est pas encore chargé. Veuillez réessayer dans un instant."
+  },
+  "locale": {
+    "switcher": "Langue",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "ja": "日本語"
+  },
+  "faq": {
+    "q1": {
+      "question": "Dois-je obligatoirement utiliser le portefeuille délégué à une Rugpool Hosky ?",
+      "answer": "Non ! Vous pouvez utiliser n’importe quel portefeuille pour configurer les paiements. La recommandation est d’utiliser un petit portefeuille « chaud » et de renseigner dans le champ « Adresse de paiement ou de staking » l’adresse du portefeuille pour lequel vous souhaitez collecter les récompenses."
+    },
+    "q2": {
+      "question": "Où recevrai-je mes récompenses Hosky ?",
+      "answer": "Vous recevrez les récompenses Hosky sur le portefeuille pour lequel vous les avez réclamées. Que vous ayez utilisé le portefeuille délégué ou un autre petit portefeuille chaud, les récompenses seront envoyées par le Hosky Doggiebowl à l’adresse du portefeuille délégué."
+    },
+    "q3": {
+      "question": "Combien de retraits automatiques puis-je configurer ?",
+      "answer": "Vous pouvez configurer autant de retraits automatiques que vous le souhaitez. Il est recommandé de tous les configurer depuis le même petit portefeuille chaud — ainsi ils apparaîtront ensemble dans la page des paiements AdaMatic."
+    },
+    "q4": {
+      "question": "J’ai un petit portefeuille — comment rendre les retraits rentables ?",
+      "answer": "Le Hosky Doggie Bowl permet aux récompenses de s’accumuler jusqu’à un certain montant. AdaMatic vous permet de définir la fréquence des retraits en nombre d’époques. Nous vous recommandons de faire vos propres calculs pour trouver la fréquence idéale !"
+    },
+    "q5": {
+      "question": "À quel moment les récompenses Hosky sont-elles réclamées ?",
+      "answer": "Par défaut, AdaMatic envoie les paiements de 2 ADA au Hosky Doggie Bowl environ 48 heures après le début de l’époque. Cela laisse à Hosky le temps de tout préparer et aux utilisateurs la possibilité de réclamer manuellement en cas de problème."
+    }
+  }
+}

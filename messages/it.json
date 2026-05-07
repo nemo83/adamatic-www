@@ -1,0 +1,54 @@
+{
+  "app": {
+    "title": "AdaMatic",
+    "tagline": "Pagamenti ricorrenti automatizzati su Cardano",
+    "beta": "beta"
+  },
+  "nav": {
+    "payments": "Pagamenti",
+    "faq": "FAQ",
+    "github": "GitHub"
+  },
+  "wallet": {
+    "connect": "Connetti wallet",
+    "connected": "Wallet connesso correttamente",
+    "networkMismatch": "Tentativo di connessione alla rete sbagliata — connettiti a {network}",
+    "noExtensions": "Nessun wallet CIP-30 rilevato. Installa Eternl, Lace, Nami, Typhon o un’altra estensione wallet Cardano e ricarica la pagina.",
+    "pickerTitle": "Connetti un wallet Cardano"
+  },
+  "tx": {
+    "submitted": "Transazione inviata: {hash}",
+    "failed": "Transazione fallita",
+    "scriptsNotLoaded": "Il manifesto degli script non è ancora caricato. Riprova tra un istante."
+  },
+  "locale": {
+    "switcher": "Lingua",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "ja": "日本語"
+  },
+  "faq": {
+    "q1": {
+      "question": "Devo necessariamente usare il wallet delegato a una Rugpool Hosky?",
+      "answer": "No! Puoi usare qualsiasi wallet per configurare i pagamenti. La raccomandazione è usare un piccolo hot wallet e impostare nel campo «Indirizzo di pagamento o di staking» l’indirizzo del wallet per cui vuoi raccogliere le ricompense."
+    },
+    "q2": {
+      "question": "Dove riceverò le mie ricompense Hosky?",
+      "answer": "Riceverai le ricompense Hosky nel wallet per cui le hai reclamate. Indipendentemente dal fatto che tu abbia usato il wallet delegato o un piccolo hot wallet diverso, le ricompense vengono inviate dal Hosky Doggiebowl all’indirizzo del wallet delegato."
+    },
+    "q3": {
+      "question": "Quanti prelievi automatici posso impostare?",
+      "answer": "Puoi impostare quanti prelievi automatici vuoi. La raccomandazione è impostarli tutti dallo stesso piccolo hot wallet, così appariranno insieme nella pagina dei pagamenti AdaMatic."
+    },
+    "q4": {
+      "question": "Ho un wallet piccolo — come faccio a rendere conveniente il prelievo delle ricompense?",
+      "answer": "Il Hosky Doggie Bowl permette alle ricompense di accumularsi fino a una certa soglia. AdaMatic ti permette di impostare la frequenza dei prelievi in epoche. Ti consigliamo di fare i tuoi conti per individuare la frequenza ideale!"
+    },
+    "q5": {
+      "question": "A che ora vengono reclamate le ricompense Hosky?",
+      "answer": "Per ora AdaMatic è configurato per inviare i pagamenti da 2 ADA al Hosky Doggie Bowl circa 48 ore dopo l’inizio dell’epoca. Questo dà a Hosky il tempo di organizzarsi e agli utenti la possibilità di reclamare manualmente in caso di problemi."
+    }
+  }
+}

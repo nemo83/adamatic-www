@@ -1,7 +1,9 @@
 import { AppBar, Box, Toolbar, Typography, Button, Stack } from "@mui/material";
 import { useWallet } from "../src/lib/wallet/useWallet";
 import { WalletButton } from "../src/lib/wallet/WalletButton";
-import React, { useState, useEffect } from "react";
+import { useTranslations } from "../src/lib/i18n/I18nProvider";
+import { LocaleSwitcher } from "../src/lib/i18n/LocaleSwitcher";
+import React, { useEffect } from "react";
 import { NETWORK, NETWORK_ID } from "../src/lib/cardano/constants";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -11,17 +13,18 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 export default function Navbar() {
 
     const { connected, networkId } = useWallet();
+    const t = useTranslations();
 
     useEffect(() => {
         if (connected && networkId !== null) {
             const isValidNetwork = String(networkId) === NETWORK_ID;
             if (isValidNetwork) {
-                toast.success("Wallet correctly connected");
+                toast.success(t("wallet.connected"));
             } else {
-                toast.error("Trying to connect to wrong network, please connect to " + NETWORK);
+                toast.error(t("wallet.networkMismatch", { network: NETWORK ?? "" }));
             }
         }
-    }, [connected, networkId]);
+    }, [connected, networkId, t]);
 
     return (
         <Box >
@@ -99,7 +102,7 @@ export default function Navbar() {
                                             mt: { xs: 0, sm: 0.5 }
                                         }}
                                     >
-                                        beta
+                                        {t("app.beta")}
                                     </Typography>
                                 </Typography>
                             </Box>
@@ -115,12 +118,12 @@ export default function Navbar() {
                         >
                             <Link href="/" passHref>
                                 <Button color="inherit" sx={{ textTransform: 'none' }}>
-                                    Payments
+                                    {t("nav.payments")}
                                 </Button>
                             </Link>
                             <Link href="/faq" passHref>
                                 <Button color="inherit" sx={{ textTransform: 'none' }}>
-                                    FAQ
+                                    {t("nav.faq")}
                                 </Button>
                             </Link>
                             <Button
@@ -131,13 +134,16 @@ export default function Navbar() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                GitHub
+                                {t("nav.github")}
                             </Button>
                         </Stack>
                     </Box>
-                    <Box data-tut="step-0">
-                        <WalletButton />
-                    </Box>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                        <LocaleSwitcher />
+                        <Box data-tut="step-0">
+                            <WalletButton />
+                        </Box>
+                    </Stack>
                 </Toolbar>
             </AppBar>
         </Box>

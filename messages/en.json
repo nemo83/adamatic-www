@@ -1,0 +1,54 @@
+{
+  "app": {
+    "title": "AdaMatic",
+    "tagline": "Automated recurring payments on Cardano",
+    "beta": "beta"
+  },
+  "nav": {
+    "payments": "Payments",
+    "faq": "FAQ",
+    "github": "GitHub"
+  },
+  "wallet": {
+    "connect": "Connect Wallet",
+    "connected": "Wallet correctly connected",
+    "networkMismatch": "Trying to connect to wrong network, please connect to {network}",
+    "noExtensions": "No CIP-30 wallets detected. Install Eternl, Lace, Nami, Typhon, or another Cardano wallet extension and reload the page.",
+    "pickerTitle": "Connect a Cardano Wallet"
+  },
+  "tx": {
+    "submitted": "Transaction submitted: {hash}",
+    "failed": "Transaction failed",
+    "scriptsNotLoaded": "Scripts manifest not loaded yet. Please retry shortly."
+  },
+  "locale": {
+    "switcher": "Language",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "ja": "日本語"
+  },
+  "faq": {
+    "q1": {
+      "question": "Do I need to necessarily use the wallet delegated to a Hosky Rugpool?",
+      "answer": "No! You can use any wallet to setup payments. In fact the recommendation is to use a small hot wallet, and to set up in the 'Payment or Staking reward address' the address of the wallet you want to collect the rewards for."
+    },
+    "q2": {
+      "question": "Where will I receive my Hosky rewards?",
+      "answer": "You will receive the Hosky rewards in the wallet you claimed the rewards for. In fact, regardless of whether you used the delegated wallet or a different small hot wallet, rewards will be sent by the Hosky Doggiebowl to the address of the delegated wallet."
+    },
+    "q3": {
+      "question": "How many automatic pulls can I setup?",
+      "answer": "You can setup as many auto-pulls as you want. Recommendation would be to set them up all from the same small hot wallet, so they will appear to you all together in the adamatic payment page."
+    },
+    "q4": {
+      "question": "I have a small wallet, how can I still make it worth to pull rewards?",
+      "answer": "Hosky Doggie bowl allows rewards to stack up to a certain amount. Adamatic allows you to set the pull frequency in term of epochs. We recommend to make your own calculations to come up with the ideal epoch frequency!"
+    },
+    "q5": {
+      "question": "At what time are the Hosky rewards claimed?",
+      "answer": "By default, and for the time being, AdaMatic is configured to send the 2 ada payments to the Hosky doggie bowl about 48 hours from the beginning of the epoch. This gives enough time to Hosky to get their poop together and to users to manually claim rewards in case of issues."
+    }
+  }
+}
