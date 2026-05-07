@@ -2,6 +2,12 @@ import { Box, Container, Typography, Link, Stack, Divider } from "@mui/material"
 import GitHubIcon from '@mui/icons-material/GitHub';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
+// Pin link color across :link/:visited/:hover/:active so the user-agent
+// purple visited color never leaks through.
+const pinInherit = {
+    '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
+};
+
 export default function Footer() {
     return (
         <Box
@@ -39,18 +45,19 @@ export default function Footer() {
                                 Navigation
                             </Typography>
                             <Stack spacing={1}>
-                                <Link href="/" color="inherit" underline="hover">
+                                <Link href="/" color="inherit" underline="hover" sx={pinInherit}>
                                     Automatic Payments
                                 </Link>
-                                <Link href="/faq" color="inherit" underline="hover">
+                                <Link href="/faq" color="inherit" underline="hover" sx={pinInherit}>
                                     FAQ
                                 </Link>
-                                <Link 
-                                    href="https://github.com/easy1staking-com/cardano-recurring-payment" 
-                                    color="inherit" 
+                                <Link
+                                    href="https://github.com/easy1staking-com/cardano-recurring-payment"
+                                    color="inherit"
                                     underline="hover"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    sx={pinInherit}
                                 >
                                     GitHub Repository
                                 </Link>
@@ -63,30 +70,33 @@ export default function Footer() {
                                 Resources
                             </Typography>
                             <Stack spacing={1}>
-                                <Link 
-                                    href="https://cardanoscan.io" 
-                                    color="inherit" 
+                                <Link
+                                    href="https://cardanoscan.io"
+                                    color="inherit"
                                     underline="hover"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    sx={pinInherit}
                                 >
                                     Cardano Explorer
                                 </Link>
-                                <Link 
-                                    href="https://cardano.org" 
-                                    color="inherit" 
+                                <Link
+                                    href="https://cardano.org"
+                                    color="inherit"
                                     underline="hover"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    sx={pinInherit}
                                 >
                                     Cardano.org
                                 </Link>
-                                <Link 
-                                    href="https://meshjs.dev" 
-                                    color="inherit" 
+                                <Link
+                                    href="https://meshjs.dev"
+                                    color="inherit"
                                     underline="hover"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    sx={pinInherit}
                                 >
                                     MeshJS
                                 </Link>
@@ -126,7 +136,10 @@ export default function Footer() {
                                 underline="hover"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                sx={{ fontWeight: 'bold' }}
+                                sx={{
+                                    fontWeight: 'bold',
+                                    '&, &:link, &:visited, &:hover, &:active': { color: 'secondary.light' },
+                                }}
                             >
                                 Easy1Staking
                             </Link>

@@ -39,17 +39,24 @@ export default function Navbar() {
 
 
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Link href="/" passHref>
-                            <Box sx={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
+                        <Box
+                            component={Link}
+                            href="/"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
                                 gap: 1.5,
                                 cursor: 'pointer',
                                 textDecoration: 'none',
-                                color: 'inherit',
+                                // Pin the anchor color across :link/:visited/:hover/:active
+                                // so the user-agent purple never leaks through.
+                                '&, &:link, &:visited, &:hover, &:active': {
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                },
                                 '&:hover': {
                                     transform: 'scale(1.02)',
-                                    transition: 'transform 0.2s ease-in-out'
+                                    transition: 'transform 0.2s ease-in-out',
                                 }
                             }}>
                                 <Box sx={{
@@ -105,10 +112,9 @@ export default function Navbar() {
                                         {t("app.beta")}
                                     </Typography>
                                 </Typography>
-                            </Box>
-                        </Link>
-                        
-                        <Stack 
+                        </Box>
+
+                        <Stack
                             direction="row" 
                             spacing={1} 
                             sx={{ 
@@ -116,20 +122,35 @@ export default function Navbar() {
                                 ml: 4 
                             }}
                         >
-                            <Link href="/" passHref>
-                                <Button color="inherit" sx={{ textTransform: 'none' }}>
-                                    {t("nav.payments")}
-                                </Button>
-                            </Link>
-                            <Link href="/faq" passHref>
-                                <Button color="inherit" sx={{ textTransform: 'none' }}>
-                                    {t("nav.faq")}
-                                </Button>
-                            </Link>
+                            <Button
+                                component={Link}
+                                href="/"
+                                color="inherit"
+                                sx={{
+                                    textTransform: 'none',
+                                    '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
+                                }}
+                            >
+                                {t("nav.payments")}
+                            </Button>
+                            <Button
+                                component={Link}
+                                href="/faq"
+                                color="inherit"
+                                sx={{
+                                    textTransform: 'none',
+                                    '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
+                                }}
+                            >
+                                {t("nav.faq")}
+                            </Button>
                             <Button
                                 color="inherit"
                                 startIcon={<GitHubIcon />}
-                                sx={{ textTransform: 'none' }}
+                                sx={{
+                                    textTransform: 'none',
+                                    '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
+                                }}
                                 href="https://github.com/easy1staking-com/cardano-recurring-payment"
                                 target="_blank"
                                 rel="noopener noreferrer"

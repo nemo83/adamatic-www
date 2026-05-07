@@ -45,16 +45,16 @@ export default function PaymentsTable(props: { version: number }) {
 
     const [selectedPayments, setSelectedPayments] = useState<Set<string>>(new Set());
 
+    // Trigger on `walletAddress`, not `connected` — `connected` flips true
+    // a tick before the bech32 address resolves on auto-reconnect, so a
+    // `connected`-only effect would fire with `walletAddress === null` and
+    // bail out before the manifest catches up.
     useEffect(() => {
-        if (connected) {
+        if (walletAddress) {
             reloadPayments();
         }
-    }, [connected]);
-
-    useEffect(() => {
-        console.log('version: ' + version);
-        reloadPayments();
-    }, [version]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [walletAddress, version]);
 
     useEffect(() => {
         // Reset to first page when data reloads. Slice off page 1 directly

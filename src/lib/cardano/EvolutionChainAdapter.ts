@@ -6,7 +6,6 @@
  * The cancel path applies parameters client-side (inline-script tx) since
  * the BE doesn't expose a reference-script UTxO yet.
  */
-import * as Evo from "@evolution-sdk/evolution";
 import {
     Address,
     AddressEras,
@@ -20,6 +19,7 @@ import {
     PlutusV1,
     PlutusV2,
     PlutusV3,
+    RewardAccount,
     ScriptHash,
     TransactionHash,
     TransactionInput,
@@ -29,19 +29,6 @@ import {
     preview,
     type Chain,
 } from "@evolution-sdk/evolution";
-
-// `RewardAccount` is fetched off the namespace import to dodge the type-check
-// error when the export isn't surfaced in older typings — used as a fallback
-// for stake/reward addresses where `Address.fromBech32` rejects the bech32.
-const RewardAccount = (
-    Evo as unknown as {
-        RewardAccount?: {
-            fromBech32?: (s: string) => {
-                stakeCredential: { hash: Uint8Array };
-            };
-        };
-    }
-).RewardAccount;
 import type {
     BuildCancelContext,
     BuildSetupContext,
@@ -101,20 +88,20 @@ export function deriveScriptAddressBech32(
 
 function extractStakeCredentialHex(bech32: string): string | null {
     try {
-        const addr = Address.fromBech32(bech32);
-        if (!addr.stakingCredential) return null;
-        return Bytes.toHex(
-            (addr.stakingCredential as { hash: Uint8Array }).hash,
-        );
-    } catch {
-        try {
-            if (RewardAccount?.fromBech32) {
-                const reward = RewardAccount.fromBech32(bech32);
-                return Bytes.toHex(reward.stakeCredential.hash);
-            }
-        } catch {
-            /* fallthrough */
+        const parsed = AddressEras.fromBech32(bech32);
+        switch (parsed._tag) {
+            case "BaseAddress":
+                return Bytes.toHex(
+                    (parsed.stakeCredential as { hash: Uint8Array }).hash,
+                );
+            case "RewardAccount":
+                return Bytes.toHex(
+                    (parsed.stakeCredential as { hash: Uint8Array }).hash,
+                );
+            default:
+                return null;
         }
+    } catch {
         return null;
     }
 }
@@ -145,46 +132,60 @@ class EvolutionAdapter implements ChainAdapter {
                 isValid: false,
             };
         }
+        const trimmed = bech32.trim();
         try {
-            const addr = Address.fromBech32(bech32.trim());
-            const hasStake = addr.stakingCredential !== undefined;
-            const kind: ParsedAddress["kind"] = hasStake ? "base" : "enterprise";
-            return {
-                bech32: Address.toBech32(addr),
-                paymentCredentialHash: credentialHex(addr.paymentCredential),
-                stakeCredentialHash: hasStake
-                    ? credentialHex(addr.stakingCredential!)
-                    : undefined,
-                kind,
-                isValid: true,
-            };
-        } catch {
-            /* fall through */
-        }
-
-        try {
-            if (RewardAccount?.fromBech32) {
-                const reward = RewardAccount.fromBech32(bech32.trim());
-                const hex = Bytes.toHex(reward.stakeCredential.hash);
-                return {
-                    bech32: bech32.trim(),
-                    paymentCredentialHash: hex,
-                    stakeCredentialHash: hex,
-                    kind: "reward",
-                    isValid: true,
-                };
+            // AddressEras.fromBech32 handles every modern address type — base,
+            // enterprise, reward (`stake1...`/`stake_test1...`), pointer,
+            // byron — returning a tagged union we can switch on.
+            const parsed = AddressEras.fromBech32(trimmed);
+            switch (parsed._tag) {
+                case "BaseAddress":
+                    return {
+                        bech32: AddressEras.toBech32(parsed),
+                        paymentCredentialHash: credentialHex(parsed.paymentCredential),
+                        stakeCredentialHash: credentialHex(parsed.stakeCredential),
+                        kind: "base",
+                        isValid: true,
+                    };
+                case "EnterpriseAddress":
+                    return {
+                        bech32: AddressEras.toBech32(parsed),
+                        paymentCredentialHash: credentialHex(parsed.paymentCredential),
+                        kind: "enterprise",
+                        isValid: true,
+                    };
+                case "RewardAccount": {
+                    const hex = credentialHex(parsed.stakeCredential);
+                    return {
+                        bech32: RewardAccount.toBech32(parsed),
+                        // Reward addresses have no payment credential — surface
+                        // the stake hash in both fields so callers that key on
+                        // `paymentCredentialHash` (e.g. /recurring_payments/public_key_hash/…)
+                        // still work for users who only paste their stake address.
+                        paymentCredentialHash: hex,
+                        stakeCredentialHash: hex,
+                        kind: "reward",
+                        isValid: true,
+                    };
+                }
+                default:
+                    return {
+                        bech32: trimmed,
+                        paymentCredentialHash: "",
+                        kind: "base",
+                        isValid: false,
+                        error: `Unsupported address kind (${parsed._tag})`,
+                    };
             }
         } catch {
-            /* fall through */
+            return {
+                bech32: trimmed,
+                paymentCredentialHash: "",
+                kind: "base",
+                isValid: false,
+                error: "Invalid Cardano address format",
+            };
         }
-
-        return {
-            bech32,
-            paymentCredentialHash: "",
-            kind: "base",
-            isValid: false,
-            error: "Invalid Cardano address format",
-        };
     }
 
     async deriveScriptAddress(
