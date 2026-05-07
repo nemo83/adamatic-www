@@ -145,20 +145,6 @@ export default function SetupRecurringPayment(props: {
         console.log('walletFromList: ' + JSON.stringify(walletFromList))
         console.log('walletFromList.length: ' + walletFromList.length)
 
-        const balance = await wallet.getBalance();
-        const collateralUtxos = await wallet.getCollateral();
-
-        const collateralSum = collateralUtxos.map((utxo: any) => utxo.output.amount.filter((asset: any) => asset.unit === "lovelace")[0].quantity).reduce((a: number, b: string) => a + parseInt(b), 0);
-
-        const adaBalance = parseInt(balance.filter((asset: any) => asset.unit === "lovelace")[0].quantity) + collateralSum;
-
-        const minAdaBalance = deposit * walletFromList.length + 10_000_000;
-
-        if (adaBalance < minAdaBalance) {
-            toast.error(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`, { duration: 5000 })
-            return Promise.reject(`Insufficient balance, please ensure the wallet contains at least ${minAdaBalance / 1_000_000} ada`);
-        }
-
         if (!automaticPayments?.finalHash) {
             toast.error("Scripts manifest not loaded yet. Please retry shortly.", { duration: 5000 });
             return;

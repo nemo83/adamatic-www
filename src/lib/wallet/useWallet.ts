@@ -1,12 +1,9 @@
 /**
- * Single import point for the wallet hook. Phase B re-exports Mesh's
- * `useWallet`; Phase D replaces this with a custom CIP-30 hook with
- * identical surface (`{ wallet, connected }`).
+ * Wallet hook — re-exports the WalletProvider context.
  */
-import { useWallet as useMeshWallet } from "@meshsdk/react";
+import { useWalletContext } from "./WalletProvider";
 import type { UseWalletResult } from "./types";
 
 export function useWallet(): UseWalletResult {
-    const { wallet, connected } = useMeshWallet();
-    return { wallet, connected };
+    return useWalletContext();
 }

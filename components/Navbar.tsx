@@ -10,20 +10,18 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 export default function Navbar() {
 
-    const { wallet, connected } = useWallet();
+    const { connected, networkId } = useWallet();
 
     useEffect(() => {
-        if (connected) {
-            wallet.getNetworkId().then((id: number) => {
-                const isValidNetwork = String(id) == NETWORK_ID
-                if (isValidNetwork) {
-                    toast.success("Wallet correctly connected");
-                } else {
-                    toast.error("Trying to connect to wrong network, please connect to " + NETWORK);
-                }
-            });
+        if (connected && networkId !== null) {
+            const isValidNetwork = String(networkId) === NETWORK_ID;
+            if (isValidNetwork) {
+                toast.success("Wallet correctly connected");
+            } else {
+                toast.error("Trying to connect to wrong network, please connect to " + NETWORK);
+            }
         }
-    }, [connected]);
+    }, [connected, networkId]);
 
     return (
         <Box >

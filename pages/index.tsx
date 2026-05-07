@@ -6,18 +6,15 @@ import { NETWORK_ID } from "../src/lib/cardano/constants";
 
 export default function Home() {
 
-    const { wallet, connected } = useWallet();
+    const { connected, networkId } = useWallet();
 
     const [validNetwork, setValidNetwork] = useState<boolean>(false);
 
     useEffect(() => {
-        if (connected) {
-            wallet.getNetworkId().then((id: number) => {
-                const isValidNetwork = String(id) == NETWORK_ID
-                setValidNetwork(isValidNetwork);
-            });
+        if (connected && networkId !== null) {
+            setValidNetwork(String(networkId) === NETWORK_ID);
         }
-    }, [connected]);
+    }, [connected, networkId]);
 
     return (
         <SetupRecurringPayment isValidNetwork={validNetwork} hoskyInput={true} />

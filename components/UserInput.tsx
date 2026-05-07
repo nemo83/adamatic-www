@@ -46,7 +46,7 @@ export default function UserInput(props: {
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
-    const { wallet, connected } = useWallet();
+    const { connected, address: walletAddress } = useWallet();
 
     const [owner, setOwner] = React.useState<string>("");
     const [payee, setPayee] = React.useState<string>("");
@@ -145,19 +145,14 @@ export default function UserInput(props: {
     }, [walletFromList, setIsDelegatedToHosky])
 
     useEffect(() => {
-        if (connected) {
-            wallet.getUsedAddresses().then((addresses: string[]) => {
-                const parsed = chainAdapter.parseAddress(addresses[0]);
-                if (!parsed.isValid) return;
-                const userWallet = parsed.bech32;
-                setOwner(userWallet);
-                if (walletFromList.length > 0 && walletFromList[0] === "") {
-                    const newWalletFromList = [userWallet, ...walletFromList.slice(1)];
-                    setWalletFromList(newWalletFromList);
-                }
-            });
+        if (connected && walletAddress) {
+            setOwner(walletAddress);
+            if (walletFromList.length > 0 && walletFromList[0] === "") {
+                const newWalletFromList = [walletAddress, ...walletFromList.slice(1)];
+                setWalletFromList(newWalletFromList);
+            }
         }
-    }, [connected])
+    }, [connected, walletAddress])
 
     useEffect(() => {
         if (isHoskyInput) {

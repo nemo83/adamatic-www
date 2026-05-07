@@ -18,8 +18,6 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@evolution-sdk/evolution": "^0.5.7",
-    "@meshsdk/core": "1.8.0",
-    "@meshsdk/react": "1.8.0",
     "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
     "@mui/x-date-pickers": "^7.23.0",

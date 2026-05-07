@@ -22,7 +22,7 @@ export default function PaymentsTable(props: { version: number }) {
 
     const { version } = props;
 
-    const { wallet, connected } = useWallet();
+    const { wallet, connected, address: walletAddress } = useWallet();
 
     const chainAdapter = getChainAdapter();
     const automaticPayments = useScriptByName("automatic_payments");
@@ -67,8 +67,8 @@ export default function PaymentsTable(props: { version: number }) {
     }, [recurringPaymentDTOs, itemsPerPage]);
 
     const reloadPayments = async () => {
-        const addresses = await wallet.getUsedAddresses();
-        const parsed = chainAdapter.parseAddress(addresses[0]);
+        if (!walletAddress) return;
+        const parsed = chainAdapter.parseAddress(walletAddress);
         if (!parsed.isValid) return;
         const data = await fetchRecurringPaymentsByPkh(parsed.paymentCredentialHash);
         const dtos: RecurringPayment[] = data.map((rp: any) => ({
