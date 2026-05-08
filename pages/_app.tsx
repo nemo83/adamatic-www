@@ -4,7 +4,7 @@ import type { AppProps } from "next/app";
 import React, { useMemo } from "react";
 import { WalletProvider } from "../src/lib/wallet/WalletProvider";
 import { ScriptProvider } from "../src/lib/cardano/ScriptContext";
-import { I18nProvider, useTranslations } from "../src/lib/i18n/I18nProvider";
+import { I18nProvider, useI18n } from "../src/lib/i18n/I18nProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
@@ -26,7 +26,7 @@ const theme = createTheme({
  * that step automatically.
  */
 function TourBoundary({ children }: { children: React.ReactNode }) {
-    const t = useTranslations();
+    const { locale, t } = useI18n();
     const steps = useMemo(
         () => [
             { selector: '[data-tut="step-welcome"]', content: t("tour.welcome") },
@@ -41,7 +41,14 @@ function TourBoundary({ children }: { children: React.ReactNode }) {
         ],
         [t],
     );
-    return <TourProvider steps={steps}>{children}</TourProvider>;
+    // `key={locale}` forces TourProvider to remount when the locale changes —
+    // Reactour reads its `steps` prop only at mount, so a re-render with new
+    // strings doesn't propagate without a remount.
+    return (
+        <TourProvider key={locale} steps={steps}>
+            {children}
+        </TourProvider>
+    );
 }
 
 export default function App({ Component, pageProps }: AppProps) {
