@@ -286,25 +286,68 @@
     "backHome": "Retour à AdaMatic"
   },
   "faq": {
-    "q1": {
-      "question": "Dois-je obligatoirement utiliser le portefeuille délégué à une Rugpool Hosky ?",
-      "answer": "Non ! Vous pouvez utiliser n’importe quel portefeuille pour configurer les paiements. La recommandation est d’utiliser un petit portefeuille « chaud » et de renseigner dans le champ « Adresse de paiement ou de staking » l’adresse du portefeuille pour lequel vous souhaitez collecter les récompenses."
+    "title": "Foire aux questions",
+    "subtitle": "Retrouvez les réponses aux questions les plus fréquentes sur AdaMatic et les paiements automatisés sur Cardano",
+    "general": {
+      "title": "Questions générales",
+      "q1": {
+        "question": "Qu’est-ce qu’AdaMatic ?",
+        "answer": "AdaMatic est une application décentralisée construite sur Cardano qui permet des paiements récurrents automatisés. Elle utilise des contrats intelligents pour exécuter des transactions programmées sans intervention manuelle — idéal pour les paiements réguliers comme la collecte de tokens, les abonnements ou tout transfert récurrent."
+      },
+      "q2": {
+        "question": "Comment fonctionne AdaMatic ?",
+        "answer": "AdaMatic utilise des contrats intelligents Plutus sur la blockchain Cardano. Vous déposez des fonds dans un contrat intelligent avec des paramètres de paiement précis (montant, fréquence, destinataire). Le système exécute ensuite ces paiements automatiquement selon votre calendrier sans nécessiter la connexion de votre portefeuille."
+      },
+      "q3": {
+        "question": "AdaMatic est-il sécurisé ?",
+        "answer": "Oui, AdaMatic est construit sur l’infrastructure blockchain sécurisée de Cardano grâce aux contrats intelligents Plutus. Vos fonds sont conservés dans des contrats intelligents, et non par une entité centralisée. Vous gardez le contrôle total et pouvez annuler les paiements à tout moment."
+      },
+      "q4": {
+        "question": "Quels sont les frais ?",
+        "answer": "AdaMatic facture de petits frais d’opérateur par transaction plus les frais réseau Cardano standard. Les frais exacts sont affichés lors de la configuration d’un paiement. Tous les frais sont transparents et indiqués à l’avance."
+      }
     },
-    "q2": {
-      "question": "Où recevrai-je mes récompenses Hosky ?",
-      "answer": "Vous recevrez les récompenses Hosky sur le portefeuille pour lequel vous les avez réclamées. Que vous ayez utilisé le portefeuille délégué ou un autre petit portefeuille chaud, les récompenses sont envoyées à l’adresse du portefeuille délégué."
+    "hosky": {
+      "title": "Questions sur le token Hosky",
+      "q1": {
+        "question": "Dois-je obligatoirement utiliser le portefeuille délégué à une Rugpool Hosky ?",
+        "answer": "Non ! Vous pouvez utiliser n’importe quel portefeuille pour configurer les paiements. La recommandation est d’utiliser un petit portefeuille « chaud » et de renseigner dans le champ « Adresse de paiement ou de staking » l’adresse du portefeuille pour lequel vous souhaitez collecter les récompenses."
+      },
+      "q2": {
+        "question": "Où recevrai-je mes récompenses Hosky ?",
+        "answer": "Vous recevrez les récompenses Hosky sur le portefeuille pour lequel vous les avez réclamées. Que vous ayez utilisé le portefeuille délégué ou un autre petit portefeuille chaud, les récompenses sont envoyées à l’adresse du portefeuille délégué."
+      },
+      "q3": {
+        "question": "Combien de retraits automatiques puis-je configurer ?",
+        "answer": "Vous pouvez configurer autant de retraits automatiques que vous le souhaitez. Il est recommandé de tous les configurer depuis le même petit portefeuille chaud — ainsi ils apparaîtront ensemble dans la page des paiements AdaMatic."
+      },
+      "q4": {
+        "question": "J’ai un petit portefeuille — comment rendre les retraits rentables ?",
+        "answer": "Les récompenses Hosky s’accumulent jusqu’à un certain montant. AdaMatic vous permet de définir la fréquence des retraits en nombre d’époques. Nous vous recommandons de faire vos propres calculs pour trouver la fréquence idéale !"
+      },
+      "q5": {
+        "question": "À quel moment les récompenses Hosky sont-elles réclamées ?",
+        "answer": "Par défaut, AdaMatic envoie les paiements de 2 ADA environ 48 heures après le début de l’époque. Cela laisse au mécanisme de récompense le temps de se stabiliser et aux utilisateurs la possibilité de réclamer manuellement en cas de problème."
+      }
     },
-    "q3": {
-      "question": "Combien de retraits automatiques puis-je configurer ?",
-      "answer": "Vous pouvez configurer autant de retraits automatiques que vous le souhaitez. Il est recommandé de tous les configurer depuis le même petit portefeuille chaud — ainsi ils apparaîtront ensemble dans la page des paiements AdaMatic."
-    },
-    "q4": {
-      "question": "J’ai un petit portefeuille — comment rendre les retraits rentables ?",
-      "answer": "Les récompenses Hosky s’accumulent jusqu’à un certain montant. AdaMatic vous permet de définir la fréquence des retraits en nombre d’époques. Nous vous recommandons de faire vos propres calculs pour trouver la fréquence idéale !"
-    },
-    "q5": {
-      "question": "À quel moment les récompenses Hosky sont-elles réclamées ?",
-      "answer": "Par défaut, AdaMatic envoie les paiements de 2 ADA environ 48 heures après le début de l’époque. Cela laisse au mécanisme de récompense le temps de se stabiliser et aux utilisateurs la possibilité de réclamer manuellement en cas de problème."
+    "tech": {
+      "title": "Questions techniques",
+      "q1": {
+        "question": "Quels portefeuilles sont pris en charge ?",
+        "answer": "AdaMatic prend en charge tous les principaux portefeuilles Cardano dont Lace, Eternl, Flint, Typhon et tout autre portefeuille compatible CIP-30. L’intégration s’appuie directement sur le standard CIP-30."
+      },
+      "q2": {
+        "question": "Puis-je annuler un paiement récurrent ?",
+        "answer": "Oui, vous pouvez annuler n’importe quel paiement récurrent à tout moment. Allez simplement dans votre liste de paiements, trouvez celui que vous souhaitez annuler et cliquez sur Annuler. Les fonds restants seront renvoyés à votre portefeuille."
+      },
+      "q3": {
+        "question": "Que se passe-t-il si mon paiement échoue ?",
+        "answer": "Si un paiement échoue (par exemple en raison de fonds insuffisants), le système le marquera comme échoué et ne réessaiera pas automatiquement. Vous pouvez ajouter des fonds au contrat ou l’annuler et créer un nouveau paiement avec un financement adéquat."
+      },
+      "q4": {
+        "question": "Quels réseaux AdaMatic prend-il en charge ?",
+        "answer": "AdaMatic prend actuellement en charge le testnet Preprod de Cardano pour le développement et les tests. Le support du mainnet est disponible pour la production. Assurez-vous que votre portefeuille est connecté au bon réseau."
+      }
     }
   }
 }

@@ -16,10 +16,10 @@ const HoskyFAQ = () => {
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls={`${k}-content`}
                         id={`${k}-header`}>
-                        {t(`faq.${k}.question`)}
+                        {t(`faq.hosky.${k}.question`)}
                     </AccordionSummary>
                     <AccordionDetails>
-                        {t(`faq.${k}.answer`)}
+                        {t(`faq.hosky.${k}.answer`)}
                     </AccordionDetails>
                 </Accordion>))}
         </Box>

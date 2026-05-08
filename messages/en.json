@@ -286,25 +286,68 @@
     "backHome": "Back to AdaMatic"
   },
   "faq": {
-    "q1": {
-      "question": "Do I need to necessarily use the wallet delegated to a Hosky Rugpool?",
-      "answer": "No! You can use any wallet to setup payments. In fact the recommendation is to use a small hot wallet, and to set up in the 'Payment or Staking reward address' the address of the wallet you want to collect the rewards for."
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions about AdaMatic and automated Cardano payments",
+    "general": {
+      "title": "General Questions",
+      "q1": {
+        "question": "What is AdaMatic?",
+        "answer": "AdaMatic is a decentralized application built on Cardano that enables automated recurring payments. It uses smart contracts to execute scheduled transactions without manual intervention, perfect for regular payments like token collection, subscriptions, or any recurring transfers."
+      },
+      "q2": {
+        "question": "How does AdaMatic work?",
+        "answer": "AdaMatic uses Plutus smart contracts on the Cardano blockchain. You deposit funds into a smart contract with specific payment parameters (amount, frequency, recipient). The system then automatically executes these payments according to your schedule without requiring your wallet to be connected."
+      },
+      "q3": {
+        "question": "Is AdaMatic secure?",
+        "answer": "Yes, AdaMatic is built on Cardano's secure blockchain infrastructure using Plutus smart contracts. Your funds are held in smart contracts, not by any centralized entity. You maintain full control and can cancel payments at any time."
+      },
+      "q4": {
+        "question": "What are the fees?",
+        "answer": "AdaMatic charges a small operator fee per transaction plus standard Cardano network fees. The exact fees are displayed when you set up a payment. All fees are transparent and shown upfront."
+      }
     },
-    "q2": {
-      "question": "Where will I receive my Hosky rewards?",
-      "answer": "You will receive the Hosky rewards in the wallet you claimed them for. Regardless of whether you used the delegated wallet or a different small hot wallet, rewards are sent to the address of the delegated wallet."
+    "hosky": {
+      "title": "Hosky Token Questions",
+      "q1": {
+        "question": "Do I need to necessarily use the wallet delegated to a Hosky Rugpool?",
+        "answer": "No! You can use any wallet to setup payments. In fact the recommendation is to use a small hot wallet, and to set up in the 'Payment or Staking reward address' the address of the wallet you want to collect the rewards for."
+      },
+      "q2": {
+        "question": "Where will I receive my Hosky rewards?",
+        "answer": "You will receive the Hosky rewards in the wallet you claimed them for. Regardless of whether you used the delegated wallet or a different small hot wallet, rewards are sent to the address of the delegated wallet."
+      },
+      "q3": {
+        "question": "How many automatic pulls can I setup?",
+        "answer": "You can setup as many auto-pulls as you want. Recommendation would be to set them up all from the same small hot wallet, so they will appear to you all together in the adamatic payment page."
+      },
+      "q4": {
+        "question": "I have a small wallet, how can I still make it worth pulling rewards?",
+        "answer": "Hosky rewards stack up to a certain amount. AdaMatic lets you set the pull frequency in terms of epochs. We recommend running your own calculations to find the ideal epoch frequency!"
+      },
+      "q5": {
+        "question": "At what time are the Hosky rewards claimed?",
+        "answer": "By default, and for the time being, AdaMatic is configured to send the 2 ADA pulls about 48 hours from the beginning of the epoch. This gives enough time for the rewards mechanism to settle and for users to manually claim rewards in case of issues."
+      }
     },
-    "q3": {
-      "question": "How many automatic pulls can I setup?",
-      "answer": "You can setup as many auto-pulls as you want. Recommendation would be to set them up all from the same small hot wallet, so they will appear to you all together in the adamatic payment page."
-    },
-    "q4": {
-      "question": "I have a small wallet, how can I still make it worth pulling rewards?",
-      "answer": "Hosky rewards stack up to a certain amount. AdaMatic lets you set the pull frequency in terms of epochs. We recommend running your own calculations to find the ideal epoch frequency!"
-    },
-    "q5": {
-      "question": "At what time are the Hosky rewards claimed?",
-      "answer": "By default, and for the time being, AdaMatic is configured to send the 2 ADA pulls about 48 hours from the beginning of the epoch. This gives enough time for the rewards mechanism to settle and for users to manually claim rewards in case of issues."
+    "tech": {
+      "title": "Technical Questions",
+      "q1": {
+        "question": "Which wallets are supported?",
+        "answer": "AdaMatic supports all major Cardano wallets including Lace, Eternl, Flint, Typhon, and any other CIP-30 compatible wallet. The integration is built directly on the CIP-30 standard."
+      },
+      "q2": {
+        "question": "Can I cancel a recurring payment?",
+        "answer": "Yes, you can cancel any recurring payment at any time. Simply go to your payments list, find the payment you want to cancel, and click the cancel button. Any remaining funds will be returned to your wallet."
+      },
+      "q3": {
+        "question": "What happens if my payment fails?",
+        "answer": "If a payment fails (e.g., due to insufficient funds), the system will mark it as failed and won't retry automatically. You can add more funds to the contract or cancel and create a new payment with adequate funding."
+      },
+      "q4": {
+        "question": "Which networks does AdaMatic support?",
+        "answer": "AdaMatic currently supports Cardano Preprod testnet for development and testing. Mainnet support is available for production use. Make sure your wallet is connected to the correct network."
+      }
     }
   }
 }

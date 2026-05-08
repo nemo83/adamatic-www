@@ -286,25 +286,68 @@
     "backHome": "Torna ad AdaMatic"
   },
   "faq": {
-    "q1": {
-      "question": "Devo necessariamente usare il wallet delegato a una Rugpool Hosky?",
-      "answer": "No! Puoi usare qualsiasi wallet per configurare i pagamenti. La raccomandazione è usare un piccolo hot wallet e impostare nel campo «Indirizzo di pagamento o di staking» l’indirizzo del wallet per cui vuoi raccogliere le ricompense."
+    "title": "Domande frequenti",
+    "subtitle": "Trova le risposte alle domande più comuni su AdaMatic e sui pagamenti automatizzati su Cardano",
+    "general": {
+      "title": "Domande generali",
+      "q1": {
+        "question": "Cos’è AdaMatic?",
+        "answer": "AdaMatic è un’applicazione decentralizzata costruita su Cardano che consente pagamenti ricorrenti automatizzati. Utilizza contratti intelligenti per eseguire transazioni programmate senza intervento manuale — perfetto per pagamenti regolari come la raccolta di token, abbonamenti o qualsiasi trasferimento ricorrente."
+      },
+      "q2": {
+        "question": "Come funziona AdaMatic?",
+        "answer": "AdaMatic usa contratti intelligenti Plutus sulla blockchain Cardano. Depositi fondi in un contratto intelligente con parametri di pagamento specifici (importo, frequenza, destinatario). Il sistema esegue poi questi pagamenti automaticamente secondo la tua pianificazione, senza richiedere che il tuo wallet sia connesso."
+      },
+      "q3": {
+        "question": "AdaMatic è sicuro?",
+        "answer": "Sì, AdaMatic è costruito sull’infrastruttura blockchain sicura di Cardano usando contratti intelligenti Plutus. I tuoi fondi sono custoditi nei contratti intelligenti, non da alcun ente centralizzato. Mantieni il pieno controllo e puoi annullare i pagamenti in qualsiasi momento."
+      },
+      "q4": {
+        "question": "Quali sono le commissioni?",
+        "answer": "AdaMatic addebita una piccola commissione di operatore per transazione più le commissioni di rete Cardano standard. Le commissioni esatte vengono mostrate durante la configurazione del pagamento. Tutte le commissioni sono trasparenti e indicate in anticipo."
+      }
     },
-    "q2": {
-      "question": "Dove riceverò le mie ricompense Hosky?",
-      "answer": "Riceverai le ricompense Hosky nel wallet per cui le hai reclamate. Indipendentemente dal fatto che tu abbia usato il wallet delegato o un piccolo hot wallet diverso, le ricompense vengono inviate all’indirizzo del wallet delegato."
+    "hosky": {
+      "title": "Domande sul token Hosky",
+      "q1": {
+        "question": "Devo necessariamente usare il wallet delegato a una Rugpool Hosky?",
+        "answer": "No! Puoi usare qualsiasi wallet per configurare i pagamenti. La raccomandazione è usare un piccolo hot wallet e impostare nel campo «Indirizzo di pagamento o di staking» l’indirizzo del wallet per cui vuoi raccogliere le ricompense."
+      },
+      "q2": {
+        "question": "Dove riceverò le mie ricompense Hosky?",
+        "answer": "Riceverai le ricompense Hosky nel wallet per cui le hai reclamate. Indipendentemente dal fatto che tu abbia usato il wallet delegato o un piccolo hot wallet diverso, le ricompense vengono inviate all’indirizzo del wallet delegato."
+      },
+      "q3": {
+        "question": "Quanti prelievi automatici posso impostare?",
+        "answer": "Puoi impostare quanti prelievi automatici vuoi. La raccomandazione è impostarli tutti dallo stesso piccolo hot wallet, così appariranno insieme nella pagina dei pagamenti AdaMatic."
+      },
+      "q4": {
+        "question": "Ho un wallet piccolo — come faccio a rendere conveniente il prelievo delle ricompense?",
+        "answer": "Le ricompense Hosky si accumulano fino a una certa soglia. AdaMatic ti permette di impostare la frequenza dei prelievi in epoche. Ti consigliamo di fare i tuoi conti per individuare la frequenza ideale!"
+      },
+      "q5": {
+        "question": "A che ora vengono reclamate le ricompense Hosky?",
+        "answer": "Per ora AdaMatic è configurato per inviare i pagamenti da 2 ADA circa 48 ore dopo l’inizio dell’epoca. Questo dà al meccanismo delle ricompense il tempo di stabilizzarsi e agli utenti la possibilità di reclamare manualmente in caso di problemi."
+      }
     },
-    "q3": {
-      "question": "Quanti prelievi automatici posso impostare?",
-      "answer": "Puoi impostare quanti prelievi automatici vuoi. La raccomandazione è impostarli tutti dallo stesso piccolo hot wallet, così appariranno insieme nella pagina dei pagamenti AdaMatic."
-    },
-    "q4": {
-      "question": "Ho un wallet piccolo — come faccio a rendere conveniente il prelievo delle ricompense?",
-      "answer": "Le ricompense Hosky si accumulano fino a una certa soglia. AdaMatic ti permette di impostare la frequenza dei prelievi in epoche. Ti consigliamo di fare i tuoi conti per individuare la frequenza ideale!"
-    },
-    "q5": {
-      "question": "A che ora vengono reclamate le ricompense Hosky?",
-      "answer": "Per ora AdaMatic è configurato per inviare i pagamenti da 2 ADA circa 48 ore dopo l’inizio dell’epoca. Questo dà al meccanismo delle ricompense il tempo di stabilizzarsi e agli utenti la possibilità di reclamare manualmente in caso di problemi."
+    "tech": {
+      "title": "Domande tecniche",
+      "q1": {
+        "question": "Quali wallet sono supportati?",
+        "answer": "AdaMatic supporta tutti i principali wallet Cardano, tra cui Lace, Eternl, Flint, Typhon e qualsiasi altro wallet compatibile CIP-30. L’integrazione si basa direttamente sullo standard CIP-30."
+      },
+      "q2": {
+        "question": "Posso annullare un pagamento ricorrente?",
+        "answer": "Sì, puoi annullare qualsiasi pagamento ricorrente in qualsiasi momento. Vai semplicemente alla lista dei pagamenti, trova il pagamento che vuoi annullare e clicca sul pulsante di annullamento. Eventuali fondi residui verranno restituiti al tuo wallet."
+      },
+      "q3": {
+        "question": "Cosa succede se il mio pagamento fallisce?",
+        "answer": "Se un pagamento fallisce (per esempio per fondi insufficienti), il sistema lo segnerà come fallito e non riproverà automaticamente. Puoi aggiungere altri fondi al contratto oppure annullarlo e creare un nuovo pagamento con la copertura adeguata."
+      },
+      "q4": {
+        "question": "Quali reti supporta AdaMatic?",
+        "answer": "AdaMatic attualmente supporta la testnet Preprod di Cardano per sviluppo e test. Il supporto mainnet è disponibile per l’uso in produzione. Assicurati che il tuo wallet sia connesso alla rete corretta."
+      }
     }
   }
 }
