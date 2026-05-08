@@ -36,7 +36,7 @@
     },
     "q2": {
       "question": "¿Dónde recibiré mis recompensas Hosky?",
-      "answer": "Recibirás las recompensas Hosky en la billetera para la que las reclamaste. Independientemente de si usaste la billetera delegada o una billetera caliente distinta, las recompensas las enviará el Hosky Doggiebowl a la dirección de la billetera delegada."
+      "answer": "Recibirás las recompensas Hosky en la billetera para la que las reclamaste. Independientemente de si usaste la billetera delegada o una billetera caliente distinta, las recompensas se envían a la dirección de la billetera delegada."
     },
     "q3": {
       "question": "¿Cuántos retiros automáticos puedo configurar?",
@@ -44,11 +44,11 @@
     },
     "q4": {
       "question": "Tengo una billetera pequeña — ¿cómo hago que valga la pena retirar las recompensas?",
-      "answer": "El Hosky Doggie Bowl permite que las recompensas se acumulen hasta cierta cantidad. AdaMatic te permite establecer la frecuencia de retiro en términos de épocas. ¡Te recomendamos hacer tus propios cálculos para dar con la frecuencia ideal!"
+      "answer": "Las recompensas Hosky se acumulan hasta cierta cantidad. AdaMatic te permite establecer la frecuencia de retiro en términos de épocas. ¡Te recomendamos hacer tus propios cálculos para dar con la frecuencia ideal!"
     },
     "q5": {
       "question": "¿A qué hora se reclaman las recompensas Hosky?",
-      "answer": "Por defecto, AdaMatic está configurado para enviar los pagos de 2 ADA al Hosky Doggie Bowl unas 48 horas tras el inicio de la época. Esto da tiempo a Hosky para organizarse y a los usuarios para reclamar manualmente en caso de problemas."
+      "answer": "Por defecto, AdaMatic está configurado para enviar los pagos de 2 ADA unas 48 horas tras el inicio de la época. Esto da tiempo al mecanismo de recompensas para asentarse y a los usuarios para reclamar manualmente en caso de problemas."
     }
   }
 }

@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import React, { ReactNode } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import BetaRibbon from "./BetaRibbon";
 import { Toaster } from "react-hot-toast";
 import { Box } from "@mui/material";
 
@@ -17,6 +18,7 @@ const Layout = ({ children }: DashboardLayoutProps) => {
             minHeight: '50vh' 
         }}>
             <Toaster />
+            <BetaRibbon />
             <Navbar />
             <Box component="main" sx={{ flex: 1, paddingBottom: 4 }}>
                 {children}

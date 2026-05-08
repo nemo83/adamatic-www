@@ -49,7 +49,7 @@ const hoskyFaqs = [
         aria: "hosky2-content",
         id: "hosky2-header",
         question: "Where will I receive my Hosky rewards?",
-        answer: "You will receive the Hosky rewards in the wallet you claimed the rewards for. In fact, regardless of whether you used the delegated wallet or a different small hot wallet, rewards will be sent by the Hosky Doggiebowl to the address of the delegated wallet."
+        answer: "You will receive the Hosky rewards in the wallet you claimed them for. Regardless of whether you used the delegated wallet or a different small hot wallet, rewards are sent to the address of the delegated wallet."
     },
     {
         aria: "hosky3-content",
@@ -60,14 +60,14 @@ const hoskyFaqs = [
     {
         aria: "hosky4-content",
         id: "hosky4-header",
-        question: "I have a small wallet, how can I still make it worth to pull rewards?",
-        answer: "Hosky Doggie bowl allows rewards to stack up to a certain amount. AdaMatic allows you to set the pull frequency in terms of epochs. We recommend to make your own calculations to come up with the ideal epoch frequency!"
+        question: "I have a small wallet, how can I still make it worth pulling rewards?",
+        answer: "Hosky rewards stack up to a certain amount. AdaMatic lets you set the pull frequency in terms of epochs. We recommend running your own calculations to find the ideal epoch frequency!"
     },
     {
         aria: "hosky5-content",
         id: "hosky5-header",
         question: "At what time are the Hosky rewards claimed?",
-        answer: "By default, and for the time being, AdaMatic is configured to sent the 2 ada payments to the Hosky doggie bowl about 48 hours from the beginning of the epoch. This gives enough time to Hosky to get their poop together and to users to manually claim rewards in case of issues."
+        answer: "By default, and for the time being, AdaMatic is configured to send the 2 ADA pulls about 48 hours from the beginning of the epoch. This gives enough time for the rewards mechanism to settle and for users to manually claim rewards in case of issues."
     }
 ];
 
@@ -76,7 +76,7 @@ const technicalFaqs = [
         aria: "tech1-content",
         id: "tech1-header",
         question: "Which wallets are supported?",
-        answer: "AdaMatic supports all major Cardano wallets including Lace, Eternl, Flint, and other CIP-30 compatible wallets. The integration uses MeshSDK for broad wallet compatibility."
+        answer: "AdaMatic supports all major Cardano wallets including Lace, Eternl, Flint, Typhon, and any other CIP-30 compatible wallet. The integration is built directly on the CIP-30 standard."
     },
     {
         aria: "tech2-content",

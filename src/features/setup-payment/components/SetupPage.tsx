@@ -23,6 +23,7 @@ import PaymentsTable from "../../payments-list/components/PaymentsTable";
 import PaymentForm from "./PaymentForm";
 import PaymentReceipt from "./PaymentReceipt";
 import SubmitPanel from "./SubmitPanel";
+import LimitsStrip from "./LimitsStrip";
 import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
@@ -184,11 +185,6 @@ export default function SetupPage(props: {
                 }),
             })}
         >
-            {settings ?
-                <Typography paddingRight={3} align="right">
-                    Protocol Fee: {settings.operator_fee_lovelace / 1_000_000}
-                </Typography>
-                : null}
 
             <Stack spacing={4} sx={{
                 alignItems: "center",
@@ -210,6 +206,14 @@ export default function SetupPage(props: {
                     <Divider sx={{ my: 4 }}>
                         <Chip label="Setup Your Payment" color="primary" />
                     </Divider> */}
+
+                    <LimitsStrip
+                        protocolFeeAda={
+                            settings
+                                ? settings.operator_fee_lovelace / 1_000_000
+                                : null
+                        }
+                    />
 
                     <PaymentForm
                         deposit={deposit}

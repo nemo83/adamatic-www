@@ -48,7 +48,7 @@ const steps = [
     },
     {
         selector: '[data-tut="step-7"]',
-        content: "The number of total pulls to be executed. Currently maxed to 50",
+        content: "The number of total pulls to be executed. Capped at 5 during the beta.",
     },
     {
         selector: '[data-tut="step-8"]',

@@ -36,7 +36,7 @@
     },
     "q2": {
       "question": "Dove riceverò le mie ricompense Hosky?",
-      "answer": "Riceverai le ricompense Hosky nel wallet per cui le hai reclamate. Indipendentemente dal fatto che tu abbia usato il wallet delegato o un piccolo hot wallet diverso, le ricompense vengono inviate dal Hosky Doggiebowl all’indirizzo del wallet delegato."
+      "answer": "Riceverai le ricompense Hosky nel wallet per cui le hai reclamate. Indipendentemente dal fatto che tu abbia usato il wallet delegato o un piccolo hot wallet diverso, le ricompense vengono inviate all’indirizzo del wallet delegato."
     },
     "q3": {
       "question": "Quanti prelievi automatici posso impostare?",
@@ -44,11 +44,11 @@
     },
     "q4": {
       "question": "Ho un wallet piccolo — come faccio a rendere conveniente il prelievo delle ricompense?",
-      "answer": "Il Hosky Doggie Bowl permette alle ricompense di accumularsi fino a una certa soglia. AdaMatic ti permette di impostare la frequenza dei prelievi in epoche. Ti consigliamo di fare i tuoi conti per individuare la frequenza ideale!"
+      "answer": "Le ricompense Hosky si accumulano fino a una certa soglia. AdaMatic ti permette di impostare la frequenza dei prelievi in epoche. Ti consigliamo di fare i tuoi conti per individuare la frequenza ideale!"
     },
     "q5": {
       "question": "A che ora vengono reclamate le ricompense Hosky?",
-      "answer": "Per ora AdaMatic è configurato per inviare i pagamenti da 2 ADA al Hosky Doggie Bowl circa 48 ore dopo l’inizio dell’epoca. Questo dà a Hosky il tempo di organizzarsi e agli utenti la possibilità di reclamare manualmente in caso di problemi."
+      "answer": "Per ora AdaMatic è configurato per inviare i pagamenti da 2 ADA circa 48 ore dopo l’inizio dell’epoca. Questo dà al meccanismo delle ricompense il tempo di stabilizzarsi e agli utenti la possibilità di reclamare manualmente in caso di problemi."
     }
   }
 }

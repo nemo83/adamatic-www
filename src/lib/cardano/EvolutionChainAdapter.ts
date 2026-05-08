@@ -13,12 +13,14 @@ import {
     BaseAddress,
     Bytes,
     Client,
+    Credential,
     Data,
     InlineDatum,
     KeyHash,
     PlutusV1,
     PlutusV2,
     PlutusV3,
+    PoolKeyHash,
     RewardAccount,
     ScriptHash,
     TransactionHash,
@@ -31,6 +33,7 @@ import {
 } from "@evolution-sdk/evolution";
 import type {
     BuildCancelContext,
+    BuildDelegationContext,
     BuildSetupContext,
     ChainAdapter,
     DeriveScriptAddressParams,
@@ -370,6 +373,127 @@ class EvolutionAdapter implements ChainAdapter {
         const hash = await submitBuilder.submit();
         return TransactionHash.toHex(hash);
     }
+
+    async buildAndSubmitDelegateTx(
+        ctx: BuildDelegationContext,
+    ): Promise<string> {
+        if (!ctx.wallet) {
+            throw new Error(
+                "Delegation requires a connected CIP-30 wallet",
+            );
+        }
+        if (!ctx.poolBech32?.startsWith("pool")) {
+            throw new Error(`Invalid pool bech32: ${ctx.poolBech32}`);
+        }
+
+        const client = buildClient(ctx.wallet);
+        const poolKeyHash = PoolKeyHash.fromBech32(ctx.poolBech32);
+
+        // Pull the connected wallet's primary address to extract the
+        // staking credential. CIP-30 returns hex; the client wraps it.
+        const walletAddrAny = await (
+            client as unknown as { address(): Promise<string | Address.Address> }
+        ).address();
+        const walletAddr =
+            typeof walletAddrAny === "string"
+                ? Address.fromBech32(walletAddrAny)
+                : walletAddrAny;
+        if (!walletAddr.stakingCredential) {
+            throw new Error(
+                "Connected wallet has no staking credential — cannot delegate.",
+            );
+        }
+        const stakeHashBytes = (
+            walletAddr.stakingCredential as { hash: Uint8Array }
+        ).hash;
+        const stakeCredential = Credential.makeKeyHash(stakeHashBytes);
+
+        // Compute the reward (stake) bech32 to query Blockfrost.
+        const rewardAcct = new RewardAccount.RewardAccount({
+            networkId: walletAddr.networkId,
+            stakeCredential: walletAddr.stakingCredential,
+        });
+        const rewardBech32 = RewardAccount.toBech32(rewardAcct);
+
+        // Decide which cert to send:
+        //   • Stake key already registered → plain `delegateToPool`.
+        //   • Not registered yet           → `registerAndDelegateTo`
+        //     (combined cert; locks 2 ADA deposit one time).
+        // Blockfrost is the source of truth; retry on opposite cert if
+        // we guessed wrong (e.g. Blockfrost was unreachable, or the user
+        // delegated via another tab between our check and submit).
+        const initialGuessRegistered = await isStakeRegisteredViaBlockfrost(
+            rewardBech32,
+        );
+
+        const buildOne = async (registered: boolean): Promise<string> => {
+            const b = registered
+                ? client.newTx().delegateToPool({ stakeCredential, poolKeyHash })
+                : client.newTx().registerAndDelegateTo({
+                      stakeCredential,
+                      poolKeyHash,
+                  });
+            const signBuilder = await b.build();
+            const submitBuilder = await signBuilder.sign();
+            const hash = await submitBuilder.submit();
+            return TransactionHash.toHex(hash);
+        };
+
+        try {
+            return await buildOne(initialGuessRegistered);
+        } catch (err) {
+            const msg = String(err);
+            // Self-correct on the two ledger errors that mean we guessed wrong.
+            if (
+                /StakeKeyRegistered|StakeKeyAlreadyRegistered/.test(msg) &&
+                !initialGuessRegistered
+            ) {
+                return await buildOne(true);
+            }
+            if (
+                /StakeKeyNotRegistered/.test(msg) &&
+                initialGuessRegistered
+            ) {
+                return await buildOne(false);
+            }
+            throw err;
+        }
+    }
+}
+
+/**
+ * Check whether a stake/reward bech32 is registered on-chain via Blockfrost.
+ * `GET /accounts/{stake_addr}` returns 200 for registered, 404 for never-
+ * registered (or de-registered).
+ *
+ * The retry logic in `buildAndSubmitDelegateTx` self-corrects if this
+ * answer is wrong, so we default to `true` on errors / missing API key
+ * (registered is the common case — most users have delegated before).
+ */
+async function isStakeRegisteredViaBlockfrost(
+    rewardBech32: string,
+): Promise<boolean> {
+    if (!BLOCKFROST_API_KEY) return true;
+    try {
+        const baseUrl = blockfrostBaseUrl();
+        const res = await fetch(`${baseUrl}/accounts/${rewardBech32}`, {
+            headers: { project_id: BLOCKFROST_API_KEY },
+        });
+        if (res.ok) return true;
+        if (res.status === 404) return false;
+        return true; // any other error → assume registered, let retry handle it
+    } catch {
+        return true;
+    }
+}
+
+function blockfrostBaseUrl(): string {
+    const chain = currentChain();
+    if (chain === mainnet)
+        return "https://cardano-mainnet.blockfrost.io/api/v0";
+    if (chain === preview)
+        return "https://cardano-preview.blockfrost.io/api/v0";
+    return "https://cardano-preprod.blockfrost.io/api/v0";
 }
 
 /** CBOR hex of an encoded datum — exposed for byte-compat verification. */
@@ -391,14 +515,10 @@ function buildClient(walletApi: unknown) {
             "NEXT_PUBLIC_BLOCKFROST_API_KEY is required to build transactions on the client",
         );
     }
-    const chain = currentChain();
-    const baseUrl =
-        chain === mainnet
-            ? "https://cardano-mainnet.blockfrost.io/api/v0"
-            : chain === preview
-              ? "https://cardano-preview.blockfrost.io/api/v0"
-              : "https://cardano-preprod.blockfrost.io/api/v0";
-    return Client.make(chain)
-        .withBlockfrost({ baseUrl, projectId: BLOCKFROST_API_KEY })
+    return Client.make(currentChain())
+        .withBlockfrost({
+            baseUrl: blockfrostBaseUrl(),
+            projectId: BLOCKFROST_API_KEY,
+        })
         .withCip30(walletApi as Parameters<ReturnType<typeof Client.make>["withCip30"]>[0]);
 }

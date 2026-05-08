@@ -64,6 +64,12 @@ export interface BuildCancelContext {
     scriptVersion?: "V1" | "V2" | "V3";
 }
 
+export interface BuildDelegationContext {
+    wallet: WalletHandle;
+    /** Bech32 pool id (`pool1...`). */
+    poolBech32: string;
+}
+
 export interface ChainAdapter {
     parseAddress(bech32: string): ParsedAddress;
     deriveScriptAddress(params: DeriveScriptAddressParams): Promise<string>;
@@ -73,4 +79,10 @@ export interface ChainAdapter {
     buildAndSubmitSetupTx(ctx: BuildSetupContext): Promise<string>;
     /** Build + sign + submit. Returns tx hash. */
     buildAndSubmitCancelTx(ctx: BuildCancelContext): Promise<string>;
+    /**
+     * Delegate the connected wallet's stake to a given pool. Auto-registers
+     * the stake key (combined cert) when it isn't registered yet. Returns
+     * tx hash.
+     */
+    buildAndSubmitDelegateTx(ctx: BuildDelegationContext): Promise<string>;
 }
