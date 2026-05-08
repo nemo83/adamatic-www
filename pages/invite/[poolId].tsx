@@ -21,6 +21,9 @@ import { useTranslations } from "../../src/lib/i18n/I18nProvider";
 interface Props {
     pool: CuratedPool | null;
     poolIdParam: string;
+    /** Absolute origin (e.g. "https://beta.adamatic.xyz") — Twitter/X
+     *  requires absolute URLs for `og:image` / `twitter:image`. */
+    baseUrl: string;
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
@@ -30,10 +33,24 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     if (!pool) {
         ctx.res.statusCode = 404;
     }
-    return { props: { pool, poolIdParam } };
+    // Build the absolute origin from the request. `x-forwarded-proto` is
+    // set by Vercel/CDN proxies; fall back to https on production-like
+    // hosts and http on localhost.
+    const fwdProto = ctx.req.headers["x-forwarded-proto"];
+    const proto =
+        typeof fwdProto === "string"
+            ? fwdProto.split(",")[0].trim()
+            : Array.isArray(fwdProto)
+                ? fwdProto[0]
+                : ctx.req.headers.host?.startsWith("localhost")
+                    ? "http"
+                    : "https";
+    const host = ctx.req.headers.host ?? "";
+    const baseUrl = host ? `${proto}://${host}` : "";
+    return { props: { pool, poolIdParam, baseUrl } };
 };
 
-export default function InviteRoute({ pool, poolIdParam }: Props) {
+export default function InviteRoute({ pool, poolIdParam, baseUrl }: Props) {
     const t = useTranslations();
 
     if (!pool) {
@@ -93,7 +110,10 @@ export default function InviteRoute({ pool, poolIdParam }: Props) {
     const description = pool.description
         ? `${pool.description} · ${pool.hoskyada.toLocaleString()} HOSKY/ADA/epoch · ${saturationPct}% saturated`
         : `${pool.hoskyada.toLocaleString()} HOSKY/ADA/epoch · ${saturationPct}% saturated · Delegate to ${pool.ticker} and earn HOSKY each epoch.`;
-    const ogPath = `/api/og/invite/${pool.ticker.toLowerCase()}`;
+    // Absolute URLs for og:image / twitter:image — Twitter's crawler
+    // ignores relative paths and silently falls back to defaults.
+    const ogUrl = `${baseUrl}/api/og/invite/${pool.ticker.toLowerCase()}`;
+    const pageUrl = `${baseUrl}/invite/${poolIdParam}`;
 
     return (
         <>
@@ -109,8 +129,9 @@ export default function InviteRoute({ pool, poolIdParam }: Props) {
                 <meta property="og:title" content={title} key="og:title" />
                 <meta property="og:description" content={description} key="og:description" />
                 <meta property="og:type" content="website" key="og:type" />
-                <meta property="og:image" content={ogPath} key="og:image" />
-                <meta property="og:image:secure_url" content={ogPath} key="og:image:secure_url" />
+                <meta property="og:url" content={pageUrl} key="og:url" />
+                <meta property="og:image" content={ogUrl} key="og:image" />
+                <meta property="og:image:secure_url" content={ogUrl} key="og:image:secure_url" />
                 <meta property="og:image:alt" content={`${pool.ticker} — Hosky Rugpool`} key="og:image:alt" />
                 <meta property="og:image:width" content="1200" key="og:image:width" />
                 <meta property="og:image:height" content="630" key="og:image:height" />
@@ -118,7 +139,7 @@ export default function InviteRoute({ pool, poolIdParam }: Props) {
                 <meta name="twitter:card" content="summary_large_image" key="twitter:card" />
                 <meta name="twitter:title" content={title} key="twitter:title" />
                 <meta name="twitter:description" content={description} key="twitter:description" />
-                <meta name="twitter:image" content={ogPath} key="twitter:image" />
+                <meta name="twitter:image" content={ogUrl} key="twitter:image" />
                 <meta name="twitter:image:alt" content={`${pool.ticker} — Hosky Rugpool`} key="twitter:image:alt" />
             </Head>
             <InvitePage pool={pool} />

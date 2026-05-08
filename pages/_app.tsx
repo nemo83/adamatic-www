@@ -22,7 +22,12 @@ import Layout from "../components/Layout";
 const DEFAULT_TITLE = "AdaMatic — Automate your Cardano payments";
 const DEFAULT_DESCRIPTION =
     "Set up recurring payments on Cardano with smart contracts. Perfect for Hosky token collection, subscriptions, and any scheduled transactions. Secure, automated, and cost-effective.";
-const DEFAULT_OG_IMAGE = "/og-image-1200x630.png";
+// Twitter/X requires absolute URLs for og:image and twitter:image. Set
+// NEXT_PUBLIC_SITE_URL in env (e.g. "https://beta.adamatic.xyz") for
+// staging vs prod; falls back to the production hostname.
+const SITE_URL =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://adamatic.xyz";
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image-1200x630.png`;
 
 function DefaultSiteHead() {
     return (
