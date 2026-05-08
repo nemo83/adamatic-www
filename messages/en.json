@@ -5,7 +5,8 @@
     "beta": "beta"
   },
   "nav": {
-    "payments": "Payments",
+    "setup": "Set up",
+    "myPulls": "My auto-pulls",
     "faq": "FAQ",
     "github": "GitHub"
   },
@@ -69,6 +70,8 @@
     "takeTour": "Take a tour",
     "create": "Create recurring payment",
     "myAutoPulls": "My auto-pulls",
+    "viewMyAutoPulls": "View my auto-pulls",
+    "newAutoPull": "New auto-pull",
     "refreshTooltip": "Refresh payments",
     "refreshAria": "Reload auto-pulls"
   },
@@ -170,6 +173,8 @@
     "failed": "Delegation failed: {error}"
   },
   "payments": {
+    "connectHint": "Connect a wallet to see your auto-pulls.",
+    "networkHint": "Switch your wallet to the configured network to see your auto-pulls.",
     "noneSelected": "No payments selected",
     "selectedCount": "{n} payment(s) selected",
     "cancelSelected": "Cancel selected payments",

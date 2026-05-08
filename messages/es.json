@@ -5,7 +5,8 @@
     "beta": "beta"
   },
   "nav": {
-    "payments": "Pagos",
+    "setup": "Configurar",
+    "myPulls": "Mis retiros",
     "faq": "Preguntas",
     "github": "GitHub"
   },
@@ -69,6 +70,8 @@
     "takeTour": "Hacer el tour",
     "create": "Crear pago recurrente",
     "myAutoPulls": "Mis retiros automáticos",
+    "viewMyAutoPulls": "Ver mis retiros automáticos",
+    "newAutoPull": "Nuevo retiro",
     "refreshTooltip": "Actualizar pagos",
     "refreshAria": "Recargar retiros automáticos"
   },
@@ -170,6 +173,8 @@
     "failed": "Falló la delegación: {error}"
   },
   "payments": {
+    "connectHint": "Conecta una billetera para ver tus retiros automáticos.",
+    "networkHint": "Cambia tu billetera a la red configurada para ver tus retiros automáticos.",
     "noneSelected": "Sin pagos seleccionados",
     "selectedCount": "{n} pago(s) seleccionado(s)",
     "cancelSelected": "Cancelar pagos seleccionados",

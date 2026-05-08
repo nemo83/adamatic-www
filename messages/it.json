@@ -5,7 +5,8 @@
     "beta": "beta"
   },
   "nav": {
-    "payments": "Pagamenti",
+    "setup": "Imposta",
+    "myPulls": "I miei prelievi",
     "faq": "FAQ",
     "github": "GitHub"
   },
@@ -69,6 +70,8 @@
     "takeTour": "Fai il tour",
     "create": "Crea pagamento ricorrente",
     "myAutoPulls": "I miei prelievi automatici",
+    "viewMyAutoPulls": "Vedi i miei prelievi automatici",
+    "newAutoPull": "Nuovo prelievo",
     "refreshTooltip": "Aggiorna pagamenti",
     "refreshAria": "Ricarica prelievi automatici"
   },
@@ -170,6 +173,8 @@
     "failed": "Delega fallita: {error}"
   },
   "payments": {
+    "connectHint": "Connetti un wallet per vedere i tuoi prelievi automatici.",
+    "networkHint": "Cambia il wallet sulla rete configurata per vedere i tuoi prelievi automatici.",
     "noneSelected": "Nessun pagamento selezionato",
     "selectedCount": "{n} pagamento/i selezionato/i",
     "cancelSelected": "Annulla i pagamenti selezionati",

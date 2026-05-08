@@ -132,7 +132,18 @@ export default function Navbar() {
                                     '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
                                 }}
                             >
-                                {t("nav.payments")}
+                                {t("nav.setup")}
+                            </Button>
+                            <Button
+                                component={Link}
+                                href="/payments"
+                                color="inherit"
+                                sx={{
+                                    textTransform: 'none',
+                                    '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
+                                }}
+                            >
+                                {t("nav.myPulls")}
                             </Button>
                             <Button
                                 component={Link}

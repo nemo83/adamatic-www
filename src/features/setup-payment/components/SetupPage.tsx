@@ -3,9 +3,7 @@ import {
     Box,
     Button,
     Grid2,
-    IconButton,
     Stack,
-    Tooltip,
     Typography,
     Link
 } from "@mui/material";
@@ -19,14 +17,12 @@ import { useScriptByName } from "../../../lib/cardano/ScriptContext";
 import { fetchSettings } from "../../../lib/api/adamatic";
 import { HOSKY_TOUR_DISPLAYED } from "../../../lib/cardano/constants";
 import type { PaymentMode } from "../mode";
-import PaymentsTable from "../../payments-list/components/PaymentsTable";
 import PaymentForm from "./PaymentForm";
 import PaymentReceipt from "./PaymentReceipt";
 import SubmitPanel from "./SubmitPanel";
 import LimitsStrip from "./LimitsStrip";
 import { useTranslations } from "../../../lib/i18n/I18nProvider";
 import { useTour } from '@reactour/tour'
-import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
 import type { Settings } from "../../../types/AdaMaticTypes";
 import NextLink from "next/link";
@@ -56,8 +52,6 @@ export default function SetupPage(props: {
     const [showLimit, setShowLimit] = useState(false);
 
     const [maintenanceMode, setMaintenanceMode] = useState(false);
-
-    const [version, setVersion] = useState(0);
 
     const [settings, setSettings] = useState<Settings | undefined>(undefined)
 
@@ -316,40 +310,20 @@ export default function SetupPage(props: {
                     </Grid2>
                 </Grid2>
                 {connected ?
-                    <Stack width={"750px"} maxWidth={"60%"}>
-
-                        <Grid2 container width={"100%"} justifyContent={"space-between"}>
-                            <Grid2>
-                                <Typography variant="h4">{t("setup.myAutoPulls")}</Typography>
-                            </Grid2>
-                            <Grid2>
-                                <Tooltip title={t("setup.refreshTooltip")}>
-                                    <IconButton
-                                        color="primary"
-                                        size="large"
-                                        aria-label={t("setup.refreshAria")}
-                                        onClick={() => setVersion(version + 1)}
-                                        sx={{
-                                            background: 'linear-gradient(45deg, rgba(33, 150, 243, 0.1) 30%, rgba(33, 203, 243, 0.1) 90%)',
-                                            borderRadius: '12px',
-                                            transition: 'all 0.3s ease-in-out',
-                                            '&:hover': {
-                                                background: 'linear-gradient(45deg, rgba(33, 150, 243, 0.2) 30%, rgba(33, 203, 243, 0.2) 90%)',
-                                                transform: 'rotate(180deg) scale(1.1)',
-                                            }
-                                        }}
-                                    >
-                                        <CachedIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            </Grid2>
-
-                        </Grid2>
-
-                        <PaymentsTable version={version} />
-
-
-                    </Stack>
+                    <NextLink href="/payments" passHref legacyBehavior>
+                        <Button
+                            component="a"
+                            variant="text"
+                            sx={{
+                                textTransform: 'none',
+                                fontWeight: 600,
+                                color: 'primary.main',
+                                '&, &:link, &:visited, &:hover, &:active': { color: 'primary.main' },
+                            }}
+                        >
+                            {t("setup.viewMyAutoPulls")} →
+                        </Button>
+                    </NextLink>
                     : null}
 
             </Stack>

@@ -5,7 +5,8 @@
     "beta": "bêta"
   },
   "nav": {
-    "payments": "Paiements",
+    "setup": "Configurer",
+    "myPulls": "Mes retraits",
     "faq": "FAQ",
     "github": "GitHub"
   },
@@ -69,6 +70,8 @@
     "takeTour": "Visite guidée",
     "create": "Créer le paiement récurrent",
     "myAutoPulls": "Mes retraits automatiques",
+    "viewMyAutoPulls": "Voir mes retraits automatiques",
+    "newAutoPull": "Nouveau retrait",
     "refreshTooltip": "Actualiser les paiements",
     "refreshAria": "Recharger les retraits automatiques"
   },
@@ -170,6 +173,8 @@
     "failed": "Échec de la délégation : {error}"
   },
   "payments": {
+    "connectHint": "Connectez un portefeuille pour voir vos retraits automatiques.",
+    "networkHint": "Basculez votre portefeuille sur le réseau configuré pour voir vos retraits automatiques.",
     "noneSelected": "Aucun paiement sélectionné",
     "selectedCount": "{n} paiement(s) sélectionné(s)",
     "cancelSelected": "Annuler les paiements sélectionnés",

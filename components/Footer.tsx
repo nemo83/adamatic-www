@@ -45,7 +45,10 @@ export default function Footer() {
                             </Typography>
                             <Stack spacing={1}>
                                 <Link href="/" color="inherit" underline="hover" sx={pinInherit}>
-                                    {t("footer.automaticPayments")}
+                                    {t("nav.setup")}
+                                </Link>
+                                <Link href="/payments" color="inherit" underline="hover" sx={pinInherit}>
+                                    {t("nav.myPulls")}
                                 </Link>
                                 <Link href="/faq" color="inherit" underline="hover" sx={pinInherit}>
                                     {t("nav.faq")}
@@ -121,16 +124,21 @@ export default function Footer() {
                             </Typography>
                             <Link
                                 href="https://easy1staking.com"
-                                color="secondary.light"
                                 underline="hover"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 sx={{
-                                    fontWeight: 'bold',
-                                    '&, &:link, &:visited, &:hover, &:active': { color: 'secondary.light' },
+                                    fontWeight: 700,
+                                    // Warm amber — readable on the blue footer,
+                                    // ties to the BetaRibbon / HOSKY accent palette.
+                                    // Pinned across :link/:visited/:hover/:active so
+                                    // the user-agent purple-after-click never appears.
+                                    '&, &:link, &:visited': { color: '#FCD34D' },
+                                    '&:hover, &:active': { color: '#FDE68A' },
+                                    transition: 'color 160ms ease',
                                 }}
                             >
-                                Easy1Staking
+                                easy1staking
                             </Link>
                         </Stack>
                     </Stack>

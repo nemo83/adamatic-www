@@ -5,7 +5,8 @@
     "beta": "ベータ"
   },
   "nav": {
-    "payments": "支払い",
+    "setup": "設定",
+    "myPulls": "マイ自動引き出し",
     "faq": "よくある質問",
     "github": "GitHub"
   },
@@ -69,6 +70,8 @@
     "takeTour": "ツアーを開始",
     "create": "定期支払いを作成",
     "myAutoPulls": "マイ自動引き出し",
+    "viewMyAutoPulls": "マイ自動引き出しを表示",
+    "newAutoPull": "新しい自動引き出し",
     "refreshTooltip": "支払いを更新",
     "refreshAria": "自動引き出しをリロード"
   },
@@ -170,6 +173,8 @@
     "failed": "委任に失敗しました: {error}"
   },
   "payments": {
+    "connectHint": "ウォレットを接続するとマイ自動引き出しが表示されます。",
+    "networkHint": "設定済みのネットワークにウォレットを切り替えると、マイ自動引き出しが表示されます。",
     "noneSelected": "選択中の支払いはありません",
     "selectedCount": "{n} 件の支払いを選択中",
     "cancelSelected": "選択した支払いをキャンセル",

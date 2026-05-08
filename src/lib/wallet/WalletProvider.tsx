@@ -120,20 +120,57 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         localStorage.removeItem(STORAGE_KEY);
     }, []);
 
+    /**
+     * Wallet extensions inject `window.cardano.<id>` asynchronously — often
+     * a few hundred ms after our component mounts. A single check at mount
+     * misses them. Poll for ~4s, refreshing the installed list on each tick,
+     * and auto-reconnect as soon as the previously-stored extension shows
+     * up + reports enabled. Stops on first successful detection.
+     */
     useEffect(() => {
-        refreshInstalled();
         const stored =
             typeof window !== "undefined"
                 ? localStorage.getItem(STORAGE_KEY)
                 : null;
-        if (!stored) return;
-        const ext = getExtension(stored);
-        if (!ext) return;
-        (ext.isEnabled ? ext.isEnabled() : Promise.resolve(false))
-            .then((enabled) => {
-                if (enabled) doConnect(stored, true);
-            })
-            .catch(() => void 0);
+
+        let cancelled = false;
+        let attempts = 0;
+        const MAX_ATTEMPTS = 20; // 20 × 200ms = 4s
+        const reconnected = { current: false };
+
+        const tick = async () => {
+            if (cancelled) return;
+            // Always refresh the installed list — fills the wallet picker
+            // even if we have nothing stored to reconnect to.
+            refreshInstalled();
+
+            if (stored && !reconnected.current) {
+                const ext = getExtension(stored);
+                if (ext) {
+                    try {
+                        const enabled = await (ext.isEnabled
+                            ? ext.isEnabled()
+                            : Promise.resolve(false));
+                        if (enabled && !cancelled) {
+                            reconnected.current = true;
+                            doConnect(stored, true);
+                            return;
+                        }
+                    } catch {
+                        /* swallow — keep polling */
+                    }
+                }
+            }
+
+            if (attempts++ < MAX_ATTEMPTS) {
+                setTimeout(tick, 200);
+            }
+        };
+        tick();
+
+        return () => {
+            cancelled = true;
+        };
     }, [doConnect, refreshInstalled]);
 
     useEffect(() => {
