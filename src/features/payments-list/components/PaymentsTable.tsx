@@ -116,8 +116,6 @@ export default function PaymentsTable(props: { version: number }) {
             selectedPayments.has(payment.txHash + payment.output_index)
         );
 
-        console.log('num payments to cancel: ' + paymentsToCancel.length);
-
         try {
             const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx(paymentsToCancel));
             toast.success(`Payment cancelled: ${txHash.substring(0, 10)}...${txHash.substring(txHash.length - 10)}`, { duration: 3000 });
@@ -156,7 +154,6 @@ export default function PaymentsTable(props: { version: number }) {
     }
 
     const openPaymentDetails = (txHash: string, outputIndex: number) => {
-        console.log('calles outputIndex')
         setTxHash(txHash);
         setOutputIndex(outputIndex);
         setOpen(true);
@@ -204,18 +201,12 @@ export default function PaymentsTable(props: { version: number }) {
         }
     }
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        console.log('value: ' + value);
+    const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
         setCurrentPage(value);
-        
         const startIndex = (value - 1) * itemsPerPage;
         setStartIndex(startIndex);
-        console.log('startIndex: ' + startIndex);
-
         const endIndex = startIndex + itemsPerPage;
         setEndIndex(endIndex);
-        console.log('endIndex: ' + endIndex);
-
         setCurrentPageData(recurringPaymentDTOs.slice(startIndex, endIndex));
     };
 

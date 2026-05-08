@@ -4,7 +4,6 @@
  * "Failed to fetch"). Returns `null` on failure — callers branch on that.
  */
 import { ADAMATIC_HOST } from "../cardano/constants";
-import type { ScriptsPayload } from "../cardano/ScriptContext";
 import type {
     HoskyTemplate,
     PaymentDetails,
@@ -24,10 +23,6 @@ async function safeJson<T>(url: string): Promise<T | null> {
         console.warn(`GET ${url} failed:`, err);
         return null;
     }
-}
-
-export function fetchScripts(): Promise<ScriptsPayload | null> {
-    return safeJson<ScriptsPayload>(`${ADAMATIC_HOST}/scripts`);
 }
 
 export function fetchSettings(): Promise<Settings | null> {

@@ -1,12 +1,8 @@
 /**
- * ScriptContext — fetches the protocol script manifest from the BE on mount
- * and caches it for the rest of the session. Replaces the hardcoded compiled
- * Plutus bytes + script hash that used to live in Constants.tsx.
- *
- * BE endpoint: GET {ADAMATIC_HOST}/scripts
- *
- * Response shape:
- *   { network: "preprod", protocols: [{ protocolId, title, version, scripts: [...] }] }
+ * ScriptContext — exposes the protocol script manifest to the rest of the
+ * FE. The manifest is **bundled statically** (see `scriptManifestFallback`)
+ * so consumers don't need to wait for a network round-trip and the FE keeps
+ * working without any BE involvement.
  *
  * Each script entry:
  *   { name, plutusVersion, rawCompiledCode, rawHash, parameters, finalHash }
@@ -14,15 +10,12 @@
  * The FE primarily needs `finalHash` (for script-address derivation) and
  * `plutusVersion` + `rawCompiledCode` + `parameters` (for the inline-script
  * cancel path).
+ *
+ * If/when a BE manifest endpoint comes online, swap the static `manifest`
+ * lookup for an effectful fetch — the public hooks (`useScripts`,
+ * `useScriptByName`) stay the same.
  */
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
-import { fetchScripts } from "../api/adamatic";
+import React, { createContext, useContext, useMemo } from "react";
 import { fallbackForNetwork } from "./scriptManifestFallback";
 import { NETWORK } from "./constants";
 
@@ -59,6 +52,7 @@ interface ScriptContextValue {
     loading: boolean;
     error: string | null;
     byName(name: string): ScriptInfo | undefined;
+    /** No-op — kept for API compatibility with the BE-driven version. */
     reload(): void;
 }
 
@@ -67,42 +61,14 @@ const Ctx = createContext<ScriptContextValue | null>(null);
 export const ScriptProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [manifest, setManifest] = useState<ScriptsPayload | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [version, setVersion] = useState(0);
-
-    useEffect(() => {
-        let cancelled = false;
-        setLoading(true);
-        setError(null);
-        fetchScripts()
-            .then((data) => {
-                if (cancelled) return;
-                if (data) {
-                    setManifest(data);
-                    return;
-                }
-                // BE unreachable / 404 → fall back to the bundled manifest
-                // so the FE keeps working until the BE catches up.
-                const fb = fallbackForNetwork(NETWORK);
-                if (fb) {
-                    console.warn(
-                        "Scripts manifest fetch failed — using bundled fallback for network",
-                        NETWORK,
-                    );
-                    setManifest(fb);
-                } else {
-                    setError("Failed to fetch scripts manifest");
-                }
-            })
-            .finally(() => {
-                if (!cancelled) setLoading(false);
-            });
-        return () => {
-            cancelled = true;
-        };
-    }, [version]);
+    // Resolved synchronously — no network, no loading state.
+    const manifest = useMemo<ScriptsPayload | null>(
+        () => fallbackForNetwork(NETWORK),
+        [],
+    );
+    const error = manifest === null
+        ? `No bundled script manifest for network "${NETWORK ?? "unknown"}"`
+        : null;
 
     const byName = useMemo(
         () => (name: string) => {
@@ -119,12 +85,12 @@ export const ScriptProvider: React.FC<{ children: React.ReactNode }> = ({
     const value = useMemo<ScriptContextValue>(
         () => ({
             manifest,
-            loading,
+            loading: false,
             error,
             byName,
-            reload: () => setVersion((v) => v + 1),
+            reload: () => {},
         }),
-        [manifest, loading, error, byName],
+        [manifest, error, byName],
     );
 
     return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
@@ -132,8 +98,7 @@ export const ScriptProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export function useScripts(): ScriptContextValue {
     const v = useContext(Ctx);
-    if (!v)
-        throw new Error("useScripts must be used inside <ScriptProvider>");
+    if (!v) throw new Error("useScripts must be used inside <ScriptProvider>");
     return v;
 }
 

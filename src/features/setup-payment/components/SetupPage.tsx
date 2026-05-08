@@ -88,30 +88,32 @@ export default function SetupPage(props: {
     const [numPayments, setNumPayments] = useState<number>(0)
 
     useEffect(() => {
-        if (connected) {
-            try {
-                const datum = chainAdapter.encodeSetupDatum(datumDTO);
-                setDatum(datum);
-
-                setPayeeAddress(datumDTO.payee);
-
-                const amountPerPayment = datumDTO.amountToSend[0].amount;
-                console.log("amountPerPayment: " + amountPerPayment);
-
-                setAmountPerPayment(amountPerPayment)
-
-                const numPayments = deposit / (amountPerPayment + datumDTO.maxFeesLovelace)
-                console.log("numPayments: " + numPayments);
-
-                setNumPayments(numPayments)
-            } catch (error) {
-                console.warn('could not build datum: ' + error);
-                setDatum(undefined);
-            }
-        } else {
+        // Skip datum-build until the form has the bits the encoder needs.
+        // Without this gate the encoder throws on every keystroke during
+        // initial render, spamming "Missing ownerPaymentPubKeyHash or payee"
+        // into the console.
+        if (
+            !connected ||
+            !datumDTO.ownerPaymentPubKeyHash ||
+            !datumDTO.payee ||
+            datumDTO.amountToSend.length === 0
+        ) {
+            setDatum(undefined);
+            return;
+        }
+        try {
+            const datum = chainAdapter.encodeSetupDatum(datumDTO);
+            setDatum(datum);
+            setPayeeAddress(datumDTO.payee);
+            const amountPerPayment = datumDTO.amountToSend[0].amount;
+            setAmountPerPayment(amountPerPayment);
+            const numPayments = deposit / (amountPerPayment + datumDTO.maxFeesLovelace);
+            setNumPayments(numPayments);
+        } catch (error) {
+            console.warn("could not build datum:", error);
             setDatum(undefined);
         }
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datumDTO, connected]);
 
     // useEffect(() => {
@@ -130,19 +132,11 @@ export default function SetupPage(props: {
 
     useEffect(() => {
         fetchSettings().then((data) => {
-            if (data) {
-                console.log('settings: ' + JSON.stringify(data));
-                setSettings(data);
-            }
+            if (data) setSettings(data);
         });
     }, [])
 
     const signAndSubmit = async () => {
-
-        console.log('per wallet deposit: ' + deposit)
-        console.log('walletFromList: ' + JSON.stringify(walletFromList))
-        console.log('walletFromList.length: ' + walletFromList.length)
-
         if (!automaticPayments?.finalHash) {
             toast.error(t("tx.scriptsNotLoaded"), { duration: 5000 });
             return;

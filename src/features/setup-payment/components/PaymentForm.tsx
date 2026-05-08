@@ -162,8 +162,6 @@ export default function PaymentForm(props: {
             let allValid = true;
 
             for (const address of walletFromList) {
-                console.log('checking validation and delegation for: ' + address);
-
                 // First validate the address format
                 const validation = validateCardanoAddress(address);
                 newValidationStatus[address] = validation;
@@ -223,8 +221,6 @@ export default function PaymentForm(props: {
 
     const updateStuff = async (maxFees: number, epochStart: number, numPulls: number, epochFrequency: number) => {
 
-        console.log('maxFees: ' + maxFees);
-
         if (maxFees == null || isNaN(maxFees)
             || epochStart == null || isNaN(epochStart)
             || numPulls == null || isNaN(numPulls)
@@ -232,14 +228,12 @@ export default function PaymentForm(props: {
             return;
         }
 
-        let baseRequest = {
+        const baseRequest = {
             max_fees: maxFees.toString(),
             epoch_start: epochStart.toString(),
             num_pulls: numPulls.toString(),
             epoch_frequency: epochFrequency.toString()
         };
-
-        console.log('baseRequest: ' + JSON.stringify(baseRequest));
 
         if (isHoskyInput) {
             fetchHoskyTemplate(baseRequest).then((data) => {

@@ -43,11 +43,6 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
     };
 
     useEffect(() => {
-
-        console.log('open: ' + open);
-        console.log('txHash: ' + txHash);
-        console.log('outputIndex: ' + outputIndex);
-
         if (open && txHash && outputIndex != undefined) {
             fetchPaymentDetails(txHash, outputIndex).then((data) => {
                 if (!data) return;
