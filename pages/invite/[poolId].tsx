@@ -7,6 +7,7 @@
  *   pools render a friendly "not found" page instead of crashing.
  */
 import { useRouter } from "next/router";
+import Head from "next/head";
 import NextLink from "next/link";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { resolveCuratedPool } from "../../src/lib/cardano/curatedPools";
@@ -69,5 +70,32 @@ export default function InviteRoute() {
         );
     }
 
-    return <InvitePage pool={pool} />;
+    const title = `Earn HOSKY by delegating to ${pool.ticker} · AdaMatic`;
+    const saturationPct = ((pool.liveSaturation ?? 0) * 100).toFixed(1);
+    const description =
+        pool.description
+            ? `${pool.description} · ${pool.hoskyada.toLocaleString()} HOSKY/ADA/epoch · ${saturationPct}% saturated`
+            : `${pool.hoskyada.toLocaleString()} HOSKY/ADA/epoch · ${saturationPct}% saturated · Delegate to ${pool.ticker} and earn HOSKY each epoch.`;
+    // Use the ticker as the OG slug — short, stable, cacheable across share platforms.
+    const ogPath = `/api/og/invite/${pool.ticker.toLowerCase()}`;
+
+    return (
+        <>
+            <Head>
+                <title>{title}</title>
+                <meta name="description" content={description} />
+                <meta property="og:title" content={title} />
+                <meta property="og:description" content={description} />
+                <meta property="og:type" content="website" />
+                <meta property="og:image" content={ogPath} />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={title} />
+                <meta name="twitter:description" content={description} />
+                <meta name="twitter:image" content={ogPath} />
+            </Head>
+            <InvitePage pool={pool} />
+        </>
+    );
 }
