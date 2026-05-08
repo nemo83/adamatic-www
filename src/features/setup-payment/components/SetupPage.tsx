@@ -24,6 +24,7 @@ import PaymentForm from "./PaymentForm";
 import PaymentReceipt from "./PaymentReceipt";
 import SubmitPanel from "./SubmitPanel";
 import LimitsStrip from "./LimitsStrip";
+import { useTranslations } from "../../../lib/i18n/I18nProvider";
 import { useTour } from '@reactour/tour'
 import CachedIcon from '@mui/icons-material/Cached';
 import toast from "react-hot-toast";
@@ -70,6 +71,7 @@ export default function SetupPage(props: {
 
     const { isValidNetwork, mode } = props;
     const { wallet, connected } = useWallet();
+    const t = useTranslations();
 
     const [txHash, setTxHash] = useState<string>("");
     const [datumDTO, setDatumDTO] = useState<RecurringPaymentDatum>({ ownerPaymentPubKeyHash: "", "amountToSend": [], "payee": "", "startTime": 0, "endTime": undefined, "paymentIntervalHours": 0, "maxPaymentDelayHours": undefined, "maxFeesLovelace": 0 });
@@ -148,7 +150,7 @@ export default function SetupPage(props: {
         console.log('walletFromList.length: ' + walletFromList.length)
 
         if (!automaticPayments?.finalHash) {
-            toast.error("Scripts manifest not loaded yet. Please retry shortly.", { duration: 5000 });
+            toast.error(t("tx.scriptsNotLoaded"), { duration: 5000 });
             return;
         }
         if (wallet && datum) {
@@ -161,12 +163,15 @@ export default function SetupPage(props: {
                     scriptHash: automaticPayments.finalHash,
                 });
                 setTxHash(txHash);
-                toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
+                toast.success(
+                    t("tx.submitted", { hash: txHash.substring(0, 10) + "…" + txHash.substring(txHash.length - 10) }),
+                    { duration: 5000 },
+                );
             } catch (error) {
                 toast.error('' + error, { duration: 5000 });
             }
         } else {
-            toast.error('It was not possible to build the transaction. Please contact support', { duration: 5000 });
+            toast.error(t("tx.buildFailed"), { duration: 5000 });
         }
     }
 
@@ -197,9 +202,9 @@ export default function SetupPage(props: {
                     }}
                 >
 
-                    {showLimit && <Alert severity="warning" sx={{ my: 2 }}>Limit of payments reached. Please try again later</Alert>}
+                    {showLimit && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.limitReached")}</Alert>}
 
-                    {maintenanceMode && <Alert severity="warning" sx={{ my: 2 }}>AdaMatic is currently in maintenance mode. Please try again later!</Alert>}
+                    {maintenanceMode && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.maintenance")}</Alert>}
 
                     {/* <Hero/>
 
@@ -275,7 +280,7 @@ export default function SetupPage(props: {
                                 }
                             }}
                         >
-                            Take a Tour
+                            {t("setup.takeTour")}
                         </Button>
                     </Grid2>
                     <Grid2>
@@ -306,7 +311,7 @@ export default function SetupPage(props: {
                                 }
                             }}
                         >
-                            Create Recurring Payment
+                            {t("setup.create")}
                         </Button>
                     </Grid2>
                 </Grid2>
@@ -315,14 +320,14 @@ export default function SetupPage(props: {
 
                         <Grid2 container width={"100%"} justifyContent={"space-between"}>
                             <Grid2>
-                                <Typography variant="h4">My Auto-pulls</Typography>
+                                <Typography variant="h4">{t("setup.myAutoPulls")}</Typography>
                             </Grid2>
                             <Grid2>
-                                <Tooltip title="Refresh Payments">
+                                <Tooltip title={t("setup.refreshTooltip")}>
                                     <IconButton
                                         color="primary"
                                         size="large"
-                                        aria-label="reload auto pulls"
+                                        aria-label={t("setup.refreshAria")}
                                         onClick={() => setVersion(version + 1)}
                                         sx={{
                                             background: 'linear-gradient(45deg, rgba(33, 150, 243, 0.1) 30%, rgba(33, 203, 243, 0.1) 90%)',

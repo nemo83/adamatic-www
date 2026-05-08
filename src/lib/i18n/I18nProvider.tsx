@@ -25,11 +25,13 @@ export const DEFAULT_LOCALE: Locale = "en";
 const STORAGE_KEY = "adamatic.locale";
 
 type Messages = typeof en;
+// Non-en files are typed loosely so partial translations compile;
+// missing keys fall back to English at lookup time.
 const MESSAGES: Record<Locale, Messages> = {
     en,
-    fr,
-    es,
-    it,
+    fr: fr as unknown as Messages,
+    es: es as unknown as Messages,
+    it: it as unknown as Messages,
     ja: ja as unknown as Messages,
 };
 

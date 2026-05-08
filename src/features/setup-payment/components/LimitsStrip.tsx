@@ -10,6 +10,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import { MAX_PULLS, MAX_WALLETS } from "../limits";
+import { useTranslations } from "../../../lib/i18n/I18nProvider";
 
 export interface LimitsStripProps {
     /** Operator fee in ADA. Pass `null` while loading from BE. */
@@ -17,6 +18,7 @@ export interface LimitsStripProps {
 }
 
 export default function LimitsStrip({ protocolFeeAda }: LimitsStripProps) {
+    const t = useTranslations();
     return (
         <Stack
             direction={{ xs: "column", sm: "row" }}
@@ -48,7 +50,7 @@ export default function LimitsStrip({ protocolFeeAda }: LimitsStripProps) {
                         fontSize: 10.5,
                     }}
                 >
-                    Beta limits
+                    {t("limits.label")}
                 </Typography>
             </Stack>
             <Stack
@@ -60,24 +62,24 @@ export default function LimitsStrip({ protocolFeeAda }: LimitsStripProps) {
             >
                 <Pill
                     icon={<RefreshIcon sx={{ fontSize: 14 }} />}
-                    label={`Max pulls: ${MAX_PULLS}`}
-                    tooltip="Maximum number of recurring pulls per setup."
+                    label={t("limits.maxPulls", { n: MAX_PULLS })}
+                    tooltip={t("limits.tooltips.maxPulls")}
                 />
                 <Pill
                     icon={
                         <AccountBalanceWalletOutlinedIcon sx={{ fontSize: 14 }} />
                     }
-                    label={`Max wallets: ${MAX_WALLETS}`}
-                    tooltip="Maximum number of source wallets per setup."
+                    label={t("limits.maxWallets", { n: MAX_WALLETS })}
+                    tooltip={t("limits.tooltips.maxWallets")}
                 />
                 <Pill
                     icon={<AttachMoneyIcon sx={{ fontSize: 14 }} />}
                     label={
                         protocolFeeAda !== null
-                            ? `Protocol fee: ${protocolFeeAda} ADA`
-                            : "Protocol fee: —"
+                            ? t("limits.protocolFee", { ada: protocolFeeAda })
+                            : t("limits.protocolFeeLoading")
                     }
-                    tooltip="Operator fee per pull, paid to the AdaMatic infrastructure."
+                    tooltip={t("limits.tooltips.protocolFee")}
                 />
             </Stack>
         </Stack>

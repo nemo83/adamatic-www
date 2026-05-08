@@ -1,5 +1,6 @@
 import React from 'react';
-import { FormGroup, FormControlLabel, Checkbox, Box, Typography } from '@mui/material';
+import { FormGroup, FormControlLabel, Checkbox, Box } from '@mui/material';
+import { useTranslations } from "../../../lib/i18n/I18nProvider";
 
 interface PaymentConfirmationProps {
     acceptRisk: boolean;
@@ -12,33 +13,31 @@ export default function PaymentConfirmation({
     acceptRisk,
     setAcceptRisk,
     acceptFees,
-    setAcceptFees
+    setAcceptFees,
 }: PaymentConfirmationProps) {
+    const t = useTranslations();
     return (
         <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                Confirmation
-            </Typography>
             <FormGroup>
-                <FormControlLabel 
-                    required 
+                <FormControlLabel
+                    required
                     control={
-                        <Checkbox 
+                        <Checkbox
                             checked={acceptRisk}
                             onChange={() => setAcceptRisk(!acceptRisk)}
                         />
-                    } 
-                    label="I accept to use this tool at my own risk"
+                    }
+                    label={t("submit.acceptRisk")}
                 />
-                <FormControlLabel 
-                    required 
+                <FormControlLabel
+                    required
                     control={
-                        <Checkbox 
+                        <Checkbox
                             checked={acceptFees}
                             onChange={() => setAcceptFees(!acceptFees)}
                         />
-                    } 
-                    label="I accept to pay required transaction and protocol fees to setup my automated payments"
+                    }
+                    label={t("submit.acceptFees")}
                 />
             </FormGroup>
         </Box>

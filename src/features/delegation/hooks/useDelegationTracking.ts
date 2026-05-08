@@ -49,25 +49,29 @@ const DELEGATION_POLL_MS = 30 * 1000;
 const shortHash = (h: string) =>
     h.length > 18 ? `${h.slice(0, 8)}…${h.slice(-8)}` : h;
 
+/** Translation function — same shape as I18nProvider's `t()`. */
+type T = (key: string, vars?: Record<string, string | number>) => string;
+
 export interface TrackDelegationOptions {
     txHash: string;
     /** Bech32 of the delegated wallet — used by the BE check. */
     walletAddress: string;
     /** Toast id to update across phases (so we don't pile up toasts). */
     toastId: string;
+    /** Translation function from the calling component. */
+    t: T;
     /** Called when `is_delegated_to_hosky` flips true — typically a state
      *  bump that triggers the form to re-check delegation. */
     onDelegated?: () => void;
 }
 
 export async function trackDelegationFlow(opts: TrackDelegationOptions) {
-    const { txHash, walletAddress, toastId, onDelegated } = opts;
+    const { txHash, walletAddress, toastId, t, onDelegated } = opts;
 
     // ── Phase 1 ── tx confirmation ────────────────────────────────────────
-    toast.loading(
-        `Delegation submitted (${shortHash(txHash)}) — waiting for confirmation…`,
-        { id: toastId },
-    );
+    toast.loading(t("delegate.submitted", { hash: shortHash(txHash) }), {
+        id: toastId,
+    });
     const txStart = Date.now();
     let confirmed = false;
     while (Date.now() - txStart < TX_TIMEOUT_MS) {
@@ -78,16 +82,13 @@ export async function trackDelegationFlow(opts: TrackDelegationOptions) {
         await sleep(TX_POLL_MS);
     }
     if (!confirmed) {
-        toast.error(
-            "Delegation tx didn't confirm within 5 minutes. Check Cardanoscan and reload the page.",
-            { id: toastId, duration: 9000 },
-        );
+        toast.error(t("delegate.txTimeout"), {
+            id: toastId,
+            duration: 9000,
+        });
         return;
     }
-    toast.loading(
-        "Delegation confirmed on-chain — checking pool registration…",
-        { id: toastId },
-    );
+    toast.loading(t("delegate.confirmedChecking"), { id: toastId });
 
     // ── Phase 2 ── is_delegated_to_hosky ──────────────────────────────────
     const delStart = Date.now();
@@ -101,17 +102,17 @@ export async function trackDelegationFlow(opts: TrackDelegationOptions) {
     }
 
     if (!delegated) {
-        // Cardano applies stake at epoch boundaries — this is normal.
-        toast(
-            "Delegation confirmed, but not yet active in a Hosky pool. Cardano applies stake at epoch boundaries (typically 1–2 epochs). Come back then to set up auto-pulls.",
-            { id: toastId, duration: 12000, icon: "⏳" },
-        );
+        toast(t("delegate.notYetActive"), {
+            id: toastId,
+            duration: 12000,
+            icon: "⏳",
+        });
         return;
     }
 
-    toast.success(
-        "🎉 You're delegated to a Hosky pool — auto-pulls unlocked!",
-        { id: toastId, duration: 8000 },
-    );
+    toast.success(t("delegate.activated"), {
+        id: toastId,
+        duration: 8000,
+    });
     onDelegated?.();
 }

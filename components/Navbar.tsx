@@ -42,6 +42,7 @@ export default function Navbar() {
                         <Box
                             component={Link}
                             href="/"
+                            data-tut="step-welcome"
                             sx={{
                                 display: 'flex',
                                 alignItems: 'center',

@@ -30,6 +30,7 @@ import { trackDelegationFlow } from "../../delegation/hooks/useDelegationTrackin
 import toast from "react-hot-toast";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { MAX_PULLS, MAX_WALLETS } from "../limits";
+import { useTranslations } from "../../../lib/i18n/I18nProvider";
 
 export default function PaymentForm(props: {
     deposit: number,
@@ -49,6 +50,7 @@ export default function PaymentForm(props: {
 
     const { deposit, setDeposit, walletFromList, setWalletFromList, acceptRisk, setAcceptRisk, acceptFees, setAcceptFees, datumDTO, setDatumDTO, isDelegatedToHosky, setIsDelegatedToHosky, mode } = props;
     const isHoskyInput = mode === "hosky";
+    const t = useTranslations();
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -76,13 +78,13 @@ export default function PaymentForm(props: {
      *  (connected wallet owns the address) or surfaces a switch-wallet dialog. */
     const handleRowDelegate = (address: string) => {
         if (!walletAddress) {
-            toast.error("Connect a wallet first.");
+            toast.error(t("wallet.connectFirst"));
             return;
         }
         const typedHash = stakeHashOf(address);
         const walletHash = stakeHashOf(walletAddress);
         if (!typedHash || !walletHash) {
-            toast.error("Couldn't read the address — try again.");
+            toast.error(t("delegate.couldntReadAddress"));
             return;
         }
         if (typedHash !== walletHash) {
@@ -99,8 +101,9 @@ export default function PaymentForm(props: {
         if (!mismatchAddress || !walletAddress) return;
         if (stakeHashOf(mismatchAddress) === stakeHashOf(walletAddress)) {
             setMismatchAddress(null);
-            toast.success("Wallet switched — click Delegate again to continue.");
+            toast.success(t("delegate.walletSwitched"));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [walletAddress, mismatchAddress, stakeHashOf]);
 
     const [owner, setOwner] = React.useState<string>("");
@@ -135,10 +138,10 @@ export default function PaymentForm(props: {
         }
         const parsed = chainAdapter.parseAddress(address.trim());
         if (!parsed.isValid) {
-            return { isValid: false, error: parsed.error ?? "Invalid Cardano address format" };
+            return { isValid: false, error: t("form.addressInvalid") };
         }
         if (parsed.kind === "enterprise") {
-            return { isValid: false, error: "Unsupported address type" };
+            return { isValid: false, error: t("form.addressUnsupported") };
         }
         return { isValid: true, error: "" };
     };
@@ -283,7 +286,7 @@ export default function PaymentForm(props: {
 
     const addWalletAddress = () => {
         if (walletFromList.length >= MAX_WALLETS) {
-            toast.error(`Beta limit: max ${MAX_WALLETS} wallets per setup.`);
+            toast.error(t("form.maxWalletsToast", { n: MAX_WALLETS }));
             return;
         }
         setWalletFromList([...walletFromList, ""]);
@@ -314,9 +317,9 @@ export default function PaymentForm(props: {
         <Stack spacing={1} style={{ paddingTop: "10px" }}>
             {/* Multiple Wallet Addresses Section */}
             <Box>
-                <Tooltip title="Payment or Staking addresses delegated to Hosky Pools for collecting rewards">
+                <Tooltip title={t("form.addressesTooltip")}>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                        Payment or Staking addresses delegated to Hosky Pools
+                        {t("form.addressesLabel")}
                     </Typography>
                 </Tooltip>
 
@@ -335,7 +338,7 @@ export default function PaymentForm(props: {
                             errorMessage = validation.error;
                         } else if (validation && validation.isValid && !isDelegated) {
                             hasError = true;
-                            errorMessage = "Address not delegated to any Hosky Pool";
+                            errorMessage = t("form.addressNotDelegated");
                         }
                     }
 
@@ -351,7 +354,7 @@ export default function PaymentForm(props: {
                                 <TextField
                                     required={true}
                                     fullWidth
-                                    label={`Address ${index + 1}`}
+                                    label={t("form.addressLabel", { n: index + 1 })}
                                     value={address}
                                     name={`addressFrom-${index}`}
                                     onChange={(e) => updateWalletAddress(index, e.target.value)}
@@ -369,7 +372,7 @@ export default function PaymentForm(props: {
                                     sx={{ flex: 1 }}
                                 />
                                 {walletFromList.length > 1 && (
-                                    <Tooltip title="Remove this address">
+                                    <Tooltip title={t("form.removeAddress")}>
                                         <IconButton
                                             onClick={() => removeWalletAddress(index)}
                                             size="small"
@@ -386,6 +389,7 @@ export default function PaymentForm(props: {
                             </Box>
                             {showDelegateCta && (
                                 <Box
+                                    data-tut={index === 0 ? "step-delegate" : undefined}
                                     sx={{
                                         mt: 1,
                                         px: 1.5,
@@ -403,7 +407,7 @@ export default function PaymentForm(props: {
                                     <Stack direction="row" alignItems="center" gap={1} sx={{ minWidth: 0 }}>
                                         <LocalFireDepartmentIcon sx={{ color: '#B45309', fontSize: 20 }} />
                                         <Typography variant="caption" sx={{ color: '#78350F', fontWeight: 500, lineHeight: 1.4 }}>
-                                            Not delegated to a Hosky pool — delegate to start earning HOSKY each epoch.
+                                            {t("form.rowDelegateMessage")}
                                         </Typography>
                                     </Stack>
                                     <Button
@@ -417,7 +421,7 @@ export default function PaymentForm(props: {
                                             '&:hover': { bgcolor: 'rgba(180,83,9,0.08)' },
                                         }}
                                     >
-                                        Delegate this wallet →
+                                        {t("form.rowDelegateCta")}
                                     </Button>
                                 </Box>
                             )}
@@ -431,8 +435,8 @@ export default function PaymentForm(props: {
                         <Tooltip
                             title={
                                 atWalletLimit
-                                    ? `Beta limit: max ${MAX_WALLETS} wallets per setup`
-                                    : "Add another address"
+                                    ? t("form.maxWalletsTooltip", { n: MAX_WALLETS })
+                                    : t("form.addAddressTooltip")
                             }
                         >
                             <Box
@@ -484,7 +488,9 @@ export default function PaymentForm(props: {
                                         fontSize: '0.875rem'
                                     }}
                                 >
-                                    {atWalletLimit ? `Max ${MAX_WALLETS} wallets reached` : 'Add Address'}
+                                    {atWalletLimit
+                                        ? t("form.maxWalletsReached", { n: MAX_WALLETS })
+                                        : t("form.addAddress")}
                                 </Typography>
                             </Box>
                         </Tooltip>
@@ -499,35 +505,37 @@ export default function PaymentForm(props: {
                 maxWidth="xs"
                 fullWidth
             >
-                <DialogTitle sx={{ pb: 0.5 }}>Different wallet</DialogTitle>
+                <DialogTitle sx={{ pb: 0.5 }}>{t("delegate.differentWallet.title")}</DialogTitle>
                 <DialogContent>
                     <Stack spacing={1.5} sx={{ pt: 0.5 }}>
                         <DialogContentText sx={{ fontSize: 14 }}>
-                            The address you want to delegate isn&apos;t controlled by your currently connected wallet.
+                            {t("delegate.differentWallet.body")}
                         </DialogContentText>
                         <Box sx={{ p: 1.5, borderRadius: 1, bgcolor: 'rgba(0,0,0,0.04)' }}>
                             <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 0.25 }}>
-                                Address to delegate
+                                {t("delegate.differentWallet.addressToDelegate")}
                             </Typography>
                             <Typography sx={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 12, wordBreak: 'break-all' }}>
                                 {mismatchAddress}
                             </Typography>
                             <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1.25, mb: 0.25 }}>
-                                Currently connected
+                                {t("delegate.differentWallet.currentlyConnected")}
                             </Typography>
                             <Typography sx={{ fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', fontSize: 12, wordBreak: 'break-all' }}>
                                 {walletAddress ?? '—'}
                             </Typography>
                         </Box>
-                        <DialogContentText sx={{ fontSize: 13.5 }}>
-                            Open your wallet extension and switch to the account that owns this address.
-                            AdaMatic will detect the change automatically — then click <strong>Delegate</strong> again.
-                        </DialogContentText>
+                        <DialogContentText
+                            sx={{ fontSize: 13.5 }}
+                            dangerouslySetInnerHTML={{
+                                __html: t("delegate.differentWallet.instructions"),
+                            }}
+                        />
                     </Stack>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setMismatchAddress(null)} variant="contained" sx={{ textTransform: 'none' }}>
-                        Got it
+                        {t("common.gotIt")}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -538,14 +546,12 @@ export default function PaymentForm(props: {
                 pools={poolsLoading || hoskyPools.length === 0 ? undefined : hoskyPools}
                 onDelegate={async (poolId) => {
                     if (!connected || !wallet || !walletAddress) {
-                        toast.error("Connect a wallet first.");
+                        toast.error(t("wallet.connectFirst"));
                         return;
                     }
                     setDelegationModalOpen(false);
                     const FLOW_TOAST = "delegation-flow";
-                    toast.loading("Building delegation transaction…", {
-                        id: FLOW_TOAST,
-                    });
+                    toast.loading(t("delegate.building"), { id: FLOW_TOAST });
                     try {
                         const adapter = getChainAdapter();
                         const txHash = await adapter.buildAndSubmitDelegateTx({
@@ -558,11 +564,12 @@ export default function PaymentForm(props: {
                             txHash,
                             walletAddress,
                             toastId: FLOW_TOAST,
+                            t,
                             onDelegated: () =>
                                 setDelegationCheckVersion((v) => v + 1),
                         });
                     } catch (err) {
-                        toast.error(`Delegation failed: ${err}`, {
+                        toast.error(t("delegate.failed", { error: String(err) }), {
                             id: FLOW_TOAST,
                             duration: 6000,
                         });

@@ -1,6 +1,6 @@
 import { Box, Container, Typography, Link, Stack, Divider } from "@mui/material";
-import GitHubIcon from '@mui/icons-material/GitHub';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useTranslations } from "../src/lib/i18n/I18nProvider";
 
 // Pin link color across :link/:visited/:hover/:active so the user-agent
 // purple visited color never leaks through.
@@ -9,6 +9,7 @@ const pinInherit = {
 };
 
 export default function Footer() {
+    const t = useTranslations();
     return (
         <Box
             component="footer"
@@ -30,26 +31,24 @@ export default function Footer() {
                         {/* About Section */}
                         <Box sx={{ flex: 1 }}>
                             <Typography variant="h6" gutterBottom>
-                                AdaMatic
+                                {t("app.title")}
                             </Typography>
                             <Typography variant="body2" sx={{ mb: 2, maxWidth: 300 }}>
-                                Automated recurring payments on the Cardano blockchain. 
-                                Perfect for regular transactions like Hosky token collection 
-                                and other scheduled payments.
+                                {t("footer.tagline")}
                             </Typography>
                         </Box>
 
                         {/* Navigation Links */}
                         <Box sx={{ flex: 1 }}>
                             <Typography variant="h6" gutterBottom>
-                                Navigation
+                                {t("footer.navigation")}
                             </Typography>
                             <Stack spacing={1}>
                                 <Link href="/" color="inherit" underline="hover" sx={pinInherit}>
-                                    Automatic Payments
+                                    {t("footer.automaticPayments")}
                                 </Link>
                                 <Link href="/faq" color="inherit" underline="hover" sx={pinInherit}>
-                                    FAQ
+                                    {t("nav.faq")}
                                 </Link>
                                 <Link
                                     href="https://github.com/easy1staking-com/cardano-recurring-payment"
@@ -59,7 +58,7 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     sx={pinInherit}
                                 >
-                                    GitHub Repository
+                                    {t("footer.githubRepository")}
                                 </Link>
                             </Stack>
                         </Box>
@@ -67,7 +66,7 @@ export default function Footer() {
                         {/* Resources */}
                         <Box sx={{ flex: 1 }}>
                             <Typography variant="h6" gutterBottom>
-                                Resources
+                                {t("footer.resources")}
                             </Typography>
                             <Stack spacing={1}>
                                 <Link
@@ -78,7 +77,7 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     sx={pinInherit}
                                 >
-                                    Cardano Explorer
+                                    {t("footer.cardanoExplorer")}
                                 </Link>
                                 <Link
                                     href="https://cardano.org"
@@ -88,17 +87,7 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     sx={pinInherit}
                                 >
-                                    Cardano.org
-                                </Link>
-                                <Link
-                                    href="https://meshjs.dev"
-                                    color="inherit"
-                                    underline="hover"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    sx={pinInherit}
-                                >
-                                    MeshJS
+                                    {t("footer.cardanoOrg")}
                                 </Link>
                             </Stack>
                         </Box>
@@ -114,9 +103,9 @@ export default function Footer() {
                         justifyContent="space-between"
                     >
                         <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                            © {new Date().getFullYear()} AdaMatic. Built on Cardano.
+                            {t("footer.copyright", { year: new Date().getFullYear() })}
                         </Typography>
-                        
+
                         <Stack
                             direction="row"
                             spacing={1}
@@ -124,11 +113,11 @@ export default function Footer() {
                             sx={{ opacity: 0.8 }}
                         >
                             <Typography variant="body2">
-                                Sponsored with
+                                {t("footer.sponsoredWith")}
                             </Typography>
                             <FavoriteIcon sx={{ fontSize: 16, color: 'error.main' }} />
                             <Typography variant="body2">
-                                by
+                                {t("footer.sponsoredBy")}
                             </Typography>
                             <Link
                                 href="https://easy1staking.com"

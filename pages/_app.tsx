@@ -1,9 +1,10 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 
+import React, { useMemo } from "react";
 import { WalletProvider } from "../src/lib/wallet/WalletProvider";
 import { ScriptProvider } from "../src/lib/cardano/ScriptContext";
-import { I18nProvider } from "../src/lib/i18n/I18nProvider";
+import { I18nProvider, useTranslations } from "../src/lib/i18n/I18nProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
@@ -16,47 +17,32 @@ const theme = createTheme({
     },
 });
 
-// Reactour walks through the form fields once on first connect. The
-// selectors hook into `data-tut="step-N"` attributes on the inputs.
-const steps = [
-    {
-        selector: '[data-tut="step-0"]',
-        content:
-            "The wallet to use to pay and manage Hosky automatic pulls. Although any wallet can be used, it is recommended to use a small hot wallet.",
-    },
-    {
-        selector: '[data-tut="step-1"]',
-        content:
-            "The Staking or Payment addresses delegated to a Hosky Rug Pool you want to collect rewards for. " +
-            "It's set by default to the connected wallet. It allows for multi-wallet auto pulls. Just press the + icon " +
-            "and add more wallets you want to collect rewards for",
-    },
-    {
-        selector: '[data-tut="step-3"]',
-        content:
-            "Max amount of fees, per pull, the user is willing to pay to cover for AdaMatic and Cardano Transaction fees.",
-    },
-    {
-        selector: '[data-tut="step-5"]',
-        content:
-            "The epoch (and the exact date and time) in which the first pull be made",
-    },
-    {
-        selector: '[data-tut="step-6"]',
-        content:
-            "The epoch (and the exact date and time) in which the last pull be made",
-    },
-    {
-        selector: '[data-tut="step-7"]',
-        content: "The number of total pulls to be executed. Capped at 5 during the beta.",
-    },
-    {
-        selector: '[data-tut="step-8"]',
-        content:
-            "The epoch frequency interval to pull Hosky rewards. Hosky allows to stack rewards which allows smaller wallets to save on fees. " +
-            "Such wallets should pull less frequently (2 to 3 epochs). While larger wallets should pull each epoch (e.g. 1 epoch).",
-    },
-];
+/**
+ * Reactour walks the user through the setup flow on first connect. Steps
+ * anchor to `data-tut="step-…"` attributes on the components. The Delegate
+ * step (`step-delegate`) is contextual — only present when the wallet is
+ * not delegated to a Hosky pool. Reactour skips selectors that don't
+ * resolve to a DOM node, so users who are already delegated breeze past
+ * that step automatically.
+ */
+function TourBoundary({ children }: { children: React.ReactNode }) {
+    const t = useTranslations();
+    const steps = useMemo(
+        () => [
+            { selector: '[data-tut="step-welcome"]', content: t("tour.welcome") },
+            { selector: '[data-tut="step-0"]', content: t("tour.wallet") },
+            { selector: '[data-tut="step-1"]', content: t("tour.addresses") },
+            { selector: '[data-tut="step-delegate"]', content: t("tour.delegate") },
+            { selector: '[data-tut="step-3"]', content: t("tour.maxFees") },
+            { selector: '[data-tut="step-5"]', content: t("tour.firstEpoch") },
+            { selector: '[data-tut="step-6"]', content: t("tour.lastEpoch") },
+            { selector: '[data-tut="step-7"]', content: t("tour.numPulls") },
+            { selector: '[data-tut="step-8"]', content: t("tour.frequency") },
+        ],
+        [t],
+    );
+    return <TourProvider steps={steps}>{children}</TourProvider>;
+}
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
@@ -66,11 +52,11 @@ export default function App({ Component, pageProps }: AppProps) {
                     <ThemeProvider theme={theme}>
                         <CssBaseline />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <TourProvider steps={steps}>
+                            <TourBoundary>
                                 <Layout>
                                     <Component {...pageProps} />
                                 </Layout>
-                            </TourProvider>
+                            </TourBoundary>
                         </LocalizationProvider>
                     </ThemeProvider>
                 </ScriptProvider>

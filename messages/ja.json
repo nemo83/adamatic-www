@@ -9,17 +9,28 @@
     "faq": "よくある質問",
     "github": "GitHub"
   },
+  "common": {
+    "cancel": "キャンセル",
+    "add": "追加",
+    "gotIt": "了解",
+    "close": "閉じる",
+    "delete": "削除",
+    "ada": "ADA",
+    "lovelace": "Lovelace"
+  },
   "wallet": {
     "connect": "ウォレットを接続",
-    "connected": "ウォレットが正しく接続されました",
-    "networkMismatch": "誤ったネットワークに接続しようとしています。{network} に接続してください。",
+    "connected": "ウォレットを接続しました",
+    "networkMismatch": "ネットワークが違います。{network} に接続してください。",
     "noExtensions": "CIP-30 ウォレットが検出されませんでした。Eternl、Lace、Nami、Typhon などの Cardano ウォレット拡張機能をインストールしてページを再読み込みしてください。",
-    "pickerTitle": "Cardano ウォレットを接続"
+    "pickerTitle": "Cardano ウォレットを接続",
+    "connectFirst": "まずウォレットを接続してください。"
   },
   "tx": {
     "submitted": "トランザクションを送信しました: {hash}",
     "failed": "トランザクションに失敗しました",
-    "scriptsNotLoaded": "スクリプトマニフェストがまだ読み込まれていません。少し待ってから再試行してください。"
+    "scriptsNotLoaded": "スクリプトマニフェストがまだ読み込まれていません。少し待ってから再試行してください。",
+    "buildFailed": "トランザクションを構築できませんでした。問題が続く場合はサポートにお問い合わせください。"
   },
   "locale": {
     "switcher": "言語",
@@ -28,6 +39,183 @@
     "es": "Español",
     "it": "Italiano",
     "ja": "日本語"
+  },
+  "tour": {
+    "welcome": "AdaMatic へようこそ。数ステップで HOSKY 報酬の自動引き出しを設定できます。順を追ってご案内します。",
+    "wallet": "ウォレットを接続してください。CIP-30 対応の Cardano ウォレットなら何でも使えます。AdaMatic 専用に小さなホットウォレットを用意することをおすすめします — メインの資金は安全に保てます。",
+    "addresses": "HOSKY を回収したいウォレットを選びます。デフォルトは接続中のウォレットで、これが一般的なケースです。自分が管理する別のウォレットの分も引き出したい場合は、もう一つのアドレスを追加できます。",
+    "delegate": "ウォレットがまだ Hosky のラグプールに委任されていない場合、この CTA が表示されます。クリックしてプールを選び委任してください — HOSKY を獲得し始めるために必要です。",
+    "maxFees": "1 回の引き出しあたりの最大手数料。AdaMatic + ネットワーク手数料に使える上限を決めます。余剰はウォレットに戻ります。",
+    "firstEpoch": "最初の引き出しエポック。最初の引き出しが行われるタイミングです。デフォルトは次のエポックです。",
+    "lastEpoch": "最後の引き出しエポック。スケジュールが停止するタイミングです。任意 — 空欄のままにすると入金がなくなるまで実行されます。",
+    "numPulls": "引き出し回数。ベータ期間中は 5 回までに制限されています。各引き出しにはプロトコル手数料 + トランザクション手数料がかかります。",
+    "frequency": "頻度。引き出しの間隔（エポック数）です。HOSKY 報酬は累積されます — 小さなウォレットは手数料を抑えるため引き出し頻度を下げるのがよく（2〜3 エポックごと）、大きなウォレットは毎エポック引き出して構いません。"
+  },
+  "limits": {
+    "label": "ベータ制限",
+    "maxPulls": "最大引き出し回数: {n}",
+    "maxWallets": "最大ウォレット数: {n}",
+    "protocolFee": "プロトコル手数料: {ada} ADA",
+    "protocolFeeLoading": "プロトコル手数料: —",
+    "tooltips": {
+      "maxPulls": "1 つの設定での自動引き出しの最大回数です。",
+      "maxWallets": "1 つの設定でのソースウォレットの最大数です。",
+      "protocolFee": "1 回の引き出しごとに AdaMatic インフラへ支払う運営手数料です。"
+    }
+  },
+  "setup": {
+    "limitReached": "支払い数の上限に達しました。後ほどお試しください",
+    "maintenance": "AdaMatic は現在メンテナンス中です。後ほどお試しください！",
+    "takeTour": "ツアーを開始",
+    "create": "定期支払いを作成",
+    "myAutoPulls": "マイ自動引き出し",
+    "refreshTooltip": "支払いを更新",
+    "refreshAria": "自動引き出しをリロード"
+  },
+  "form": {
+    "addressesTooltip": "Hosky のラグプールに委任されたウォレット — HOSKY 報酬を得るのはこれらです",
+    "addressesLabel": "Hosky プールに委任された支払い／ステーキングアドレス",
+    "addressLabel": "アドレス {n}",
+    "addressInvalid": "Cardano アドレスの形式が無効です",
+    "addressUnsupported": "サポートされていないアドレス種別です",
+    "addressNotDelegated": "このアドレスは Hosky プールに委任されていません",
+    "removeAddress": "このアドレスを削除",
+    "addAddress": "アドレスを追加",
+    "addAddressTooltip": "もう一つアドレスを追加",
+    "maxWalletsReached": "ウォレットは最大 {n} 個までです",
+    "maxWalletsTooltip": "ベータ制限: 1 設定あたり最大 {n} ウォレット",
+    "maxWalletsToast": "ベータ制限: 1 設定あたり最大 {n} ウォレットです。",
+    "rowDelegateMessage": "Hosky プールに委任されていません — 委任してエポックごとに HOSKY を獲得しましょう。",
+    "rowDelegateCta": "このウォレットを委任 →",
+    "maxFeesLabel": "最大手数料",
+    "maxFeesTooltip": "1 回の引き出しあたりの最大手数料 — AdaMatic 運営手数料 + Cardano ネットワーク手数料を含みます",
+    "firstEpochLabel": "最初のエポック",
+    "firstEpochTooltip": "最初の報酬引き出しのエポック",
+    "startTimeLabel": "開始時刻",
+    "startTimeTooltip": "最初の支払いが行われるタイミング",
+    "lastEpochLabel": "最後のエポック（任意）",
+    "lastEpochTooltip": "最後の報酬引き出しのエポック",
+    "endTimeLabel": "終了時刻（任意）",
+    "endTimeTooltip": "最後の支払いが行われるタイミング。空欄にすると入金が尽きるまで実行されます。",
+    "numPullsLabel": "引き出し回数",
+    "numPullsTooltip": "予定する HOSKY 引き出しの総回数",
+    "maxButton": "MAX",
+    "maxDelayLabel": "支払いの最大遅延（時間）",
+    "maxDelayTooltip": "見送られた引き出しが失敗とみなされるまでの最大遅延（時間）",
+    "intervalLabel": "支払い間隔（エポック）",
+    "intervalTooltip": "支払いの間のエポック数",
+    "addAsset": "アセットを追加",
+    "addAssetTooltip": "各支払いで送るアセット",
+    "asset": {
+      "title": "アセットを追加",
+      "body": "各支払いで送るポリシー ID、アセット名、数量を追加します。",
+      "policyId": "ポリシー ID",
+      "assetName": "アセット名",
+      "amount": "数量",
+      "unitToggleAda": "Ada",
+      "unitToggleLovelace": "Lovelace"
+    }
+  },
+  "submit": {
+    "acceptRisk": "このベータ版ツールを使うリスクを理解しています",
+    "acceptFees": "これらの自動支払いの設定に必要なトランザクション手数料およびプロトコル手数料に同意します"
+  },
+  "delegate": {
+    "modal": {
+      "epoch": "エポック {n}",
+      "channel": "Hosky ラグプール",
+      "eyebrow": "◇ 厳選された血統プール",
+      "titleA": "ステーク。",
+      "titleItalic": "HOSKY を獲得。",
+      "titleC": "繰り返す。",
+      "deckPart1": "Hosky のラグプールに ADA を委任すると、通常の ADA ステーキング報酬に加えて ",
+      "deckHosky": "毎エポック HOSKY",
+      "deckPart2": " を獲得できます。同じ ADA で 2 つの利回り、しかも ",
+      "deckDecentralise": "Cardano の分散化",
+      "deckPart3": " にも貢献できます。委任が完了したら AdaMatic の自動引き出しを設定しましょう。仕組みは自動販売機のようなもの — 小さな ADA を入れると、HOSKY の報酬が出てきます。",
+      "featuredHosky": "ベスト・イン・ショー",
+      "featuredEasy1": "血統パートナー",
+      "taglineHosky": "ドギー本人と一緒にステーキング。",
+      "taglineEasy1": "これを作ったチーム — そりゃフェアでしょ。",
+      "rateUnit": "HOSKY · ADA あたり · エポックあたり",
+      "rateShortPerAda": "/ADA",
+      "otherPools": "❀ その他の血統プール ❀",
+      "saturationChip": "{pct} 飽和",
+      "feeChip": "手数料 {pct}",
+      "delegatorsChip": "{n} 名の委任者",
+      "nearSaturation": "⚠ 飽和間近",
+      "step1": "① 委任",
+      "step2": "② 自動引き出し設定",
+      "step3": "③ HOSKY 受け取り",
+      "fineprint": "ADA がウォレットを離れることはありません。ステーキング報酬も通常どおり継続します。",
+      "delegateButton": "委任する",
+      "rosetteBest": "BEST",
+      "rosetteBuilt": "BUILT"
+    },
+    "differentWallet": {
+      "title": "別のウォレットです",
+      "body": "委任しようとしているアドレスは、現在接続中のウォレットでは管理されていません。",
+      "addressToDelegate": "委任するアドレス",
+      "currentlyConnected": "現在接続中",
+      "instructions": "ウォレット拡張機能を開き、このアドレスを保有するアカウントに切り替えてください。AdaMatic は変化を自動で検出します — その後もう一度 <strong>委任する</strong> をクリックしてください。"
+    },
+    "couldntReadAddress": "アドレスを読み取れませんでした — もう一度お試しください。",
+    "walletSwitched": "ウォレットを切り替えました — 続けるにはもう一度委任をクリックしてください。",
+    "building": "委任トランザクションを構築中…",
+    "submitted": "委任を送信しました（{hash}） — 確定を待っています…",
+    "txTimeout": "委任トランザクションが 5 分以内に確定しませんでした。Cardanoscan を確認し、ページを再読み込みしてください。",
+    "confirmedChecking": "オンチェーンで委任を確定 — プール登録を確認中…",
+    "activated": "🎉 Hosky プールに委任しました — 自動引き出しが解放されました！",
+    "notYetActive": "委任は確定しましたが、Hosky プールでまだアクティブではありません。Cardano はエポックの境界でステークを反映します（通常 1〜2 エポック）。その頃に戻って自動引き出しを設定してください。",
+    "failed": "委任に失敗しました: {error}"
+  },
+  "payments": {
+    "noneSelected": "選択中の支払いはありません",
+    "selectedCount": "{n} 件の支払いを選択中",
+    "cancelSelected": "選択した支払いをキャンセル",
+    "headers": {
+      "view": "表示",
+      "stakingAddress": "ステーキングアドレス",
+      "nextRun": "次回実行",
+      "balance": "残高",
+      "status": "ステータス",
+      "cancel": "キャンセル"
+    },
+    "showDetails": "支払いの詳細を表示",
+    "deleteAria": "削除",
+    "tableAria": "支払い一覧表",
+    "status": {
+      "scheduled": "予定済み",
+      "completed": "完了",
+      "withdrawn": "引き出し済み",
+      "cancelled": "キャンセル済み",
+      "insufficientFunds": "残高不足"
+    },
+    "toast": {
+      "txSubmitted": "トランザクションを送信しました: {hash}",
+      "paymentCancelled": "支払いをキャンセルしました: {hash}",
+      "bulkCancelled": "{n} 件の支払いをキャンセルしました",
+      "cancelError": "支払いのキャンセル中にエラー: {error}",
+      "stakeAddressCopied": "ステーキングアドレスをコピーしました"
+    },
+    "showing": "{total} 件中 {start}〜{end} を表示中"
+  },
+  "receipt": {
+    "addressCopied": "アドレスをクリップボードにコピーしました",
+    "copyFailed": "コピーに失敗しました",
+    "copyAddress": "アドレスをコピー"
+  },
+  "footer": {
+    "tagline": "Cardano ブロックチェーン上の自動定期支払い。Hosky トークンの回収など、定期的なトランザクションに最適です。",
+    "navigation": "ナビゲーション",
+    "automaticPayments": "自動支払い",
+    "githubRepository": "GitHub リポジトリ",
+    "resources": "リソース",
+    "cardanoExplorer": "Cardano エクスプローラー",
+    "cardanoOrg": "Cardano.org",
+    "copyright": "© {year} AdaMatic. Cardano 上で構築。",
+    "sponsoredWith": "心を込めて、",
+    "sponsoredBy": "提供:"
   },
   "faq": {
     "q1": {

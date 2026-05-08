@@ -27,6 +27,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import GroupsIcon from "@mui/icons-material/Groups";
 import PercentIcon from "@mui/icons-material/Percent";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
+import { useTranslations } from "../../../lib/i18n/I18nProvider";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -428,12 +429,17 @@ function FeaturedRow({
     onDelegate: (id: string) => void;
     delay: number;
 }) {
+    const t = useTranslations();
     const isHosky = tier === "best-in-show";
     const accent = isHosky ? T.amber : T.forest;
     const accentDeep = isHosky ? T.amberDeep : T.forestDeep;
     const accentSoft = isHosky ? T.amberSoft : T.forestSoft;
-    const ribbonLabel = isHosky ? "Best in Show" : "Pedigree Partner";
-    const rosetteLabel = isHosky ? "BEST" : "BUILT";
+    const ribbonLabel = isHosky
+        ? t("delegate.modal.featuredHosky")
+        : t("delegate.modal.featuredEasy1");
+    const rosetteLabel = isHosky
+        ? t("delegate.modal.rosetteBest")
+        : t("delegate.modal.rosetteBuilt");
 
     return (
         <Box
@@ -652,7 +658,7 @@ function FeaturedRow({
                                 fontWeight: 600,
                             }}
                         >
-                            HOSKY · per ADA · per epoch
+                            {t("delegate.modal.rateUnit")}
                         </Typography>
                     </Box>
 
@@ -669,7 +675,7 @@ function FeaturedRow({
                                     sx={{ fontSize: "13px !important" }}
                                 />
                             }
-                            label={`${pct(pool.liveSaturation)} sat.`}
+                            label={t("delegate.modal.saturationChip", { pct: pct(pool.liveSaturation) })}
                         />
                         <MetaChip
                             icon={
@@ -677,7 +683,7 @@ function FeaturedRow({
                                     sx={{ fontSize: "13px !important" }}
                                 />
                             }
-                            label={`${pct(pool.marginCost)} fee`}
+                            label={t("delegate.modal.feeChip", { pct: pct(pool.marginCost) })}
                         />
                         <MetaChip
                             icon={
@@ -685,7 +691,7 @@ function FeaturedRow({
                                     sx={{ fontSize: "13px !important" }}
                                 />
                             }
-                            label={`${fmt(pool.liveDelegators ?? 0)} delegators`}
+                            label={t("delegate.modal.delegatorsChip", { n: fmt(pool.liveDelegators ?? 0) })}
                         />
                         <MetaChip
                             variant="mono"
@@ -729,7 +735,7 @@ function FeaturedRow({
                             },
                         }}
                     >
-                        Delegate
+                        {t("delegate.modal.delegateButton")}
                     </Button>
                 </Box>
             </Box>
@@ -752,6 +758,7 @@ function PoolRow({
     onDelegate: (id: string) => void;
     delay: number;
 }) {
+    const t = useTranslations();
     const oversaturated =
         typeof pool.liveSaturation === "number" && pool.liveSaturation > 0.85;
 
@@ -890,7 +897,7 @@ function PoolRow({
                                 fontWeight: 700,
                             }}
                         >
-                            ⚠ Near saturation
+                            {t("delegate.modal.nearSaturation")}
                         </Box>
                     )}
                     <Typography
@@ -911,9 +918,9 @@ function PoolRow({
                             letterSpacing: "0.04em",
                         }}
                     >
-                        · {pct(pool.marginCost)} fee · {fmt(
-                            pool.liveDelegators ?? 0,
-                        )} delegators
+                        · {t("delegate.modal.feeChip", { pct: pct(pool.marginCost) })}
+                        {" · "}
+                        {t("delegate.modal.delegatorsChip", { n: fmt(pool.liveDelegators ?? 0) })}
                     </Typography>
                 </Stack>
             </Box>
@@ -953,7 +960,7 @@ function PoolRow({
                         fontWeight: 600,
                     }}
                 >
-                    /ADA
+                    {t("delegate.modal.rateShortPerAda")}
                 </Typography>
             </Box>
 
@@ -985,7 +992,7 @@ function PoolRow({
                     "&.Mui-disabled": { color: T.inkMuted },
                 }}
             >
-                Delegate ›
+                {t("delegate.modal.delegateButton")} ›
             </Button>
         </Box>
     );
@@ -1006,6 +1013,7 @@ export default function HoskyDelegationModal({
     pools = MOCK_POOLS,
     onDelegate,
 }: HoskyDelegationModalProps) {
+    const t = useTranslations();
     const hosky = pools.find((p) => p.poolId === HOSKY_ID);
     const easy1 = pools.find((p) => p.poolId === EASY1_ID);
     const others = pools
@@ -1085,7 +1093,7 @@ export default function HoskyDelegationModal({
                             }}
                         />
                         <Box component="span" sx={{ fontWeight: 600 }}>
-                            Hosky Rugpools
+                            {t("delegate.modal.channel")}
                         </Box>
                         <Box
                             component="span"
@@ -1096,7 +1104,7 @@ export default function HoskyDelegationModal({
                         >
                             ·
                         </Box>
-                        <Box component="span">Epoch 628</Box>
+                        <Box component="span">{t("delegate.modal.epoch", { n: 628 })}</Box>
                     </Box>
                     <IconButton
                         onClick={onClose}
@@ -1105,7 +1113,7 @@ export default function HoskyDelegationModal({
                             color: T.ink,
                             "&:hover": { bgcolor: "rgba(31,27,22,0.06)" },
                         }}
-                        aria-label="Close"
+                        aria-label={t("common.close")}
                     >
                         <CloseIcon fontSize="small" />
                     </IconButton>
@@ -1163,7 +1171,7 @@ export default function HoskyDelegationModal({
                                 },
                             }}
                         >
-                            ◇ Pedigree Pools, Curated
+                            {t("delegate.modal.eyebrow")}
                         </Typography>
                         <Typography
                             component="h1"
@@ -1181,7 +1189,7 @@ export default function HoskyDelegationModal({
                                     "fadeUp 600ms cubic-bezier(.2,.8,.2,1) 80ms backwards",
                             }}
                         >
-                            Stake.{" "}
+                            {t("delegate.modal.titleA")}{" "}
                             <Box
                                 component="span"
                                 sx={{
@@ -1192,9 +1200,9 @@ export default function HoskyDelegationModal({
                                         '"opsz" 144, "SOFT" 100',
                                 }}
                             >
-                                Earn HOSKY.
+                                {t("delegate.modal.titleItalic")}
                             </Box>{" "}
-                            Repeat.
+                            {t("delegate.modal.titleC")}
                         </Typography>
                         <Typography
                             sx={{
@@ -1207,8 +1215,7 @@ export default function HoskyDelegationModal({
                                     "fadeUp 560ms cubic-bezier(.2,.8,.2,1) 160ms backwards",
                             }}
                         >
-                            Delegate your ADA to a Hosky rugpool and start
-                            earning{" "}
+                            {t("delegate.modal.deckPart1")}
                             <Box
                                 component="span"
                                 sx={{
@@ -1218,10 +1225,9 @@ export default function HoskyDelegationModal({
                                     fontWeight: 500,
                                 }}
                             >
-                                HOSKY each epoch
-                            </Box>{" "}
-                            on top of normal ADA staking rewards — same ADA,
-                            two yields, plus you help{" "}
+                                {t("delegate.modal.deckHosky")}
+                            </Box>
+                            {t("delegate.modal.deckPart2")}
                             <Box
                                 component="span"
                                 sx={{
@@ -1231,11 +1237,9 @@ export default function HoskyDelegationModal({
                                     fontWeight: 500,
                                 }}
                             >
-                                decentralise Cardano
-                            </Box>{" "}
-                            along the way. Once delegated, set up an AdaMatic
-                            auto-pull: it works like a vending machine — small
-                            ADA payments go in, HOSKY rewards come out.
+                                {t("delegate.modal.deckDecentralise")}
+                            </Box>
+                            {t("delegate.modal.deckPart3")}
                         </Typography>
                     </Box>
 
@@ -1245,7 +1249,7 @@ export default function HoskyDelegationModal({
                             <FeaturedRow
                                 pool={hosky}
                                 tier="best-in-show"
-                                tagline="Stake with the doggo himself."
+                                tagline={t("delegate.modal.taglineHosky")}
                                 onDelegate={onDelegate}
                                 delay={240}
                             />
@@ -1254,7 +1258,7 @@ export default function HoskyDelegationModal({
                             <FeaturedRow
                                 pool={easy1}
                                 tier="pedigree-partner"
-                                tagline="The crew who built this thing — fair's fair."
+                                tagline={t("delegate.modal.taglineEasy1")}
                                 onDelegate={onDelegate}
                                 delay={320}
                             />
@@ -1286,7 +1290,7 @@ export default function HoskyDelegationModal({
                                 fontWeight: 700,
                             }}
                         >
-                            ❀ Other Pedigree Pools ❀
+                            {t("delegate.modal.otherPools")}
                         </Typography>
                         <Box
                             sx={{ flex: 1, height: 1, bgcolor: T.hairline }}
@@ -1348,16 +1352,16 @@ export default function HoskyDelegationModal({
                             component="span"
                             sx={{ color: T.amberDeep, fontWeight: 700 }}
                         >
-                            ① Delegate
+                            {t("delegate.modal.step1")}
                         </Box>
                         <Box component="span" sx={{ color: T.hairline }}>
                             ›
                         </Box>
-                        <Box component="span">② Set up auto-pull</Box>
+                        <Box component="span">{t("delegate.modal.step2")}</Box>
                         <Box component="span" sx={{ color: T.hairline }}>
                             ›
                         </Box>
-                        <Box component="span">③ Collect HOSKY</Box>
+                        <Box component="span">{t("delegate.modal.step3")}</Box>
                     </Stack>
                     <Typography
                         sx={{
@@ -1371,8 +1375,7 @@ export default function HoskyDelegationModal({
                             textAlign: { xs: "left", sm: "right" },
                         }}
                     >
-                        Your ADA never leaves your wallet. Staking rewards
-                        continue as normal.
+                        {t("delegate.modal.fineprint")}
                     </Typography>
                 </Box>
             </Dialog>
