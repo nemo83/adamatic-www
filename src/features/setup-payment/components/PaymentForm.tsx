@@ -213,7 +213,10 @@ export default function PaymentForm(props: {
 
     useEffect(() => {
         if (isHoskyInput) {
-            fetchHoskyTemplate().then((data) => {
+            // Pin `num_pulls` to MAX_PULLS so the initial deposit suggestion
+            // matches the FE cap (the BE defaults to 10 otherwise, double the
+            // beta cap). Other params are left to the BE's defaults.
+            fetchHoskyTemplate({ num_pulls: String(MAX_PULLS) }).then((data) => {
                 if (data) updateForm(data);
             });
         }
