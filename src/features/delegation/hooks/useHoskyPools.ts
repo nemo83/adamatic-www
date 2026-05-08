@@ -1,16 +1,18 @@
 /**
- * Fetches all 3 Hosky API feeds (rewards, metadata, metrics) **directly
- * from `hosky.io`** in the browser, merges them by `pool_id`, drops pools
- * we never want to surface (charity 100%-margin pool), and returns the
- * unified `Pool[]` shape the modal expects.
+ * Fetches all 3 Hosky API feeds (rewards, metadata, metrics) via the
+ * Next.js proxy at /api/hosky/[type], merges them by `pool_id`, drops
+ * pools we never want to surface (charity 100%-margin pool), and returns
+ * the unified `Pool[]` shape the modal expects.
+ *
+ * Browser-direct calls to hosky.io are blocked by CORS (the upstream
+ * sends `Access-Control-Allow-Origin: null`). The proxy bypasses CORS,
+ * but hosky.io's Vercel bot challenge intermittently 429s the proxy too —
+ * when that happens, all three fetches return null and the modal falls
+ * back to its built-in `MOCK_POOLS` list.
  *
  * Source-of-truth = `metadata` feed: pools without a metadata entry are
  * not curated and are skipped entirely. This also keeps logo/name/homepage
  * coupled to the canonical record.
- *
- * If hosky.io blocks the cross-origin request (missing CORS headers) or
- * returns the Vercel bot-challenge HTML, all three fetches fail silently
- * and the modal falls back to its built-in `MOCK_POOLS` list.
  */
 import { useEffect, useState } from "react";
 import {
@@ -81,9 +83,9 @@ export function useHoskyPools(): UseHoskyPoolsResult {
         setError(null);
 
         Promise.all([
-            safeJson<RewardEntry[]>("https://hosky.io/api/rugpools?type=rewards"),
-            safeJson<MetadataEntry[]>("https://hosky.io/api/rugpools?type=metadata"),
-            safeJson<MetricsResponse>("https://hosky.io/api/stats?type=rugpoolMetrics"),
+            safeJson<RewardEntry[]>("/api/hosky/rewards"),
+            safeJson<MetadataEntry[]>("/api/hosky/metadata"),
+            safeJson<MetricsResponse>("/api/hosky/metrics"),
         ])
             .then(([rewards, metadata, metricsResp]) => {
                 if (cancelled) return;
