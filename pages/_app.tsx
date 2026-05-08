@@ -41,8 +41,8 @@ function DefaultSiteHead() {
             <meta property="og:image:type" content="image/png" key="og:image:type" />
             <meta property="og:locale" content="en_US" key="og:locale" />
             <meta name="twitter:card" content="summary_large_image" key="twitter:card" />
-            <meta name="twitter:site" content="@AdaMatic" key="twitter:site" />
-            <meta name="twitter:creator" content="@Easy1Staking" key="twitter:creator" />
+            <meta name="twitter:site" content="@AdaWatchBot" key="twitter:site" />
+            <meta name="twitter:creator" content="@cryptojoe101" key="twitter:creator" />
             <meta name="twitter:title" content={DEFAULT_TITLE} key="twitter:title" />
             <meta name="twitter:description" content={DEFAULT_DESCRIPTION} key="twitter:description" />
             <meta name="twitter:image" content={DEFAULT_OG_IMAGE} key="twitter:image" />
