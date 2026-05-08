@@ -206,9 +206,48 @@
     "showing": "{total} 件中 {start}〜{end} を表示中"
   },
   "receipt": {
+    "title": "支払いの概要",
+    "payeeAddress": "受取人アドレス",
+    "walletAddresses": "ウォレットアドレス（{n}）",
+    "amountPerPayment": "1 回あたりの支払額",
+    "numPayments": "支払い回数",
+    "protocolFeesMax": "プロトコル＋ネットワーク手数料（最大）",
+    "totalPaymentAmount": "支払い総額",
+    "totalProtocolFeesMax": "プロトコル＋ネットワーク手数料の合計（最大）",
+    "totalToDeposit": "預け入れ総額",
     "addressCopied": "アドレスをクリップボードにコピーしました",
     "copyFailed": "コピーに失敗しました",
     "copyAddress": "アドレスをコピー"
+  },
+  "paymentDetails": {
+    "title": "Hosky 自動引き出しの詳細",
+    "closeAria": "閉じる",
+    "from": "送信元（ステーキングアドレス）",
+    "to": "送信先",
+    "amount": "金額",
+    "initialDeposit": "初期預け入れ",
+    "maxFee": "最大手数料",
+    "epochStart": "開始エポック",
+    "epochEnd": "終了エポック",
+    "numPulls": "引き出し回数",
+    "epochInterval": "エポック間隔",
+    "na": "該当なし",
+    "historyTitle": "支払い履歴",
+    "tableAria": "支払い一覧表",
+    "table": {
+      "dateTime": "日時",
+      "event": "支払いイベント",
+      "txHash": "トランザクションハッシュ",
+      "balance": "残高"
+    },
+    "event": {
+      "created": "支払いを作成",
+      "executed": "支払いを実行",
+      "withdrawn": "支払いを引き出し",
+      "completed": "支払いが完了",
+      "scheduled": "支払いを予定"
+    },
+    "close": "閉じる"
   },
   "footer": {
     "tagline": "Cardano ブロックチェーン上の自動定期支払い。Hosky トークンの回収など、定期的なトランザクションに最適です。",

@@ -206,9 +206,48 @@
     "showing": "Affichage de {start}–{end} sur {total} paiements"
   },
   "receipt": {
+    "title": "Récapitulatif du paiement",
+    "payeeAddress": "Adresse du bénéficiaire",
+    "walletAddresses": "Adresses de portefeuille ({n})",
+    "amountPerPayment": "Montant par paiement",
+    "numPayments": "Nombre de paiements",
+    "protocolFeesMax": "Frais de protocole + réseau (max)",
+    "totalPaymentAmount": "Montant total des paiements",
+    "totalProtocolFeesMax": "Total des frais de protocole + réseau (max)",
+    "totalToDeposit": "Montant total à déposer",
     "addressCopied": "Adresse copiée dans le presse-papiers",
     "copyFailed": "Échec de la copie",
     "copyAddress": "Copier l’adresse"
+  },
+  "paymentDetails": {
+    "title": "Détails du retrait automatique Hosky",
+    "closeAria": "fermer",
+    "from": "De (adresse de staking)",
+    "to": "Vers",
+    "amount": "Montant",
+    "initialDeposit": "Dépôt initial",
+    "maxFee": "Frais max",
+    "epochStart": "Époque de début",
+    "epochEnd": "Époque de fin",
+    "numPulls": "Nombre de retraits",
+    "epochInterval": "Intervalle d’époques",
+    "na": "N/D",
+    "historyTitle": "Historique des paiements",
+    "tableAria": "Tableau des paiements",
+    "table": {
+      "dateTime": "Date et heure",
+      "event": "Événement de paiement",
+      "txHash": "Hash de tx",
+      "balance": "Solde"
+    },
+    "event": {
+      "created": "Paiement créé",
+      "executed": "Paiement exécuté",
+      "withdrawn": "Paiement retiré",
+      "completed": "Paiement terminé",
+      "scheduled": "Paiement programmé"
+    },
+    "close": "Fermer"
   },
   "footer": {
     "tagline": "Paiements récurrents automatisés sur la blockchain Cardano. Idéal pour les transactions régulières comme la collecte de tokens Hosky et autres paiements programmés.",

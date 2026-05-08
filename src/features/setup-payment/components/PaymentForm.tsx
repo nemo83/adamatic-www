@@ -574,11 +574,11 @@ export default function PaymentForm(props: {
                 }}
             />
 
-            <Tooltip title={"Max amount of fees the user is willing to pay to cover for AdaMatic and Cardano Transaction fees."}>
-                <TextField label={"Max Fees"} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
+            <Tooltip title={t("form.maxFeesTooltip")}>
+                <TextField label={t("form.maxFeesLabel")} type={"number"} value={inputLovelace ? maxFeesLovelace : maxFeesLovelace / CONSTANTS.ADA_CONVERSION} name={"maxFeesLovelace"}
                     slotProps={{
                         input: {
-                            endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
+                            endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? t("form.asset.unitToggleLovelace") : t("form.asset.unitToggleAda")}</Button>,
                         },
                         htmlInput: { min: inputLovelace ? 200_000 : 0.2, max: inputLovelace ? 1_500_000 : 1.5, step: inputLovelace ? 100000 : 0.1 }
                     }}
@@ -589,8 +589,8 @@ export default function PaymentForm(props: {
 
             {
                 isHoskyInput ?
-                    <Tooltip title={"Epoch of the first rewards being pulled."}>
-                        <TextField type={"number"} label={"First Epoch"} value={epochStart} name={"startEpoch"} onChange={(event) => updateStuff(maxFeesLovelace, parseInt(event.target.value), Math.floor((epochEnd - epochStart) / paymentIntervalEpochs), paymentIntervalEpochs)}
+                    <Tooltip title={t("form.firstEpochTooltip")}>
+                        <TextField type={"number"} label={t("form.firstEpochLabel")} value={epochStart} name={"startEpoch"} onChange={(event) => updateStuff(maxFeesLovelace, parseInt(event.target.value), Math.floor((epochEnd - epochStart) / paymentIntervalEpochs), paymentIntervalEpochs)}
                             slotProps={{
                                 input: {
                                     endAdornment: <InputAdornment position="end">{startTime!.format('DD.MM.YYYY HH:mm')}</InputAdornment>,
@@ -600,16 +600,16 @@ export default function PaymentForm(props: {
                         />
                     </Tooltip>
                     :
-                    <Tooltip title={"The Time of the first payment"}>
-                        <DateTimePicker label={"StartTime"} value={startTime} onChange={(newValue) => setStartTime(newValue)} />
+                    <Tooltip title={t("form.startTimeTooltip")}>
+                        <DateTimePicker label={t("form.startTimeLabel")} value={startTime} onChange={(newValue) => setStartTime(newValue)} />
                     </Tooltip>
             }
 
 
             {
                 isHoskyInput ?
-                    <Tooltip title={"Epoch of the last rewards being pulled."}>
-                        <TextField disabled={isHoskyInput} type={"number"} label={"Last Epoch (optional)"} value={epochEnd} name={"endEpoch"}
+                    <Tooltip title={t("form.lastEpochTooltip")}>
+                        <TextField disabled={isHoskyInput} type={"number"} label={t("form.lastEpochLabel")} value={epochEnd} name={"endEpoch"}
                             slotProps={{
                                 input: {
                                     endAdornment: <InputAdornment position="end">{endTime ? endTime!.format('DD.MM.YYYY HH:mm') : ''}</InputAdornment>,
@@ -619,8 +619,8 @@ export default function PaymentForm(props: {
                         />
                     </Tooltip>
                     :
-                    <Tooltip title={"The time of the last payment. If empty the payments will continue until there is no ADA left."}>
-                        <DateTimePicker label={"Endtime (optional)"} value={endTime} onChange={(newValue) => setEndTime(newValue)} />
+                    <Tooltip title={t("form.endTimeTooltip")}>
+                        <DateTimePicker label={t("form.endTimeLabel")} value={endTime} onChange={(newValue) => setEndTime(newValue)} />
                     </Tooltip>
             }
 
@@ -628,14 +628,14 @@ export default function PaymentForm(props: {
             <div>
                 {isHoskyInput ?
 
-                    <Tooltip title={"Number or Hosky Rewards pull"}>
+                    <Tooltip title={t("form.numPullsTooltip")}>
                         <TextField style={{ width: "50%" }}
-                            label={"Number of Rewards pulls"}
+                            label={t("form.numPullsLabel")}
                             type={"number"}
                             // inputProps={{ inputProps: { min: 1, max: 10 } }}
                             slotProps={{
                                 input: {
-                                    endAdornment: <Button onClick={() => { updateStuff(maxFeesLovelace, epochStart, MAX_PULLS, paymentIntervalEpochs) }}>MAX</Button>,
+                                    endAdornment: <Button onClick={() => { updateStuff(maxFeesLovelace, epochStart, MAX_PULLS, paymentIntervalEpochs) }}>{t("form.maxButton")}</Button>,
                                 },
                                 htmlInput: { min: 1, max: MAX_PULLS }
                             }}
@@ -647,13 +647,13 @@ export default function PaymentForm(props: {
                     </Tooltip>
 
 
-                    : <Tooltip title={"The maximum delay in hours for a payment to be made."} >
-                        <TextField style={{ width: "50%" }} label={"Max Payment Delay Hours"} type={"number"} value={datumDTO.maxPaymentDelayHours} name={"maxPaymentDelayHours"} />
+                    : <Tooltip title={t("form.maxDelayTooltip")} >
+                        <TextField style={{ width: "50%" }} label={t("form.maxDelayLabel")} type={"number"} value={datumDTO.maxPaymentDelayHours} name={"maxPaymentDelayHours"} />
                     </Tooltip>
                 }
 
-                <Tooltip title={"The interval in epochs between the payments"}>
-                    <TextField style={{ width: "50%" }} label={"Payment Interval Epochs"} type={"number"} value={paymentIntervalEpochs} name={"paymentIntervalHours"}
+                <Tooltip title={t("form.intervalTooltip")}>
+                    <TextField style={{ width: "50%" }} label={t("form.intervalLabel")} type={"number"} value={paymentIntervalEpochs} name={"paymentIntervalHours"}
                         onChange={(event) => { updateStuff(maxFeesLovelace, epochStart, numPulls, parseInt(event.target.value)) }}
                         data-tut="step-8"
                     />
@@ -662,10 +662,10 @@ export default function PaymentForm(props: {
 
             {isHoskyInput ? null :
                 <>
-                    <Tooltip title={"The assets to pay each payment."}>
+                    <Tooltip title={t("form.addAssetTooltip")}>
                         <span> {/*I need to add a span to make the tooltip work eventhough the button is disabled. Mui is listening to events, which aren't triggered on disabled buttons.*/}
                             <Button disabled={isHoskyInput} variant="outlined" startIcon={<Add />} onClick={() => setDialogOpen(true)}>
-                                Add Asset
+                                {t("form.addAsset")}
                             </Button>
                         </span>
                     </Tooltip>
@@ -688,17 +688,17 @@ export default function PaymentForm(props: {
                                 setDialogOpen(false);
                             },
                         }}>
-                        <DialogTitle>Add Assets</DialogTitle>
+                        <DialogTitle>{t("form.asset.title")}</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Add the policy ID, asset name, and amount of the asset to pay each payment.
+                                {t("form.asset.body")}
                             </DialogContentText>
                             <TextField
                                 autoFocus
                                 margin={"dense"}
                                 id={"policyId"}
                                 name={"policyId"}
-                                label={"Policy ID"}
+                                label={t("form.asset.policyId")}
                                 type={"text"}
                                 fullWidth
                                 variant={"standard"}
@@ -707,7 +707,7 @@ export default function PaymentForm(props: {
                                 margin={"dense"}
                                 id={"assetName"}
                                 name={"assetName"}
-                                label={"Asset Name"}
+                                label={t("form.asset.assetName")}
                                 type={"text"}
                                 fullWidth
                                 variant={"standard"}
@@ -717,20 +717,20 @@ export default function PaymentForm(props: {
                                 margin={"dense"}
                                 id={"amount"}
                                 name={"amount"}
-                                label={"Amount"}
+                                label={t("form.asset.amount")}
                                 type={"number"}
                                 fullWidth
                                 variant={"standard"}
                                 slotProps={{
                                     input: {
-                                        endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? "Lovelace" : "Ada"}</Button>,
+                                        endAdornment: <Button onClick={() => setInputLovelace(!inputLovelace)}>{inputLovelace ? t("form.asset.unitToggleLovelace") : t("form.asset.unitToggleAda")}</Button>,
                                     },
                                 }}
                             />
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-                            <Button type="submit">Add</Button>
+                            <Button onClick={() => setDialogOpen(false)}>{t("common.cancel")}</Button>
+                            <Button type="submit">{t("common.add")}</Button>
                         </DialogActions>
                     </Dialog>
                     <div style={{ minHeight: "100px" }}>
@@ -744,8 +744,8 @@ export default function PaymentForm(props: {
                                             asset.policyId ?
                                                 <>{asset.amount}</> :
                                                 inputLovelace ?
-                                                    <>{asset.amount} Lovelace</> :
-                                                    <>{asset.amount / CONSTANTS.ADA_CONVERSION} ADA</>
+                                                    <>{asset.amount} {t("common.lovelace")}</> :
+                                                    <>{asset.amount / CONSTANTS.ADA_CONVERSION} {t("common.ada")}</>
                                         }
                                         </div>
                                     </section>

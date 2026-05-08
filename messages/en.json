@@ -206,9 +206,48 @@
     "showing": "Showing {start}–{end} of {total} payments"
   },
   "receipt": {
+    "title": "Payment Summary",
+    "payeeAddress": "Payee Address",
+    "walletAddresses": "Wallet Addresses ({n})",
+    "amountPerPayment": "Amount per payment",
+    "numPayments": "Number of payments",
+    "protocolFeesMax": "Protocol + Network Fees (max)",
+    "totalPaymentAmount": "Total payment amount",
+    "totalProtocolFeesMax": "Total Protocol + Network Fees (max)",
+    "totalToDeposit": "Total Amount to Deposit",
     "addressCopied": "Address copied to clipboard",
     "copyFailed": "Failed to copy to clipboard",
     "copyAddress": "Copy address"
+  },
+  "paymentDetails": {
+    "title": "Hosky Auto Pull Details",
+    "closeAria": "close",
+    "from": "From (Stake Address)",
+    "to": "To",
+    "amount": "Amount",
+    "initialDeposit": "Initial deposit",
+    "maxFee": "Max Fee",
+    "epochStart": "Epoch Start",
+    "epochEnd": "Epoch End",
+    "numPulls": "Num Pulls",
+    "epochInterval": "Epoch Interval",
+    "na": "N/A",
+    "historyTitle": "Payments History",
+    "tableAria": "Payments Table",
+    "table": {
+      "dateTime": "Date and Time",
+      "event": "Payment Event",
+      "txHash": "Tx Hash",
+      "balance": "Balance"
+    },
+    "event": {
+      "created": "Payment Created",
+      "executed": "Payment Executed",
+      "withdrawn": "Payment Withdrawn",
+      "completed": "Payment Completed",
+      "scheduled": "Payment Scheduled"
+    },
+    "close": "Close"
   },
   "footer": {
     "tagline": "Automated recurring payments on the Cardano blockchain. Perfect for regular transactions like Hosky token collection and other scheduled payments.",

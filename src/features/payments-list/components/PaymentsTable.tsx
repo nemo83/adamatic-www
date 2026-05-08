@@ -17,11 +17,13 @@ import toast from "react-hot-toast";
 import PaymentDetailsDialog from "./PaymentDetailsDialog";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ErrorIcon from '@mui/icons-material/Error';
+import { useTranslations } from "../../../lib/i18n/I18nProvider";
 
 export default function PaymentsTable(props: { version: number }) {
 
     const { version } = props;
 
+    const t = useTranslations();
     const { wallet, connected, address: walletAddress } = useWallet();
 
     const chainAdapter = getChainAdapter();
@@ -89,7 +91,7 @@ export default function PaymentsTable(props: { version: number }) {
 
     const buildCancelCtx = (payments: RecurringPayment[]) => {
         if (!automaticPayments?.finalHash) {
-            throw new Error("Scripts manifest not loaded yet. Please retry shortly.");
+            throw new Error(t("tx.scriptsNotLoaded"));
         }
         return {
             wallet,
@@ -101,10 +103,12 @@ export default function PaymentsTable(props: { version: number }) {
         };
     }
 
+    const shortHash = (h: string) => h.substring(0, 10) + "..." + h.substring(h.length - 10);
+
     const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
         try {
             const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx([recurringPaymentDTO]));
-            toast.success("Transaction submitted: " + txHash.substring(0, 10) + "..." + txHash.substring(txHash.length - 10), { duration: 5000 });
+            toast.success(t("payments.toast.txSubmitted", { hash: shortHash(txHash) }), { duration: 5000 });
         } catch (error) {
             toast.error('' + error, { duration: 5000 })
         }
@@ -118,12 +122,12 @@ export default function PaymentsTable(props: { version: number }) {
 
         try {
             const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx(paymentsToCancel));
-            toast.success(`Payment cancelled: ${txHash.substring(0, 10)}...${txHash.substring(txHash.length - 10)}`, { duration: 3000 });
+            toast.success(t("payments.toast.paymentCancelled", { hash: shortHash(txHash) }), { duration: 3000 });
 
             setSelectedPayments(new Set());
-            toast.success(`Successfully cancelled ${paymentsToCancel.length} payments`, { duration: 5000 });
+            toast.success(t("payments.toast.bulkCancelled", { n: paymentsToCancel.length }), { duration: 5000 });
         } catch (error) {
-            toast.error('Error cancelling payments: ' + error, { duration: 5000 });
+            toast.error(t("payments.toast.cancelError", { error: String(error) }), { duration: 5000 });
         }
     }
 
@@ -163,38 +167,38 @@ export default function PaymentsTable(props: { version: number }) {
         navigator
             .clipboard
             .writeText(stakeAddress)
-            .then(() => toast.success('Stake Address copied to Clipboard'));
+            .then(() => toast.success(t("payments.toast.stakeAddressCopied")));
     }
 
     const getStatus = (paymentStatus: string) => {
         switch (paymentStatus) {
             case "SCHEDULED":
                 return (
-                    <Tooltip title="Scheduled">
+                    <Tooltip title={t("payments.status.scheduled")}>
                         <ScheduleIcon />
                     </Tooltip>
                 )
             case "COMPLETED":
                 return (
-                    <Tooltip title="Completed">
+                    <Tooltip title={t("payments.status.completed")}>
                         <CheckIcon />
                     </Tooltip>
                 )
             case "WITHDRAWN":
                 return (
-                    <Tooltip title="Withdrawn">
+                    <Tooltip title={t("payments.status.withdrawn")}>
                         <UploadIcon />
                     </Tooltip>
                 )
             case "CANCELLED":
                 return (
-                    <Tooltip title="Cancelled">
+                    <Tooltip title={t("payments.status.cancelled")}>
                         <CancelIcon />
                     </Tooltip>
                 )
             case "INSUFFICIENT_FUNDS":
                 return (
-                    <Tooltip title="Insufficient Funds">
+                    <Tooltip title={t("payments.status.insufficientFunds")}>
                         <ErrorIcon />
                     </Tooltip>
                 )
@@ -222,20 +226,20 @@ export default function PaymentsTable(props: { version: number }) {
                     {selectedPayments.size > 0 && (
                         <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Typography variant="body2">
-                                {selectedPayments.size} payment(s) selected
+                                {t("payments.selectedCount", { n: selectedPayments.size })}
                             </Typography>
-                            <Button 
-                                variant="contained" 
-                                color="error" 
+                            <Button
+                                variant="contained"
+                                color="error"
                                 onClick={bulkCancelRecurringPayments}
                                 startIcon={<DeleteIcon />}
                             >
-                                Cancel Selected Payments
+                                {t("payments.cancelSelected")}
                             </Button>
                         </Box>
                     )}
                     <TableContainer component={Paper}>
-                        <Table aria-label="Payments Table">
+                        <Table aria-label={t("payments.tableAria")}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
@@ -246,12 +250,12 @@ export default function PaymentsTable(props: { version: number }) {
                                             disabled={selectablePayments.length === 0}
                                         />
                                     </TableCell>
-                                    <TableCell>View</TableCell>
-                                    <TableCell>Staking Address</TableCell>
-                                    <TableCell>Next run</TableCell>
-                                    <TableCell>Balance</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Cancel</TableCell>
+                                    <TableCell>{t("payments.headers.view")}</TableCell>
+                                    <TableCell>{t("payments.headers.stakingAddress")}</TableCell>
+                                    <TableCell>{t("payments.headers.nextRun")}</TableCell>
+                                    <TableCell>{t("payments.headers.balance")}</TableCell>
+                                    <TableCell>{t("payments.headers.status")}</TableCell>
+                                    <TableCell>{t("payments.headers.cancel")}</TableCell>
                                 </TableRow>
                             </TableHead>
                         <TableBody>
@@ -272,7 +276,7 @@ export default function PaymentsTable(props: { version: number }) {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                        <Tooltip title={"show payment details"}>
+                                        <Tooltip title={t("payments.showDetails")}>
                                             <IconButton onClick={() => openPaymentDetails(row.txHash, row.output_index)}>
                                                 <VisibilityIcon />
                                             </IconButton>
@@ -296,7 +300,7 @@ export default function PaymentsTable(props: { version: number }) {
                                     </TableCell>
                                     <TableCell>
                                         {row.paymentStatus == 'SCHEDULED' || row.paymentStatus == 'INSUFFICIENT_FUNDS' ?
-                                            <IconButton aria-label="delete"
+                                            <IconButton aria-label={t("payments.deleteAria")}
                                                 onClick={() => cancelRecurringPayment(row)}>
                                                 <DeleteIcon color="error" />
                                             </IconButton> : ""}
@@ -319,7 +323,11 @@ export default function PaymentsTable(props: { version: number }) {
                     px: 2
                 }}>
                     <Typography variant="body2" color="text.secondary">
-                        Showing {startIndex + 1}-{Math.min(endIndex, recurringPaymentDTOs.length)} of {recurringPaymentDTOs.length} payments
+                        {t("payments.showing", {
+                            start: startIndex + 1,
+                            end: Math.min(endIndex, recurringPaymentDTOs.length),
+                            total: recurringPaymentDTOs.length,
+                        })}
                     </Typography>
 
                     {totalPages > 1 && (

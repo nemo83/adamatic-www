@@ -17,6 +17,7 @@ import { Box, Button, Grid2, Paper, Stack, Table, TableBody, TableCell, TableCon
 import { fetchPaymentDetails } from "../../../lib/api/adamatic";
 import type { PaymentDetails, TransactionDetail } from "../../../types/AdaMaticTypes";
 import dayjs from "dayjs";
+import { useTranslations } from "../../../lib/i18n/I18nProvider";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -30,6 +31,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: number | undefined, open: boolean, setOpen: (isOpen: boolean) => void }) => {
 
     const { txHash, outputIndex, open, setOpen } = props;
+
+    const t = useTranslations();
 
     const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | undefined>(undefined)
 
@@ -70,7 +73,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                     <TableRow key={transaction.tx_hash ? transaction.tx_hash : getRandomId()}>
                         <TableCell >{dayjs(transaction.timestamp * 1_000).format("YYYY-MM-DD HH:mm:ss")}</TableCell>
                         <TableCell >
-                            Payment Created <SaveAltIcon />
+                            {t("paymentDetails.event.created")} <SaveAltIcon />
                         </TableCell>
                         <TableCell >
                             <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
@@ -88,7 +91,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                     <TableRow key={transaction.tx_hash ? transaction.tx_hash : getRandomId()}>
                         <TableCell >{dayjs(transaction.timestamp * 1_000).format("YYYY-MM-DD HH:mm:ss")}</TableCell>
                         <TableCell >
-                            Payment Executed <ShoppingCartCheckoutIcon />
+                            {t("paymentDetails.event.executed")} <ShoppingCartCheckoutIcon />
                         </TableCell>
                         <TableCell >
                             <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
@@ -106,7 +109,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                     <TableRow key={transaction.tx_hash ? transaction.tx_hash : getRandomId()}>
                         <TableCell >{dayjs(transaction.timestamp * 1_000).format("YYYY-MM-DD HH:mm:ss")}</TableCell>
                         <TableCell >
-                            Payment Withdrawn <UploadIcon />
+                            {t("paymentDetails.event.withdrawn")} <UploadIcon />
                         </TableCell>
                         <TableCell >
                             <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
@@ -124,7 +127,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                     <TableRow key={transaction.tx_hash ? transaction.tx_hash : getRandomId()}>
                         <TableCell >{dayjs(transaction.timestamp * 1_000).format("YYYY-MM-DD HH:mm:ss")}</TableCell>
                         <TableCell >
-                            Payment Completed <CheckBoxIcon />
+                            {t("paymentDetails.event.completed")} <CheckBoxIcon />
                         </TableCell>
                         <TableCell >
                             <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
@@ -142,7 +145,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                     <TableRow key={transaction.tx_hash ? transaction.tx_hash : getRandomId()}>
                         <TableCell >{dayjs(transaction.timestamp * 1_000).format("YYYY-MM-DD HH:mm:ss")}</TableCell>
                         <TableCell >
-                            Payment Scheduled <AccessAlarmIcon />
+                            {t("paymentDetails.event.scheduled")} <AccessAlarmIcon />
                         </TableCell>
                         <TableCell >
                             -
@@ -166,10 +169,10 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                 open={open}
             >
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Hosky Auto Pull Details
+                    {t("paymentDetails.title")}
                 </DialogTitle>
                 <IconButton
-                    aria-label="close"
+                    aria-label={t("paymentDetails.closeAria")}
                     onClick={handleClose}
                     sx={(theme) => ({
                         position: 'absolute',
@@ -192,8 +195,8 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
 
                             <TextField
                                 id="id-from"
-                                label="From (Stake Address)"
-                                value={paymentDetails ? paymentDetails.from : "N/A"}
+                                label={t("paymentDetails.from")}
+                                value={paymentDetails ? paymentDetails.from : t("paymentDetails.na")}
                                 slotProps={{
                                     input: {
                                         readOnly: true,
@@ -203,8 +206,8 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
 
                             <TextField
                                 id="id-to"
-                                label="To"
-                                value={paymentDetails ? paymentDetails.to : "N/A"}
+                                label={t("paymentDetails.to")}
+                                value={paymentDetails ? paymentDetails.to : t("paymentDetails.na")}
                                 slotProps={{
                                     input: {
                                         readOnly: true,
@@ -217,12 +220,12 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                     <TextField
                                         fullWidth
                                         id="id-amount"
-                                        label="Amount"
-                                        value={paymentDetails ? (paymentDetails.amount.amount / 1_000_000) : "N/A"}
+                                        label={t("paymentDetails.amount")}
+                                        value={paymentDetails ? (paymentDetails.amount.amount / 1_000_000) : t("paymentDetails.na")}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
-                                                endAdornment: <Button> ADA </Button>,
+                                                endAdornment: <Button> {t("common.ada")} </Button>,
                                             },
                                         }}
                                     />
@@ -232,12 +235,12 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                     <TextField
                                         fullWidth
                                         id="id-deposit"
-                                        label="Initial deposit"
-                                        value={paymentDetails ? (paymentDetails.initial_deposit.amount / 1_000_000) : "N/A"}
+                                        label={t("paymentDetails.initialDeposit")}
+                                        value={paymentDetails ? (paymentDetails.initial_deposit.amount / 1_000_000) : t("paymentDetails.na")}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
-                                                endAdornment: <Button> ADA </Button>,
+                                                endAdornment: <Button> {t("common.ada")} </Button>,
                                             },
                                         }}
                                     />
@@ -246,12 +249,12 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                     <TextField
                                         fullWidth
                                         id="id-max-fee"
-                                        label="Max Fee"
-                                        value={paymentDetails ? (paymentDetails.max_fee / 1_000_000) : "N/A"}
+                                        label={t("paymentDetails.maxFee")}
+                                        value={paymentDetails ? (paymentDetails.max_fee / 1_000_000) : t("paymentDetails.na")}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
-                                                endAdornment: <Button> ADA </Button>,
+                                                endAdornment: <Button> {t("common.ada")} </Button>,
                                             },
                                         }}
                                     />
@@ -264,8 +267,8 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                     <TextField
                                         fullWidth
                                         id="id-epoch-start"
-                                        label="Epoch Start"
-                                        value={paymentDetails ? paymentDetails.epoch_start : "N/A"}
+                                        label={t("paymentDetails.epochStart")}
+                                        value={paymentDetails ? paymentDetails.epoch_start : t("paymentDetails.na")}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -278,8 +281,8 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                     <TextField
                                         fullWidth
                                         id="id-epoch-end"
-                                        label="Epoch End"
-                                        value={paymentDetails ? paymentDetails.epoch_end : "N/A"}
+                                        label={t("paymentDetails.epochEnd")}
+                                        value={paymentDetails ? paymentDetails.epoch_end : t("paymentDetails.na")}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -292,8 +295,8 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                     <TextField
                                         fullWidth
                                         id="id-num-pulls"
-                                        label="Num Pulls"
-                                        value={paymentDetails ? paymentDetails.num_pulls : "N/A"}
+                                        label={t("paymentDetails.numPulls")}
+                                        value={paymentDetails ? paymentDetails.num_pulls : t("paymentDetails.na")}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -306,8 +309,8 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                     <TextField
                                         fullWidth
                                         id="id-epoch-interval"
-                                        label="Epoch Interval"
-                                        value={paymentDetails ? paymentDetails.epoch_interval : "N/A"}
+                                        label={t("paymentDetails.epochInterval")}
+                                        value={paymentDetails ? paymentDetails.epoch_interval : t("paymentDetails.na")}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -319,17 +322,17 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                             </Grid2>
 
                             <Typography variant="h5" marginTop={2}>
-                                Payments History
+                                {t("paymentDetails.historyTitle")}
                             </Typography>
 
                             <TableContainer component={Paper}>
-                                <Table aria-label="Payments Table">
+                                <Table aria-label={t("paymentDetails.tableAria")}>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell key="date-time">Date and Time</TableCell>
-                                            <TableCell key="payment-event">Payment Event</TableCell>
-                                            <TableCell key="tx-hash">Tx Hash</TableCell>
-                                            <TableCell key="balance">Balance</TableCell>
+                                            <TableCell key="date-time">{t("paymentDetails.table.dateTime")}</TableCell>
+                                            <TableCell key="payment-event">{t("paymentDetails.table.event")}</TableCell>
+                                            <TableCell key="tx-hash">{t("paymentDetails.table.txHash")}</TableCell>
+                                            <TableCell key="balance">{t("paymentDetails.table.balance")}</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -345,7 +348,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                 </DialogContent>
                 <DialogActions>
                     <Button autoFocus onClick={handleClose}>
-                        Close
+                        {t("paymentDetails.close")}
                     </Button>
                 </DialogActions>
             </BootstrapDialog>

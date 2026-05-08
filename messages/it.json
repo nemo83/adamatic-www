@@ -206,9 +206,48 @@
     "showing": "Mostro {start}–{end} di {total} pagamenti"
   },
   "receipt": {
+    "title": "Riepilogo pagamento",
+    "payeeAddress": "Indirizzo del beneficiario",
+    "walletAddresses": "Indirizzi del wallet ({n})",
+    "amountPerPayment": "Importo per pagamento",
+    "numPayments": "Numero di pagamenti",
+    "protocolFeesMax": "Commissioni di protocollo + rete (max)",
+    "totalPaymentAmount": "Importo totale dei pagamenti",
+    "totalProtocolFeesMax": "Totale commissioni di protocollo + rete (max)",
+    "totalToDeposit": "Importo totale da depositare",
     "addressCopied": "Indirizzo copiato negli appunti",
     "copyFailed": "Copia fallita",
     "copyAddress": "Copia l’indirizzo"
+  },
+  "paymentDetails": {
+    "title": "Dettagli del prelievo automatico Hosky",
+    "closeAria": "chiudi",
+    "from": "Da (indirizzo di staking)",
+    "to": "A",
+    "amount": "Importo",
+    "initialDeposit": "Deposito iniziale",
+    "maxFee": "Commissione massima",
+    "epochStart": "Epoca iniziale",
+    "epochEnd": "Epoca finale",
+    "numPulls": "Numero di prelievi",
+    "epochInterval": "Intervallo epoche",
+    "na": "N/D",
+    "historyTitle": "Storico pagamenti",
+    "tableAria": "Tabella dei pagamenti",
+    "table": {
+      "dateTime": "Data e ora",
+      "event": "Evento di pagamento",
+      "txHash": "Hash tx",
+      "balance": "Saldo"
+    },
+    "event": {
+      "created": "Pagamento creato",
+      "executed": "Pagamento eseguito",
+      "withdrawn": "Pagamento prelevato",
+      "completed": "Pagamento completato",
+      "scheduled": "Pagamento programmato"
+    },
+    "close": "Chiudi"
   },
   "footer": {
     "tagline": "Pagamenti ricorrenti automatizzati sulla blockchain Cardano. Perfetto per transazioni regolari come la raccolta di token Hosky e altri pagamenti programmati.",

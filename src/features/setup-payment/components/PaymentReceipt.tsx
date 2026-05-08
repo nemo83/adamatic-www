@@ -14,6 +14,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import toast from 'react-hot-toast';
 import { CONSTANTS } from '../../../lib/cardano/constants';
+import { useTranslations } from '../../../lib/i18n/I18nProvider';
 
 interface PaymentReceiptProps {
     payeeAddress: string;
@@ -30,19 +31,20 @@ export default function PaymentReceipt({
     maxFeesLovelace,
     walletAddresses = []
 }: PaymentReceiptProps) {
+    const t = useTranslations();
 
     const totalPaymentAmount = amountPerPayment * numPayments * walletAddresses.length;
     const totalProtocolFees = maxFeesLovelace * numPayments * walletAddresses.length;
-    
+
     // Use the actual total deposit amount instead of calculating it
     const grandTotal = totalPaymentAmount + totalProtocolFees;
 
     const copyToClipboard = async (text: string) => {
         try {
             await navigator.clipboard.writeText(text);
-            toast.success('Address copied to clipboard');
+            toast.success(t('receipt.addressCopied'));
         } catch (error) {
-            toast.error('Failed to copy to clipboard');
+            toast.error(t('receipt.copyFailed'));
         }
     };
 
@@ -61,7 +63,7 @@ export default function PaymentReceipt({
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <ReceiptIcon sx={{ mr: 1, color: 'primary.main' }} />
                     <Typography variant="h6" component="h3" sx={{ fontWeight: 600 }}>
-                        Payment Summary
+                        {t('receipt.title')}
                     </Typography>
                 </Box>
 
@@ -69,7 +71,7 @@ export default function PaymentReceipt({
                     {/* Payee Address */}
                     <Box>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                            Payee Address
+                            {t('receipt.payeeAddress')}
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <Typography variant="body2" sx={{ 
@@ -79,7 +81,7 @@ export default function PaymentReceipt({
                             }}>
                                 {payeeAddress.substring(0, 20)}...{payeeAddress.substring(payeeAddress.length - 20)}
                             </Typography>
-                            <Tooltip title="Copy address">
+                            <Tooltip title={t('receipt.copyAddress')}>
                                 <IconButton 
                                     size="small" 
                                     onClick={() => copyToClipboard(payeeAddress)}
@@ -95,7 +97,7 @@ export default function PaymentReceipt({
                     {walletAddresses.length > 1 && (
                         <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                                Wallet Addresses ({walletAddresses.length})
+                                {t('receipt.walletAddresses', { n: walletAddresses.length })}
                             </Typography>
                             {walletAddresses.map((address, index) => (
                                 <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
@@ -107,7 +109,7 @@ export default function PaymentReceipt({
                                     }}>
                                         {index + 1}. {address.substring(0, 15)}...{address.substring(address.length - 15)}
                                     </Typography>
-                                    <Tooltip title="Copy address">
+                                    <Tooltip title={t('receipt.copyAddress')}>
                                         <IconButton 
                                             size="small" 
                                             onClick={() => copyToClipboard(address)}
@@ -125,7 +127,7 @@ export default function PaymentReceipt({
                     {/* Payment Details */}
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">
-                            Amount per payment
+                            {t('receipt.amountPerPayment')}
                         </Typography>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             {formatAda(amountPerPayment)}
@@ -134,7 +136,7 @@ export default function PaymentReceipt({
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">
-                            Number of payments
+                            {t('receipt.numPayments')}
                         </Typography>
                         <Chip 
                             label={numPayments} 
@@ -146,7 +148,7 @@ export default function PaymentReceipt({
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">
-                            Protocol + Network Fees (max)
+                            {t('receipt.protocolFeesMax')}
                         </Typography>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             {formatAda(maxFeesLovelace)}
@@ -157,7 +159,7 @@ export default function PaymentReceipt({
 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">
-                            Total payment amount
+                            {t('receipt.totalPaymentAmount')}
                         </Typography>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             {formatAda(totalPaymentAmount)}
@@ -167,7 +169,7 @@ export default function PaymentReceipt({
                     {/* Fees */}
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="body2" color="text.secondary">
-                            Total Protocol + Network Fees (max)
+                            {t('receipt.totalProtocolFeesMax')}
                         </Typography>
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
                             {formatAda(totalProtocolFees)}
@@ -187,7 +189,7 @@ export default function PaymentReceipt({
                         p: 2
                     }}>
                         <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                            Total Amount to Deposit
+                            {t('receipt.totalToDeposit')}
                         </Typography>
                         <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
                             {formatAda(grandTotal)}
