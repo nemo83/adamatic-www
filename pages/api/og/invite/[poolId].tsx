@@ -32,6 +32,9 @@ export default async function handler(req: Request) {
     const segments = url.pathname.split("/").filter(Boolean);
     const idOrTicker = decodeURIComponent(segments[segments.length - 1] ?? "");
     const pool = resolveCuratedPool(idOrTicker);
+    // Honour the actual deployed host (so the footer URL on beta says
+    // "beta.adamatic.xyz" rather than the prod canonical).
+    const displayHost = url.host;
 
     if (!pool) {
         return new ImageResponse(
@@ -232,7 +235,7 @@ export default async function handler(req: Request) {
                     }}
                 >
                     <span style={{ color: INK_MUTED }}>
-                        adamatic.xyz/invite/{pool.ticker.toLowerCase()}
+                        {displayHost}/invite/{pool.ticker.toLowerCase()}
                     </span>
                     <span
                         style={{
