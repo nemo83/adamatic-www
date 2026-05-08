@@ -222,6 +222,30 @@
     "sponsoredWith": "心を込めて、",
     "sponsoredBy": "提供:"
   },
+  "invite": {
+    "eyebrow": "プールへの招待",
+    "statsTitle": "このプールの現在",
+    "hoskyPerAdaPerEpoch": "HOSKY / ADA / エポック",
+    "saturationChip": "飽和率 {pct}%",
+    "feeChip": "手数料 {pct}%",
+    "delegatorsChip": "{n} 名の委任者",
+    "nearSaturation": "注意 — このプールは飽和に近づいています。約 85% を超えるとリターンが減少します。",
+    "earningsTitle": "どのくらい HOSKY を獲得できますか？",
+    "connectPrompt": "ウォレットを接続すると、{ticker} で得られそうな HOSKY 報酬を試算できます。",
+    "calculating": "見込み報酬を計算中…",
+    "zeroBalance": "このアカウントにはまだ ADA がないようです。送金してからページを再読み込みしてください。",
+    "youHold": "保有中の ADA",
+    "perEpoch": "エポックあたり",
+    "perMonth": "月あたり",
+    "perYear": "年あたり",
+    "estimateLine": "委任するだけで、年間で約 {usd} 相当の HOSKY を無料で獲得できます。",
+    "delegateCta": "{ticker} に委任する",
+    "setupCta": "自動引き出しを設定",
+    "disclaimer": "現在のエポックレートに基づく試算 · HOSKY/USD = {price}（CoinGecko）· 自動引き出しの手数料は含まれていません",
+    "notFoundTitle": "プールが見つかりません",
+    "notFoundBody": "「{id}」に該当する厳選 Hosky プールが見つかりませんでした。リンクをご確認いただくか、設定ページから全プールをご覧ください。",
+    "backHome": "AdaMatic に戻る"
+  },
   "faq": {
     "q1": {
       "question": "Hosky Rugpool に委任したウォレットを必ず使う必要がありますか？",

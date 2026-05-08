@@ -222,6 +222,30 @@
     "sponsoredWith": "Soutenu avec",
     "sponsoredBy": "par"
   },
+  "invite": {
+    "eyebrow": "Invitation au pool",
+    "statsTitle": "Ce pool en ce moment",
+    "hoskyPerAdaPerEpoch": "HOSKY par ADA · par époque",
+    "saturationChip": "{pct}% saturé",
+    "feeChip": "{pct}% de frais",
+    "delegatorsChip": "{n} délégateurs",
+    "nearSaturation": "Attention — ce pool approche de la saturation. Les rendements diminuent au-dessus d’environ 85 %.",
+    "earningsTitle": "Combien de HOSKY pourriez-vous gagner ?",
+    "connectPrompt": "Connectez votre portefeuille pour estimer vos gains potentiels en HOSKY depuis {ticker}.",
+    "calculating": "Calcul de vos gains potentiels…",
+    "zeroBalance": "Aucun ADA sur ce compte pour le moment. Approvisionnez-le et rechargez la page.",
+    "youHold": "Vous détenez",
+    "perEpoch": "Par époque",
+    "perMonth": "Par mois",
+    "perYear": "Par an",
+    "estimateLine": "Environ {usd} par an en récompenses HOSKY gratuites — rien qu’en déléguant.",
+    "delegateCta": "Déléguer à {ticker}",
+    "setupCta": "Configurer les retraits auto",
+    "disclaimer": "Estimations basées sur les taux de l’époque actuelle · HOSKY/USD = {price} (CoinGecko) · les frais des retraits auto ne sont pas inclus",
+    "notFoundTitle": "Pool introuvable",
+    "notFoundBody": "Aucun pool Hosky sélectionné ne correspond à « {id} ». Vérifiez le lien ou parcourez tous les pools depuis la page de configuration.",
+    "backHome": "Retour à AdaMatic"
+  },
   "faq": {
     "q1": {
       "question": "Dois-je obligatoirement utiliser le portefeuille délégué à une Rugpool Hosky ?",

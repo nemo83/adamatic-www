@@ -222,6 +222,30 @@
     "sponsoredWith": "Sponsored with",
     "sponsoredBy": "by"
   },
+  "invite": {
+    "eyebrow": "Pool invitation",
+    "statsTitle": "This pool right now",
+    "hoskyPerAdaPerEpoch": "HOSKY per ADA · per epoch",
+    "saturationChip": "{pct}% saturated",
+    "feeChip": "{pct}% fee",
+    "delegatorsChip": "{n} delegators",
+    "nearSaturation": "Heads up — this pool is near saturation. Returns diminish above ~85%.",
+    "earningsTitle": "How much HOSKY could you earn?",
+    "connectPrompt": "Connect your wallet to estimate your potential HOSKY earnings from {ticker}.",
+    "calculating": "Calculating your potential earnings…",
+    "zeroBalance": "Looks like there's no ADA on this account yet. Send some over and refresh.",
+    "youHold": "You hold",
+    "perEpoch": "Per epoch",
+    "perMonth": "Per month",
+    "perYear": "Per year",
+    "estimateLine": "Roughly {usd} a year in free HOSKY rewards — just for delegating.",
+    "delegateCta": "Delegate to {ticker}",
+    "setupCta": "Set up auto-pulls",
+    "disclaimer": "Estimates from current epoch rates · HOSKY/USD = {price} (CoinGecko) · auto-pull fees not included",
+    "notFoundTitle": "Pool not found",
+    "notFoundBody": "We couldn't find a curated Hosky rugpool for \"{id}\". Check the link or browse all pools from the setup page.",
+    "backHome": "Back to AdaMatic"
+  },
   "faq": {
     "q1": {
       "question": "Do I need to necessarily use the wallet delegated to a Hosky Rugpool?",

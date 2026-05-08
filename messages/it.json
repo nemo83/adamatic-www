@@ -222,6 +222,30 @@
     "sponsoredWith": "Sponsorizzato con",
     "sponsoredBy": "da"
   },
+  "invite": {
+    "eyebrow": "Invito al pool",
+    "statsTitle": "Questo pool adesso",
+    "hoskyPerAdaPerEpoch": "HOSKY per ADA · per epoca",
+    "saturationChip": "{pct}% saturato",
+    "feeChip": "{pct}% di commissione",
+    "delegatorsChip": "{n} delegatori",
+    "nearSaturation": "Attenzione: il pool è vicino alla saturazione. I rendimenti calano oltre l’~85%.",
+    "earningsTitle": "Quanto HOSKY potresti guadagnare?",
+    "connectPrompt": "Connetti il tuo wallet per stimare i guadagni potenziali in HOSKY da {ticker}.",
+    "calculating": "Calcolo dei guadagni potenziali…",
+    "zeroBalance": "Non c’è ancora ADA su questo account. Caricalo e ricarica la pagina.",
+    "youHold": "Detieni",
+    "perEpoch": "Per epoca",
+    "perMonth": "Al mese",
+    "perYear": "All’anno",
+    "estimateLine": "Circa {usd} all’anno in ricompense HOSKY gratuite — solo delegando.",
+    "delegateCta": "Delega a {ticker}",
+    "setupCta": "Configura i prelievi automatici",
+    "disclaimer": "Stime basate sui tassi dell’epoca corrente · HOSKY/USD = {price} (CoinGecko) · le commissioni dei prelievi automatici non sono incluse",
+    "notFoundTitle": "Pool non trovato",
+    "notFoundBody": "Non abbiamo trovato un pool Hosky selezionato per «{id}». Controlla il link o sfoglia tutti i pool dalla pagina di configurazione.",
+    "backHome": "Torna ad AdaMatic"
+  },
   "faq": {
     "q1": {
       "question": "Devo necessariamente usare il wallet delegato a una Rugpool Hosky?",

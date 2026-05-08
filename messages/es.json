@@ -222,6 +222,30 @@
     "sponsoredWith": "Patrocinado con",
     "sponsoredBy": "por"
   },
+  "invite": {
+    "eyebrow": "Invitación al pool",
+    "statsTitle": "Este pool ahora mismo",
+    "hoskyPerAdaPerEpoch": "HOSKY por ADA · por época",
+    "saturationChip": "{pct}% saturado",
+    "feeChip": "{pct}% de comisión",
+    "delegatorsChip": "{n} delegadores",
+    "nearSaturation": "Atención: este pool se acerca a la saturación. Los rendimientos disminuyen por encima del ~85 %.",
+    "earningsTitle": "¿Cuánto HOSKY podrías ganar?",
+    "connectPrompt": "Conecta tu billetera para estimar tus ganancias potenciales de HOSKY en {ticker}.",
+    "calculating": "Calculando tus ganancias potenciales…",
+    "zeroBalance": "Aún no hay ADA en esta cuenta. Envíale algo y recarga la página.",
+    "youHold": "Tienes",
+    "perEpoch": "Por época",
+    "perMonth": "Por mes",
+    "perYear": "Por año",
+    "estimateLine": "Cerca de {usd} al año en recompensas HOSKY gratis — solo por delegar.",
+    "delegateCta": "Delegar a {ticker}",
+    "setupCta": "Configurar retiros automáticos",
+    "disclaimer": "Estimaciones según las tasas de la época actual · HOSKY/USD = {price} (CoinGecko) · las comisiones de retiros automáticos no están incluidas",
+    "notFoundTitle": "Pool no encontrado",
+    "notFoundBody": "No encontramos un pool Hosky curado para «{id}». Revisa el enlace o explora todos los pools desde la página de configuración.",
+    "backHome": "Volver a AdaMatic"
+  },
   "faq": {
     "q1": {
       "question": "¿Necesito usar obligatoriamente la billetera delegada a una Rugpool de Hosky?",

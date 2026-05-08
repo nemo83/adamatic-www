@@ -222,152 +222,17 @@ function Rosette({
 }
 
 // ---------------------------------------------------------------------------
-// Mock data (12 curated rugpools — sourced from `?type=metadata`, with WRFGS
-// excluded because it's a charity pool with a 100% margin: delegators forfeit
-// their ADA staking rewards, which is too much for a casual "delegate here"
-// modal to explain).
+// Curated pool data — re-exported from the canonical module so the invite
+// page and the modal share a single source of truth.
 // ---------------------------------------------------------------------------
 
-/** Pools we never surface in the picker. Hardcoded for clarity. */
-export const HIDDEN_POOL_IDS = new Set<string>([
-    // WRFGS — UNHCR stakepool, 100% margin → delegators forfeit ADA rewards.
-    "pool1dmnyhw9uthknzcq4q6pwdc4vtfxz5zzrvd9eg432u60lzl959tw",
-]);
+import { CURATED_POOLS } from "../../../lib/cardano/curatedPools";
 
-export const MOCK_POOLS: Pool[] = [
-    {
-        poolId: "pool19m98gdj84d4kxem5h6ch8fvj92pvauhg0y4ktmzr3mln6c45yly",
-        ticker: "HOSKY",
-        name: "HOSKY",
-        description: "Explicitly priceless since 2021.",
-        iconUrl: "https://cdn.hosky.io/icons/hosky-icon-64.png",
-        homepage: "https://hosky.io/",
-        hoskyada: 7728,
-        hoskynft: 797,
-        liveSaturation: 0.033,
-        marginCost: 0.0269,
-        liveDelegators: 84,
-    },
-    {
-        poolId: "pool1yr0cv3dtmhcfgqa6yetvmf769ngk89e6tepecmjrmjl2jzcw2lm",
-        ticker: "EASY1",
-        name: "easy1staking.com",
-        description: "Built AdaMatic. Run a pretty tidy stake pool too.",
-        iconUrl:
-            "https://raw.githubusercontent.com/speedwing/easy1-stakepool/main/img/easy1-64x64.png",
-        homepage: "https://easy1staking.com",
-        hoskyada: 243,
-        hoskynft: 549,
-        liveSaturation: 0.404,
-        marginCost: 0,
-        liveDelegators: 1172,
-    },
-    {
-        poolId: "pool1jv4yvr5edp7qp690hk3qfudwmw28n2wygjxyhaecqkzeqh0wlem",
-        ticker: "WEED",
-        name: "CardanoWeed",
-        iconUrl:
-            "https://i.postimg.cc/Hk4xh8kb/Cardano420-WEED-Logo.jpg",
-        homepage: "https://cardano420.com",
-        hoskyada: 3796,
-        liveSaturation: 0.014,
-        marginCost: 0,
-        liveDelegators: 494,
-    },
-    {
-        poolId: "pool1j742gcsul7u8c05rsqmkgpkvj5qadj0pew69nctu6crqy9wjjn4",
-        ticker: "BONE",
-        name: "BONE pool",
-        hoskyada: 3787,
-        liveSaturation: 0.019,
-        marginCost: 0.01,
-        liveDelegators: 327,
-    },
-    {
-        poolId: "pool1zkdaju2rjefa52uh6yh6etsxla0x6aqs6p6wm245y5szk7k3msd",
-        ticker: "A3C",
-        name: "A3C Pool",
-        hoskyada: 3419,
-        liveSaturation: 0.02,
-        marginCost: 0.025,
-        liveDelegators: 639,
-    },
-    {
-        poolId: "pool1c2utlagkpht4zj0jetsf245c258geuxnjqp9kf4f2z9rutx9dz4",
-        ticker: "QCPOL",
-        name: "Québec / Canada Hosky ISPO",
-        iconUrl: "https://qcpol.stakepool.quebec/qcpol_logo_64.png",
-        homepage: "https://qcpol.stakepool.quebec",
-        hoskyada: 2407,
-        liveSaturation: 0.0236,
-        marginCost: 0.05,
-        liveDelegators: 442,
-    },
-    {
-        poolId: "pool1a2gt2mvuf5zvtqlvw2xgks2efze3p4r985ft62q64lua7gx7lal",
-        ticker: "SALT",
-        name: "Salt Pool — Hosky ISPO",
-        homepage: "https://saltpool.io",
-        hoskyada: 2215,
-        liveSaturation: 0.0416,
-        marginCost: 0,
-        liveDelegators: 454,
-    },
-    {
-        poolId: "pool1df9rj4n0t3zlpak7xnh4ue6t3yh9zlw7a02w4l8askp77up25rt",
-        ticker: "VEGAS",
-        name: "VEGASPool",
-        iconUrl: "https://cdn.statically.io/gh/sp33dy/VEGAS/main/icon.png",
-        homepage: "https://www.ada.vegas",
-        hoskyada: 1801,
-        liveSaturation: 0.0596,
-        marginCost: 0.02,
-        liveDelegators: 1046,
-    },
-    {
-        poolId: "pool1dpu6kslgxlg3ccrwxldl8e6r7ylnq0yalafmucp0yc7k6qegtt0",
-        ticker: "FARM",
-        name: "ADA Farm",
-        iconUrl: "https://adafarm.io/adafarmsheild64x64.png",
-        homepage: "https://adafarm.io",
-        hoskyada: 684,
-        liveSaturation: 0.110,
-        marginCost: 0.0095,
-        liveDelegators: 427,
-    },
-    {
-        poolId: "pool1c86ul4pnqvu7jzag8fjdy6dgrn6pt4ad4vmyq038hyg0wl2kaed",
-        ticker: "BAIDU",
-        name: "baidu",
-        homepage: "https://zjavax.github.io/cardano_doc/",
-        hoskyada: 537,
-        liveSaturation: 0.142,
-        marginCost: 0.02,
-        liveDelegators: 447,
-    },
-    {
-        poolId: "pool18zf8txwv8lmtpq2src8wrhz0pjut5qft8h5tfxnctwc95r7jvvj",
-        ticker: "MALU",
-        name: "Maluiin",
-        iconUrl: "https://i.ibb.co/h9KH38V/MP-logo.png",
-        homepage: "https://maluiin.com",
-        hoskyada: 318,
-        liveSaturation: 0.235,
-        marginCost: 0.03,
-        liveDelegators: 2016,
-    },
-    {
-        poolId: "pool1j099ctc7kcc9fa78dz5qwsy2g0n96lrgletwxvxmyzh4zd7ck0j",
-        ticker: "PRIDE",
-        name: "Stake with Pride — Hosky ISPO",
-        iconUrl: "https://stakewithpride.github.io/64px.png",
-        homepage: "https://www.StakeWithPride.com",
-        hoskyada: 217,
-        liveSaturation: 0.347,
-        marginCost: 0.0199,
-        liveDelegators: 1968,
-    },
-];
+export { HIDDEN_POOL_IDS } from "../../../lib/cardano/curatedPools";
+
+/** @deprecated kept for backwards-compat with consumers that import MOCK_POOLS */
+export const MOCK_POOLS: Pool[] = CURATED_POOLS;
+
 
 // ---------------------------------------------------------------------------
 // Tiny chip primitive
