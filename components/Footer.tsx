@@ -1,6 +1,7 @@
 import { Box, Container, Typography, Link, Stack, Divider } from "@mui/material";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useTranslations } from "../src/lib/i18n/I18nProvider";
+import { explorerUrl } from "../src/lib/cardano/explorer";
 
 // Pin link color across :link/:visited/:hover/:active so the user-agent
 // purple visited color never leaks through.
@@ -73,7 +74,7 @@ export default function Footer() {
                             </Typography>
                             <Stack spacing={1}>
                                 <Link
-                                    href="https://cardanoscan.io"
+                                    href={explorerUrl.home()}
                                     color="inherit"
                                     underline="hover"
                                     target="_blank"

@@ -1,8 +1,7 @@
 {
   "app": {
     "title": "AdaMatic",
-    "tagline": "Automated recurring payments on Cardano",
-    "beta": "beta"
+    "tagline": "Automated recurring payments on Cardano"
   },
   "nav": {
     "setup": "Set up",
@@ -30,6 +29,7 @@
   "tx": {
     "submitted": "Transaction submitted: {hash}",
     "failed": "Transaction failed",
+    "userCancelled": "Transaction signing declined.",
     "scriptsNotLoaded": "Scripts manifest not loaded yet. Please retry shortly.",
     "buildFailed": "Couldn't build the transaction. Please contact support if this keeps happening."
   },
@@ -44,23 +44,18 @@
   "tour": {
     "welcome": "Welcome to AdaMatic. Set up automated HOSKY rewards pulls in a few steps. We'll walk you through it.",
     "wallet": "Connect a wallet. Any CIP-30 Cardano wallet works. We recommend a small hot wallet you keep separately for AdaMatic — your main funds stay safe.",
-    "addresses": "Pick the wallet(s) you want to collect HOSKY for. Default is your connected wallet — that's the common case. You can add a second address if you want to pull for another wallet you control.",
+    "addresses": "Pick the wallet(s) you want to collect HOSKY for. Default is your connected wallet — that's the common case. You can add more addresses if you want to pull for other wallets you control.",
     "delegate": "If your wallet isn't delegated to a Hosky rugpool yet, you'll see this CTA. Click it to pick a pool and delegate — required to start earning HOSKY.",
     "maxFees": "Max fee per pull. Caps how much each pull can spend on AdaMatic + network fees. Excess is returned to your wallet.",
     "firstEpoch": "First pull epoch. When the first pull happens. Defaults to next epoch.",
     "lastEpoch": "Last pull epoch. When the schedule stops. Optional — leave empty and it runs until the deposit is exhausted.",
-    "numPulls": "Number of pulls. Capped at 5 during the beta. Each pull costs the protocol fee + tx fees.",
+    "numPulls": "Number of pulls. Each pull costs the protocol fee + tx fees.",
     "frequency": "How often. Number of epochs between pulls. HOSKY rewards stack — small wallets should pull less frequently (every 2–3 epochs) to save on fees. Big wallets can pull every epoch."
   },
   "limits": {
-    "label": "Beta limits",
-    "maxPulls": "Max pulls: {n}",
-    "maxWallets": "Max wallets: {n}",
     "protocolFee": "Protocol fee: {ada} ADA",
     "protocolFeeLoading": "Protocol fee: —",
     "tooltips": {
-      "maxPulls": "Maximum number of recurring pulls per setup.",
-      "maxWallets": "Maximum number of source wallets per setup.",
       "protocolFee": "Operator fee per pull, paid to the AdaMatic infrastructure."
     }
   },
@@ -85,9 +80,6 @@
     "removeAddress": "Remove this address",
     "addAddress": "Add Address",
     "addAddressTooltip": "Add another address",
-    "maxWalletsReached": "Max {n} wallets reached",
-    "maxWalletsTooltip": "Beta limit: max {n} wallets per setup",
-    "maxWalletsToast": "Beta limit: max {n} wallets per setup.",
     "rowDelegateMessage": "Not delegated to a Hosky pool — delegate to start earning HOSKY each epoch.",
     "rowDelegateCta": "Delegate this wallet →",
     "maxFeesLabel": "Max fees",
@@ -102,7 +94,6 @@
     "endTimeTooltip": "When the last payment is made. Leave empty to run until the deposit is exhausted.",
     "numPullsLabel": "Number of pulls",
     "numPullsTooltip": "Total number of HOSKY pulls to schedule",
-    "maxButton": "MAX",
     "maxDelayLabel": "Max payment delay (hours)",
     "maxDelayTooltip": "Maximum delay (in hours) before a missed pull is considered failed",
     "intervalLabel": "Payment interval (epochs)",

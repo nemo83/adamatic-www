@@ -18,6 +18,7 @@ import { fetchPaymentDetails } from "../../../lib/api/adamatic";
 import type { PaymentDetails, TransactionDetail } from "../../../types/AdaMaticTypes";
 import dayjs from "dayjs";
 import { useTranslations } from "../../../lib/i18n/I18nProvider";
+import { explorerUrl } from "../../../lib/cardano/explorer";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -76,7 +77,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                             {t("paymentDetails.event.created")} <SaveAltIcon />
                         </TableCell>
                         <TableCell >
-                            <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
+                            <Button href={explorerUrl.tx(transaction.tx_hash ?? "")}
                                 target="_blank"
                                 rel="noopener"
                                 endIcon={<LaunchIcon fontSize={"small"} />}>
@@ -94,7 +95,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                             {t("paymentDetails.event.executed")} <ShoppingCartCheckoutIcon />
                         </TableCell>
                         <TableCell >
-                            <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
+                            <Button href={explorerUrl.tx(transaction.tx_hash ?? "")}
                                 target="_blank"
                                 rel="noopener"
                                 endIcon={<LaunchIcon fontSize={"small"} />}>
@@ -112,7 +113,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                             {t("paymentDetails.event.withdrawn")} <UploadIcon />
                         </TableCell>
                         <TableCell >
-                            <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
+                            <Button href={explorerUrl.tx(transaction.tx_hash ?? "")}
                                 target="_blank"
                                 rel="noopener"
                                 endIcon={<LaunchIcon fontSize={"small"} />}>
@@ -130,7 +131,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                             {t("paymentDetails.event.completed")} <CheckBoxIcon />
                         </TableCell>
                         <TableCell >
-                            <Button href={"https://cardanoscan.io/transaction/" + transaction.tx_hash}
+                            <Button href={explorerUrl.tx(transaction.tx_hash ?? "")}
                                 target="_blank"
                                 rel="noopener"
                                 endIcon={<LaunchIcon fontSize={"small"} />}>

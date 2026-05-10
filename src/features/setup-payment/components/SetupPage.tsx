@@ -22,6 +22,7 @@ import PaymentReceipt from "./PaymentReceipt";
 import SubmitPanel from "./SubmitPanel";
 import LimitsStrip from "./LimitsStrip";
 import { useTranslations } from "../../../lib/i18n/I18nProvider";
+import { formatWalletError } from "../../../lib/wallet/errors";
 import { useTour } from '@reactour/tour'
 import toast from "react-hot-toast";
 import type { Settings } from "../../../types/AdaMaticTypes";
@@ -156,7 +157,7 @@ export default function SetupPage(props: {
                     { duration: 5000 },
                 );
             } catch (error) {
-                toast.error('' + error, { duration: 5000 });
+                toast.error(formatWalletError(error, t), { duration: 5000 });
             }
         } else {
             toast.error(t("tx.buildFailed"), { duration: 5000 });

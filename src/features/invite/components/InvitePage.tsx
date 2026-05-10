@@ -34,6 +34,7 @@ import { getChainAdapter } from "../../../lib/cardano/factory";
 import { fetchHoskyPriceUsd } from "../../../lib/api/coingecko";
 import { fetchControlledBalance } from "../../../lib/wallet/balance";
 import { trackDelegationFlow } from "../../delegation/hooks/useDelegationTracking";
+import { isUserDeclinedError } from "../../../lib/wallet/errors";
 import { Address, RewardAccount } from "@evolution-sdk/evolution";
 
 const EPOCHS_PER_MONTH = 6; // 5-day epochs ≈ 6/month
@@ -150,10 +151,14 @@ export default function InvitePage({ pool }: { pool: CuratedPool }) {
                 t,
             });
         } catch (err) {
-            toast.error(t("delegate.failed", { error: String(err) }), {
-                id: FLOW_TOAST,
-                duration: 6000,
-            });
+            if (isUserDeclinedError(err)) {
+                toast.error(t("tx.userCancelled"), { id: FLOW_TOAST, duration: 5000 });
+            } else {
+                toast.error(t("delegate.failed", { error: String(err) }), {
+                    id: FLOW_TOAST,
+                    duration: 6000,
+                });
+            }
         } finally {
             setDelegating(false);
         }

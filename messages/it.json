@@ -1,8 +1,7 @@
 {
   "app": {
     "title": "AdaMatic",
-    "tagline": "Pagamenti ricorrenti automatizzati su Cardano",
-    "beta": "beta"
+    "tagline": "Pagamenti ricorrenti automatizzati su Cardano"
   },
   "nav": {
     "setup": "Imposta",
@@ -30,6 +29,7 @@
   "tx": {
     "submitted": "Transazione inviata: {hash}",
     "failed": "Transazione fallita",
+    "userCancelled": "Firma della transazione rifiutata.",
     "scriptsNotLoaded": "Il manifesto degli script non è ancora caricato. Riprova tra un istante.",
     "buildFailed": "Impossibile costruire la transazione. Contatta il supporto se il problema persiste."
   },
@@ -44,23 +44,18 @@
   "tour": {
     "welcome": "Benvenuto/a in AdaMatic. Configura prelievi HOSKY automatizzati in pochi passi — ti accompagniamo noi.",
     "wallet": "Connetti un wallet. Va bene qualsiasi wallet Cardano CIP-30. Consigliamo un piccolo hot wallet dedicato ad AdaMatic — i fondi principali restano al sicuro.",
-    "addresses": "Scegli il/i wallet per cui vuoi raccogliere HOSKY. Di default è il tuo wallet connesso — il caso comune. Puoi aggiungere un secondo indirizzo se vuoi prelevare per un altro wallet che controlli.",
+    "addresses": "Scegli il/i wallet per cui vuoi raccogliere HOSKY. Di default è il tuo wallet connesso — il caso comune. Puoi aggiungere altri indirizzi se vuoi prelevare per altri wallet che controlli.",
     "delegate": "Se il tuo wallet non è ancora delegato a un rugpool Hosky vedrai questo CTA. Cliccalo per scegliere un pool e delegare — necessario per iniziare a guadagnare HOSKY.",
     "maxFees": "Commissione massima per prelievo. Limita quanto ogni prelievo può spendere in commissioni AdaMatic + di rete. L’eccedenza torna al tuo wallet.",
     "firstEpoch": "Epoca del primo prelievo. Quando avviene il primo prelievo. Di default l’epoca successiva.",
     "lastEpoch": "Epoca dell’ultimo prelievo. Quando si ferma il programma. Opzionale — lascia vuoto e proseguirà finché il deposito non si esaurisce.",
-    "numPulls": "Numero di prelievi. Limitato a 5 durante la beta. Ogni prelievo costa la commissione di protocollo + commissioni di transazione.",
+    "numPulls": "Numero di prelievi. Ogni prelievo costa la commissione di protocollo + commissioni di transazione.",
     "frequency": "Con che frequenza. Numero di epoche tra i prelievi. Le ricompense HOSKY si accumulano — wallet piccoli dovrebbero prelevare meno spesso (ogni 2–3 epoche) per risparmiare sulle commissioni. Wallet grandi possono prelevare ogni epoca."
   },
   "limits": {
-    "label": "Limiti beta",
-    "maxPulls": "Prelievi max: {n}",
-    "maxWallets": "Wallet max: {n}",
     "protocolFee": "Commissione di protocollo: {ada} ADA",
     "protocolFeeLoading": "Commissione di protocollo: —",
     "tooltips": {
-      "maxPulls": "Numero massimo di prelievi ricorrenti per configurazione.",
-      "maxWallets": "Numero massimo di wallet di origine per configurazione.",
       "protocolFee": "Commissione dell’operatore per prelievo, versata all’infrastruttura AdaMatic."
     }
   },
@@ -85,9 +80,6 @@
     "removeAddress": "Rimuovi questo indirizzo",
     "addAddress": "Aggiungi indirizzo",
     "addAddressTooltip": "Aggiungi un altro indirizzo",
-    "maxWalletsReached": "Max {n} wallet raggiunti",
-    "maxWalletsTooltip": "Limite beta: max {n} wallet per configurazione",
-    "maxWalletsToast": "Limite beta: max {n} wallet per configurazione.",
     "rowDelegateMessage": "Non delegato a un pool Hosky — delega per iniziare a guadagnare HOSKY ogni epoca.",
     "rowDelegateCta": "Delega questo wallet →",
     "maxFeesLabel": "Commissioni max",
@@ -102,7 +94,6 @@
     "endTimeTooltip": "Quando viene effettuato l’ultimo pagamento. Lascia vuoto per andare avanti fino a esaurimento del deposito.",
     "numPullsLabel": "Numero di prelievi",
     "numPullsTooltip": "Numero totale di prelievi HOSKY da pianificare",
-    "maxButton": "MAX",
     "maxDelayLabel": "Ritardo max di pagamento (ore)",
     "maxDelayTooltip": "Ritardo massimo (in ore) prima che un prelievo mancato sia considerato fallito",
     "intervalLabel": "Intervallo di pagamento (epoche)",

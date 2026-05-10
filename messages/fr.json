@@ -1,8 +1,7 @@
 {
   "app": {
     "title": "AdaMatic",
-    "tagline": "Paiements récurrents automatisés sur Cardano",
-    "beta": "bêta"
+    "tagline": "Paiements récurrents automatisés sur Cardano"
   },
   "nav": {
     "setup": "Configurer",
@@ -30,6 +29,7 @@
   "tx": {
     "submitted": "Transaction soumise : {hash}",
     "failed": "Échec de la transaction",
+    "userCancelled": "Signature de la transaction refusée.",
     "scriptsNotLoaded": "Le manifeste des scripts n’est pas encore chargé. Veuillez réessayer dans un instant.",
     "buildFailed": "Impossible de construire la transaction. Contactez le support si le problème persiste."
   },
@@ -44,23 +44,18 @@
   "tour": {
     "welcome": "Bienvenue sur AdaMatic. Configurez vos retraits HOSKY automatisés en quelques étapes — on vous guide.",
     "wallet": "Connectez un portefeuille. N’importe quel portefeuille Cardano CIP-30 fonctionne. Nous recommandons un petit hot wallet réservé à AdaMatic — vos fonds principaux restent à l’abri.",
-    "addresses": "Choisissez le(s) portefeuille(s) pour lesquels vous voulez collecter des HOSKY. Par défaut c’est votre portefeuille connecté — c’est le cas courant. Vous pouvez ajouter une seconde adresse si vous voulez retirer pour un autre portefeuille que vous contrôlez.",
+    "addresses": "Choisissez le(s) portefeuille(s) pour lesquels vous voulez collecter des HOSKY. Par défaut c’est votre portefeuille connecté — c’est le cas courant. Vous pouvez ajouter d’autres adresses si vous voulez retirer pour d’autres portefeuilles que vous contrôlez.",
     "delegate": "Si votre portefeuille n’est pas encore délégué à un rugpool Hosky, ce bouton apparaît. Cliquez pour choisir un pool et déléguer — étape requise pour gagner des HOSKY.",
     "maxFees": "Frais maximum par retrait. Plafonne ce que chaque retrait peut dépenser en frais AdaMatic + frais réseau. Le surplus revient à votre portefeuille.",
     "firstEpoch": "Époque du premier retrait. Quand a lieu le premier retrait. Par défaut à l’époque suivante.",
     "lastEpoch": "Époque du dernier retrait. Quand le programme s’arrête. Optionnel — laissez vide et il tournera jusqu’à épuisement du dépôt.",
-    "numPulls": "Nombre de retraits. Plafonné à 5 pendant la bêta. Chaque retrait coûte les frais de protocole + frais de transaction.",
+    "numPulls": "Nombre de retraits. Chaque retrait coûte les frais de protocole + frais de transaction.",
     "frequency": "À quelle fréquence. Nombre d’époques entre les retraits. Les récompenses HOSKY s’accumulent — les petits portefeuilles devraient retirer moins souvent (toutes les 2–3 époques) pour économiser sur les frais. Les gros portefeuilles peuvent retirer à chaque époque."
   },
   "limits": {
-    "label": "Limites bêta",
-    "maxPulls": "Retraits max : {n}",
-    "maxWallets": "Portefeuilles max : {n}",
     "protocolFee": "Frais de protocole : {ada} ADA",
     "protocolFeeLoading": "Frais de protocole : —",
     "tooltips": {
-      "maxPulls": "Nombre maximum de retraits récurrents par configuration.",
-      "maxWallets": "Nombre maximum de portefeuilles source par configuration.",
       "protocolFee": "Frais d’opérateur par retrait, versés à l’infrastructure AdaMatic."
     }
   },
@@ -85,9 +80,6 @@
     "removeAddress": "Supprimer cette adresse",
     "addAddress": "Ajouter une adresse",
     "addAddressTooltip": "Ajouter une autre adresse",
-    "maxWalletsReached": "{n} portefeuilles max atteints",
-    "maxWalletsTooltip": "Limite bêta : max {n} portefeuilles par configuration",
-    "maxWalletsToast": "Limite bêta : max {n} portefeuilles par configuration.",
     "rowDelegateMessage": "Non délégué à un pool Hosky — déléguez pour commencer à gagner des HOSKY à chaque époque.",
     "rowDelegateCta": "Déléguer ce portefeuille →",
     "maxFeesLabel": "Frais max",
@@ -102,7 +94,6 @@
     "endTimeTooltip": "Quand le dernier paiement est effectué. Laissez vide pour fonctionner jusqu’à épuisement du dépôt.",
     "numPullsLabel": "Nombre de retraits",
     "numPullsTooltip": "Nombre total de retraits HOSKY à programmer",
-    "maxButton": "MAX",
     "maxDelayLabel": "Délai max de paiement (heures)",
     "maxDelayTooltip": "Délai maximum (en heures) avant qu’un retrait manqué soit considéré comme échoué",
     "intervalLabel": "Intervalle de paiement (époques)",

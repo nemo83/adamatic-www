@@ -29,8 +29,8 @@ import { useHoskyPools } from "../../delegation/hooks/useHoskyPools";
 import { trackDelegationFlow } from "../../delegation/hooks/useDelegationTracking";
 import toast from "react-hot-toast";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
-import { MAX_PULLS, MAX_WALLETS } from "../limits";
 import { useTranslations } from "../../../lib/i18n/I18nProvider";
+import { isUserDeclinedError } from "../../../lib/wallet/errors";
 
 export default function PaymentForm(props: {
     deposit: number,
@@ -213,10 +213,7 @@ export default function PaymentForm(props: {
 
     useEffect(() => {
         if (isHoskyInput) {
-            // Pin `num_pulls` to MAX_PULLS so the initial deposit suggestion
-            // matches the FE cap (the BE defaults to 10 otherwise, double the
-            // beta cap). Other params are left to the BE's defaults.
-            fetchHoskyTemplate({ num_pulls: String(MAX_PULLS) }).then((data) => {
+            fetchHoskyTemplate().then((data) => {
                 if (data) updateForm(data);
             });
         }
@@ -282,13 +279,8 @@ export default function PaymentForm(props: {
     }, [owner, payee, startTime, endTime, paymentIntervalHours, maxFeesLovelace])
 
     const addWalletAddress = () => {
-        if (walletFromList.length >= MAX_WALLETS) {
-            toast.error(t("form.maxWalletsToast", { n: MAX_WALLETS }));
-            return;
-        }
         setWalletFromList([...walletFromList, ""]);
     };
-    const atWalletLimit = walletFromList.length >= MAX_WALLETS;
 
     const removeWalletAddress = (index: number) => {
         if (walletFromList.length > 1) {
@@ -429,37 +421,27 @@ export default function PaymentForm(props: {
                 {/* Add Address Section with Divider */}
                 <Box sx={{ mt: 2, mb: 2 }}>
                     <Divider>
-                        <Tooltip
-                            title={
-                                atWalletLimit
-                                    ? t("form.maxWalletsTooltip", { n: MAX_WALLETS })
-                                    : t("form.addAddressTooltip")
-                            }
-                        >
+                        <Tooltip title={t("form.addAddressTooltip")}>
                             <Box
                                 sx={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: 1,
-                                    cursor: atWalletLimit ? 'not-allowed' : 'pointer',
-                                    opacity: atWalletLimit ? 0.5 : 1,
+                                    cursor: 'pointer',
                                     px: 2,
                                     py: 1,
                                     borderRadius: '16px',
                                     transition: 'all 0.2s ease-in-out',
                                     backgroundColor: 'transparent',
-                                    '&:hover': atWalletLimit
-                                        ? {}
-                                        : {
-                                              backgroundColor: 'rgba(33, 150, 243, 0.08)',
-                                              transform: 'scale(1.02)',
-                                          },
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(33, 150, 243, 0.08)',
+                                        transform: 'scale(1.02)',
+                                    },
                                 }}
-                                onClick={atWalletLimit ? undefined : addWalletAddress}
+                                onClick={addWalletAddress}
                             >
                                 <IconButton
                                     size="small"
-                                    disabled={atWalletLimit}
                                     sx={{
                                         backgroundColor: 'primary.main',
                                         color: 'white',
@@ -468,10 +450,6 @@ export default function PaymentForm(props: {
                                         '&:hover': {
                                             backgroundColor: 'primary.dark',
                                             transform: 'scale(1.1)'
-                                        },
-                                        '&.Mui-disabled': {
-                                            backgroundColor: 'rgba(0,0,0,0.18)',
-                                            color: 'white',
                                         },
                                     }}
                                 >
@@ -485,9 +463,7 @@ export default function PaymentForm(props: {
                                         fontSize: '0.875rem'
                                     }}
                                 >
-                                    {atWalletLimit
-                                        ? t("form.maxWalletsReached", { n: MAX_WALLETS })
-                                        : t("form.addAddress")}
+                                    {t("form.addAddress")}
                                 </Typography>
                             </Box>
                         </Tooltip>
@@ -566,10 +542,14 @@ export default function PaymentForm(props: {
                                 setDelegationCheckVersion((v) => v + 1),
                         });
                     } catch (err) {
-                        toast.error(t("delegate.failed", { error: String(err) }), {
-                            id: FLOW_TOAST,
-                            duration: 6000,
-                        });
+                        if (isUserDeclinedError(err)) {
+                            toast.error(t("tx.userCancelled"), { id: FLOW_TOAST, duration: 5000 });
+                        } else {
+                            toast.error(t("delegate.failed", { error: String(err) }), {
+                                id: FLOW_TOAST,
+                                duration: 6000,
+                            });
+                        }
                     }
                 }}
             />
@@ -632,12 +612,8 @@ export default function PaymentForm(props: {
                         <TextField style={{ width: "50%" }}
                             label={t("form.numPullsLabel")}
                             type={"number"}
-                            // inputProps={{ inputProps: { min: 1, max: 10 } }}
                             slotProps={{
-                                input: {
-                                    endAdornment: <Button onClick={() => { updateStuff(maxFeesLovelace, epochStart, MAX_PULLS, paymentIntervalEpochs) }}>{t("form.maxButton")}</Button>,
-                                },
-                                htmlInput: { min: 1, max: MAX_PULLS }
+                                htmlInput: { min: 1 }
                             }}
                             value={numPulls}
                             name={"numPulls"}

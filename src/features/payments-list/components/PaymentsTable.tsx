@@ -18,6 +18,8 @@ import PaymentDetailsDialog from "./PaymentDetailsDialog";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ErrorIcon from '@mui/icons-material/Error';
 import { useTranslations } from "../../../lib/i18n/I18nProvider";
+import { formatWalletError, isUserDeclinedError } from "../../../lib/wallet/errors";
+import { explorerUrl } from "../../../lib/cardano/explorer";
 
 export default function PaymentsTable(props: { version: number }) {
 
@@ -110,7 +112,7 @@ export default function PaymentsTable(props: { version: number }) {
             const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx([recurringPaymentDTO]));
             toast.success(t("payments.toast.txSubmitted", { hash: shortHash(txHash) }), { duration: 5000 });
         } catch (error) {
-            toast.error('' + error, { duration: 5000 })
+            toast.error(formatWalletError(error, t), { duration: 5000 });
         }
     }
 
@@ -127,7 +129,11 @@ export default function PaymentsTable(props: { version: number }) {
             setSelectedPayments(new Set());
             toast.success(t("payments.toast.bulkCancelled", { n: paymentsToCancel.length }), { duration: 5000 });
         } catch (error) {
-            toast.error(t("payments.toast.cancelError", { error: String(error) }), { duration: 5000 });
+            if (isUserDeclinedError(error)) {
+                toast.error(t("tx.userCancelled"), { duration: 5000 });
+            } else {
+                toast.error(t("payments.toast.cancelError", { error: formatWalletError(error, t) }), { duration: 5000 });
+            }
         }
     }
 
@@ -142,7 +148,7 @@ export default function PaymentsTable(props: { version: number }) {
     }
 
     const handleSelectAll = () => {
-        const selectablePayments = currentPageData.filter(payment => 
+        const selectablePayments = currentPageData.filter(payment =>
             payment.paymentStatus === 'SCHEDULED' || payment.paymentStatus === 'INSUFFICIENT_FUNDS'
         );
 
@@ -214,7 +220,7 @@ export default function PaymentsTable(props: { version: number }) {
         setCurrentPageData(recurringPaymentDTOs.slice(startIndex, endIndex));
     };
 
-    const selectablePayments = currentPageData.filter(payment => 
+    const selectablePayments = currentPageData.filter(payment =>
         payment.paymentStatus === 'SCHEDULED' || payment.paymentStatus === 'INSUFFICIENT_FUNDS'
     );
 
@@ -286,7 +292,7 @@ export default function PaymentsTable(props: { version: number }) {
                                         <IconButton onClick={() => copyToClipboard(row.staking_address)} >
                                             <ContentCopyIcon />
                                         </IconButton>
-                                        <Button href={"https://cardanoscan.io/stakekey/" + row.staking_address}
+                                        <Button href={explorerUrl.stake(row.staking_address)}
                                             target="_blank"
                                             rel="noopener"
                                             endIcon={<LaunchIcon />}>

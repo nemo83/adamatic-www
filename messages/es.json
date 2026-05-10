@@ -1,8 +1,7 @@
 {
   "app": {
     "title": "AdaMatic",
-    "tagline": "Pagos recurrentes automatizados en Cardano",
-    "beta": "beta"
+    "tagline": "Pagos recurrentes automatizados en Cardano"
   },
   "nav": {
     "setup": "Configurar",
@@ -30,6 +29,7 @@
   "tx": {
     "submitted": "Transacción enviada: {hash}",
     "failed": "Falló la transacción",
+    "userCancelled": "Firma de la transacción rechazada.",
     "scriptsNotLoaded": "El manifiesto de scripts aún no se ha cargado. Por favor, inténtalo de nuevo en un momento.",
     "buildFailed": "No se pudo construir la transacción. Contacta con soporte si esto sigue ocurriendo."
   },
@@ -44,23 +44,18 @@
   "tour": {
     "welcome": "Te damos la bienvenida a AdaMatic. Configura retiros automáticos de HOSKY en unos pocos pasos. Te guiamos.",
     "wallet": "Conecta una billetera. Sirve cualquier billetera Cardano CIP-30. Recomendamos una pequeña hot wallet aparte para AdaMatic — tus fondos principales quedan a salvo.",
-    "addresses": "Elige la(s) billetera(s) para las que quieres recolectar HOSKY. Por defecto es tu billetera conectada — el caso común. Puedes añadir una segunda dirección si quieres retirar para otra billetera que controles.",
+    "addresses": "Elige la(s) billetera(s) para las que quieres recolectar HOSKY. Por defecto es tu billetera conectada — el caso común. Puedes añadir más direcciones si quieres retirar para otras billeteras que controles.",
     "delegate": "Si tu billetera aún no está delegada a un rugpool de Hosky, verás esta llamada a la acción. Haz clic para elegir un pool y delegar — necesario para empezar a ganar HOSKY.",
     "maxFees": "Comisión máxima por retiro. Limita cuánto puede gastar cada retiro en comisiones de AdaMatic + de red. El sobrante vuelve a tu billetera.",
     "firstEpoch": "Primera época de retiro. Cuándo ocurre el primer retiro. Por defecto la próxima época.",
     "lastEpoch": "Última época de retiro. Cuándo termina el calendario. Opcional — déjalo vacío y se ejecutará hasta agotar el depósito.",
-    "numPulls": "Número de retiros. Limitado a 5 durante la beta. Cada retiro cuesta la comisión del protocolo + comisiones de transacción.",
+    "numPulls": "Número de retiros. Cada retiro cuesta la comisión del protocolo + comisiones de transacción.",
     "frequency": "Cada cuánto. Número de épocas entre retiros. Las recompensas HOSKY se acumulan — las billeteras pequeñas deberían retirar con menos frecuencia (cada 2–3 épocas) para ahorrar en comisiones. Las grandes pueden retirar cada época."
   },
   "limits": {
-    "label": "Límites beta",
-    "maxPulls": "Retiros máx.: {n}",
-    "maxWallets": "Billeteras máx.: {n}",
     "protocolFee": "Comisión de protocolo: {ada} ADA",
     "protocolFeeLoading": "Comisión de protocolo: —",
     "tooltips": {
-      "maxPulls": "Número máximo de retiros recurrentes por configuración.",
-      "maxWallets": "Número máximo de billeteras de origen por configuración.",
       "protocolFee": "Comisión del operador por retiro, pagada a la infraestructura de AdaMatic."
     }
   },
@@ -85,9 +80,6 @@
     "removeAddress": "Quitar esta dirección",
     "addAddress": "Añadir dirección",
     "addAddressTooltip": "Añadir otra dirección",
-    "maxWalletsReached": "Máx. {n} billeteras alcanzado",
-    "maxWalletsTooltip": "Límite beta: máx. {n} billeteras por configuración",
-    "maxWalletsToast": "Límite beta: máx. {n} billeteras por configuración.",
     "rowDelegateMessage": "No delegada a un pool Hosky — delega para empezar a ganar HOSKY cada época.",
     "rowDelegateCta": "Delegar esta billetera →",
     "maxFeesLabel": "Comisión máxima",
@@ -102,7 +94,6 @@
     "endTimeTooltip": "Cuándo se realiza el último pago. Déjalo vacío para ejecutar hasta agotar el depósito.",
     "numPullsLabel": "Número de retiros",
     "numPullsTooltip": "Número total de retiros HOSKY a programar",
-    "maxButton": "MÁX",
     "maxDelayLabel": "Retraso máximo de pago (horas)",
     "maxDelayTooltip": "Retraso máximo (en horas) antes de que un retiro fallido se considere fallido",
     "intervalLabel": "Intervalo de pago (épocas)",
