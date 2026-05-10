@@ -10,6 +10,18 @@ export const SETTINGS_TX_HASH =
     "017e5d80c47e4057a48f8579a95d90063d57a7d45127f04c77141b832908ef01";
 export const SETTINGS_OUTPUT_INDEX = 0;
 
+// The settings UTxO is dual-purpose: it carries the operator-fee datum
+// and hosts the `automatic_payments` validator as a reference script.
+// Cancel txs reference it via this outRef instead of inlining the script,
+// which would add ~5–10 kB per cancel tx.
+export const SCRIPT_REFERENCE_TX_HASH = SETTINGS_TX_HASH;
+export const SCRIPT_REFERENCE_OUTPUT_INDEX = SETTINGS_OUTPUT_INDEX;
+
+// Compile-time maintenance gate. When true, the setup page renders an
+// alert and the Submit button is disabled. Flip to true, commit, and
+// Vercel rebuilds — no runtime trigger needed.
+export const MAINTENANCE_MODE: boolean = false;
+
 export const ADA_CONVERSION = 1_000_000;
 
 export const NETWORK_ID = process.env.NEXT_PUBLIC_CARDANO_NETWORK_ID;

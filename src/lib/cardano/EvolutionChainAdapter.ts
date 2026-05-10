@@ -3,8 +3,9 @@
  *
  * Script address derivation uses the BE-provided `finalHash` directly —
  * no client-side CBOR wrapping, no Plutus bytes in the client bundle.
- * The cancel path applies parameters client-side (inline-script tx) since
- * the BE doesn't expose a reference-script UTxO yet.
+ * The cancel path attaches the validator via reference input (the dual-
+ * purpose settings UTxO at SCRIPT_REFERENCE_TX_HASH#OUTPUT_INDEX), so
+ * cancel txs no longer carry the script bytes inline.
  */
 import {
     Address,
@@ -17,15 +18,11 @@ import {
     Data,
     InlineDatum,
     KeyHash,
-    PlutusV1,
-    PlutusV2,
-    PlutusV3,
     PoolKeyHash,
     RewardAccount,
     ScriptHash,
     TransactionHash,
     TransactionInput,
-    UPLC,
     mainnet,
     preprod,
     preview,
@@ -41,7 +38,12 @@ import type {
     ParsedAddress,
 } from "./ChainAdapter";
 import type { RecurringPaymentDatum } from "../../types/RecurringPaymentDatum";
-import { BLOCKFROST_API_KEY, NETWORK } from "./constants";
+import {
+    BLOCKFROST_API_KEY,
+    NETWORK,
+    SCRIPT_REFERENCE_OUTPUT_INDEX,
+    SCRIPT_REFERENCE_TX_HASH,
+} from "./constants";
 
 const CHAIN_BY_NAME: Record<string, Chain> = {
     mainnet,
@@ -281,64 +283,43 @@ class EvolutionAdapter implements ChainAdapter {
         if (!ctx.wallet) {
             throw new Error("Evolution adapter requires a CIP-30 walletApi");
         }
-        if (!ctx.scriptRawCode || !ctx.scriptParameters || !ctx.scriptVersion) {
-            throw new Error(
-                "Evolution buildAndSubmitCancelTx needs scriptRawCode + scriptParameters + scriptVersion (inline-script path)",
-            );
-        }
 
         const client = buildClient(ctx.wallet);
 
-        // Apply params client-side. `applyParamsToScript` returns hex that
-        // still needs `applySingleCborEncoding` to reach the form the Cardano
-        // protocol hashes on-chain (matches the BE's `finalHash`). Determined
-        // empirically — single-wrapped output was the only hash that matched.
-        const params = ctx.scriptParameters.map((p) =>
-            Data.fromCBORHex(p.cborHex),
-        );
-        const appliedRawHex = UPLC.applyParamsToScript(
-            ctx.scriptRawCode,
-            params,
-        );
-        const normalisedHex = UPLC.applySingleCborEncoding(appliedRawHex);
-        const appliedBytes = Bytes.fromHex(normalisedHex);
-
-        const script =
-            ctx.scriptVersion === "V3"
-                ? new PlutusV3.PlutusV3({ bytes: appliedBytes })
-                : ctx.scriptVersion === "V2"
-                  ? new PlutusV2.PlutusV2({ bytes: appliedBytes })
-                  : new PlutusV1.PlutusV1({ bytes: appliedBytes });
-
-        // Tripwire: if the applied hash ever drifts from `finalHash`, fail
-        // fast instead of submitting a tx the validator will reject.
-        const computedHash = Bytes.toHex(
-            ScriptHash.fromScript(script as unknown as Parameters<typeof ScriptHash.fromScript>[0]).hash,
-        );
-        if (computedHash.toLowerCase() !== ctx.scriptHash.toLowerCase()) {
-            throw new Error(
-                `Applied script hash ${computedHash} != BE finalHash ${ctx.scriptHash}. ` +
-                    `Param-application convention may have changed — check @evolution-sdk/evolution release notes.`,
-            );
-        }
-
-        const inputs = ctx.payments.map(
+        // Two batches of UTxOs to fetch: the script outputs being spent
+        // (the cancelled payments), and the dual-purpose settings UTxO that
+        // hosts the validator as a reference script. Fetched in parallel so
+        // the cancel path stays at a single round-trip to Blockfrost.
+        const scriptInputs = ctx.payments.map(
             (p) =>
                 new TransactionInput.TransactionInput({
                     transactionId: TransactionHash.fromHex(p.txHash),
                     index: BigInt(p.output_index),
                 }),
         );
-        const scriptUtxos = await (
+        const refInput = new TransactionInput.TransactionInput({
+            transactionId: TransactionHash.fromHex(SCRIPT_REFERENCE_TX_HASH),
+            index: BigInt(SCRIPT_REFERENCE_OUTPUT_INDEX),
+        });
+        const fetchUtxos = (
             client as unknown as {
                 getUtxosByOutRef(
                     inputs: TransactionInput.TransactionInput[],
                 ): Promise<unknown[]>;
             }
-        ).getUtxosByOutRef(inputs);
+        ).getUtxosByOutRef.bind(client);
+        const [scriptUtxos, refUtxos] = await Promise.all([
+            fetchUtxos(scriptInputs),
+            fetchUtxos([refInput]),
+        ]);
         if (!scriptUtxos || scriptUtxos.length === 0) {
             throw new Error(
                 "Couldn't fetch any of the target script UTxOs (backend / Blockfrost reachable?)",
+            );
+        }
+        if (!refUtxos || refUtxos.length === 0) {
+            throw new Error(
+                `Couldn't fetch the validator reference UTxO at ${SCRIPT_REFERENCE_TX_HASH}#${SCRIPT_REFERENCE_OUTPUT_INDEX}.`,
             );
         }
 
@@ -359,13 +340,17 @@ class EvolutionAdapter implements ChainAdapter {
 
         const builder = client
             .newTx()
+            .readFrom({
+                referenceInputs: refUtxos as Parameters<
+                    ReturnType<typeof client.newTx>["readFrom"]
+                >[0]["referenceInputs"],
+            })
             .collectFrom({
                 inputs: scriptUtxos as Parameters<
                     ReturnType<typeof client.newTx>["collectFrom"]
                 >[0]["inputs"],
                 redeemer: Data.constr(0n, []),
             })
-            .attachScript({ script })
             .addSigner({ keyHash: signerKeyHash });
 
         const signBuilder = await builder.build();

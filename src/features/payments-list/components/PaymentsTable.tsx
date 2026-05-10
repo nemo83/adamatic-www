@@ -108,9 +108,6 @@ export default function PaymentsTable(props: { version: number }) {
             wallet,
             payments,
             scriptHash: automaticPayments.finalHash,
-            scriptRawCode: automaticPayments.rawCompiledCode,
-            scriptParameters: automaticPayments.parameters,
-            scriptVersion: automaticPayments.plutusVersion,
         };
     }
 

@@ -37,6 +37,9 @@ yarn-error.log*
 # Claude Code project context (local)
 /CLAUDE.md
 
+# Personal scratchpads — wallet seeds / addresses / notes that must never leak.
+MY_*
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

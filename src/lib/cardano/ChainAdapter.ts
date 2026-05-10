@@ -56,12 +56,9 @@ export interface BuildSetupContext {
 export interface BuildCancelContext {
     wallet: WalletHandle;
     payments: RecurringPayment[];
-    /** Hex script hash — used as a tripwire by the Evolution path. */
+    /** Hex script hash. Reserved for future tripwires; the cancel path uses
+     *  the on-chain reference UTxO and doesn't need to re-derive the hash. */
     scriptHash: string;
-    /** Raw (pre-param-application) UPLC hex. Required by Evolution's inline-script path. */
-    scriptRawCode?: string;
-    scriptParameters?: Array<{ cborHex: string }>;
-    scriptVersion?: "V1" | "V2" | "V3";
 }
 
 export interface BuildDelegationContext {

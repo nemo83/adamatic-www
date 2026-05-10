@@ -15,7 +15,7 @@ import type { EncodedDatum } from "../../../lib/cardano/ChainAdapter";
 import { getChainAdapter } from "../../../lib/cardano/factory";
 import { useScriptByName } from "../../../lib/cardano/ScriptContext";
 import { fetchSettings } from "../../../lib/api/adamatic";
-import { HOSKY_TOUR_DISPLAYED } from "../../../lib/cardano/constants";
+import { HOSKY_TOUR_DISPLAYED, MAINTENANCE_MODE } from "../../../lib/cardano/constants";
 import type { PaymentMode } from "../mode";
 import PaymentForm from "./PaymentForm";
 import PaymentReceipt from "./PaymentReceipt";
@@ -52,8 +52,6 @@ export default function SetupPage(props: {
     const { setIsOpen } = useTour();
 
     const [showLimit, setShowLimit] = useState(false);
-
-    const [maintenanceMode, setMaintenanceMode] = useState(false);
 
     const [settings, setSettings] = useState<Settings | undefined>(undefined)
 
@@ -225,7 +223,7 @@ export default function SetupPage(props: {
 
                     {showLimit && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.limitReached")}</Alert>}
 
-                    {maintenanceMode && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.maintenance")}</Alert>}
+                    {MAINTENANCE_MODE && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.maintenance")}</Alert>}
 
                     {/* <Hero/>
 
@@ -312,7 +310,7 @@ export default function SetupPage(props: {
                     </Grid2>
                     <Grid2>
                         <Button
-                            disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || maintenanceMode || insufficientFunds}
+                            disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || MAINTENANCE_MODE || insufficientFunds}
                             variant="contained"
                             startIcon={<Send />}
                             onClick={() => signAndSubmit()}
