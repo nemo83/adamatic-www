@@ -23,6 +23,7 @@ import SubmitPanel from "./SubmitPanel";
 import LimitsStrip from "./LimitsStrip";
 import { useTranslations } from "../../../lib/i18n/I18nProvider";
 import { formatWalletError } from "../../../lib/wallet/errors";
+import { getWalletAdaBalance } from "../../../lib/wallet/balance";
 import { useTour } from '@reactour/tour'
 import toast from "react-hot-toast";
 import type { Settings } from "../../../types/AdaMaticTypes";
@@ -62,6 +63,8 @@ export default function SetupPage(props: {
             setIsOpen(true);
             localStorage.setItem(HOSKY_TOUR_DISPLAYED, "true");
         }
+        // Mount-only tour init.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const { isValidNetwork, mode } = props;
@@ -136,6 +139,35 @@ export default function SetupPage(props: {
             if (data) setSettings(data);
         });
     }, [])
+
+    // Wallet ADA balance — used for the pre-submit insufficient-funds check.
+    // null while disconnected or fetch failed; we treat null as "skip the check"
+    // (the wallet would still refuse to sign if the build runs short).
+    const [walletAdaBalance, setWalletAdaBalance] = useState<bigint | null>(null);
+    useEffect(() => {
+        if (!wallet || !connected) {
+            setWalletAdaBalance(null);
+            return;
+        }
+        let cancelled = false;
+        getWalletAdaBalance(wallet)
+            .then((b) => { if (!cancelled) setWalletAdaBalance(b); })
+            .catch(() => { if (!cancelled) setWalletAdaBalance(null); });
+        return () => { cancelled = true; };
+    }, [wallet, connected]);
+
+    // 2 ADA buffer covers tx fee + min-UTxO for any change output.
+    const TX_FEE_BUFFER_LOVELACE = 2_000_000n;
+    const requiredLovelace =
+        BigInt(deposit) * BigInt(Math.max(walletFromList.length, 1)) + TX_FEE_BUFFER_LOVELACE;
+    const insufficientFunds =
+        walletAdaBalance !== null &&
+        deposit > 0 &&
+        walletFromList.some((a) => a.trim().length > 0) &&
+        walletAdaBalance < requiredLovelace;
+    const shortfallAda = insufficientFunds && walletAdaBalance !== null
+        ? ((Number(requiredLovelace - walletAdaBalance)) / 1_000_000).toFixed(2)
+        : "0";
 
     const signAndSubmit = async () => {
         if (!automaticPayments?.finalHash) {
@@ -246,6 +278,12 @@ export default function SetupPage(props: {
                         />
                     )}
 
+                    {connected && insufficientFunds && (
+                        <Alert severity="warning" sx={{ mt: 2 }}>
+                            {t("submit.insufficientFunds", { ada: shortfallAda })}
+                        </Alert>
+                    )}
+
 
                 </Box>
                 <Grid2 container width={"60%"} spacing={2} justifyContent={"space-evenly"} >
@@ -274,7 +312,7 @@ export default function SetupPage(props: {
                     </Grid2>
                     <Grid2>
                         <Button
-                            disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || maintenanceMode}
+                            disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || maintenanceMode || insufficientFunds}
                             variant="contained"
                             startIcon={<Send />}
                             onClick={() => signAndSubmit()}

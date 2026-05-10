@@ -151,6 +151,8 @@ export default function PaymentForm(props: {
         if (walletFromList.length === 0) {
             setWalletFromList([""]);
         }
+        // Mount-only seed; the length-guard makes re-runs idempotent anyway.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
@@ -209,6 +211,9 @@ export default function PaymentForm(props: {
                 setWalletFromList(newWalletFromList);
             }
         }
+        // Seed the first slot only when the wallet identity changes; including
+        // walletFromList would clobber later manual edits.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [connected, walletAddress])
 
     useEffect(() => {
@@ -217,6 +222,10 @@ export default function PaymentForm(props: {
                 if (data) updateForm(data);
             });
         }
+        // updateForm closes over component scope and isn't memoized; including
+        // it would refetch the template every render. One fetch on hosky-mode
+        // entry is the intent.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isHoskyInput]);
 
     const updateStuff = async (maxFees: number, epochStart: number, numPulls: number, epochFrequency: number) => {
@@ -276,7 +285,11 @@ export default function PaymentForm(props: {
         }
         setDatumDTO(newDatumDTO);
 
-    }, [owner, payee, startTime, endTime, paymentIntervalHours, maxFeesLovelace])
+        // datumDTO itself is the state we're rebuilding — including it would
+        // infinite-loop. chainAdapter is a stable singleton from
+        // getChainAdapter(); setDatumDTO is a setter.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [owner, payee, startTime, endTime, lockEndTime, paymentIntervalHours, maxFeesLovelace])
 
     const addWalletAddress = () => {
         setWalletFromList([...walletFromList, ""]);

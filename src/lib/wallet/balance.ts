@@ -10,6 +10,7 @@ import {
     BLOCKFROST_API_KEY,
     NETWORK,
 } from "../cardano/constants";
+import type { Cip30Api } from "./types";
 
 function blockfrostBaseUrl(): string {
     const net = (NETWORK ?? "mainnet").toLowerCase();
@@ -31,6 +32,64 @@ export interface AccountBalance {
     delegating: boolean;
     /** Pool the stake is delegated to, if any. */
     poolBech32: string | null;
+}
+
+/**
+ * ADA balance of the connected wallet, decoded from CIP-30 `getBalance()`.
+ *
+ * The CIP-30 spec returns a CBOR-encoded `value`:
+ *   - ADA only → a single CBOR uint
+ *   - ADA + native assets → CBOR array `[coin: uint, multi_asset: map]`
+ *
+ * We only need the lovelace component, so a tiny custom decoder is
+ * sufficient — pulling in a full CBOR lib for one field would be overkill.
+ */
+export async function getWalletAdaBalance(walletApi: Cip30Api): Promise<bigint> {
+    const hex = await walletApi.getBalance();
+    return decodeLovelaceFromBalanceCbor(hex);
+}
+
+function decodeLovelaceFromBalanceCbor(hex: string): bigint {
+    const buf = hexToBytes(hex);
+    if (buf.length === 0) return 0n;
+    // 0x82 = CBOR array of length 2 → [coin, multi_asset]; coin starts at offset 1.
+    if (buf[0] === 0x82) {
+        return decodeCborUint(buf, 1).value;
+    }
+    return decodeCborUint(buf, 0).value;
+}
+
+function decodeCborUint(buf: Uint8Array, pos: number): { value: bigint; next: number } {
+    const b = buf[pos];
+    if (b < 0x18) return { value: BigInt(b), next: pos + 1 };
+    if (b === 0x18) return { value: BigInt(buf[pos + 1]), next: pos + 2 };
+    if (b === 0x19) {
+        return {
+            value: (BigInt(buf[pos + 1]) << 8n) | BigInt(buf[pos + 2]),
+            next: pos + 3,
+        };
+    }
+    if (b === 0x1A) {
+        let v = 0n;
+        for (let i = 0; i < 4; i++) v = (v << 8n) | BigInt(buf[pos + 1 + i]);
+        return { value: v, next: pos + 5 };
+    }
+    if (b === 0x1B) {
+        let v = 0n;
+        for (let i = 0; i < 8; i++) v = (v << 8n) | BigInt(buf[pos + 1 + i]);
+        return { value: v, next: pos + 9 };
+    }
+    throw new Error(`unsupported CBOR uint marker 0x${b.toString(16).padStart(2, "0")}`);
+}
+
+function hexToBytes(hex: string): Uint8Array {
+    const clean = hex.startsWith("0x") ? hex.slice(2) : hex;
+    const len = clean.length / 2;
+    const out = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        out[i] = parseInt(clean.substr(i * 2, 2), 16);
+    }
+    return out;
 }
 
 export async function fetchControlledBalance(

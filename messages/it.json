@@ -112,7 +112,8 @@
   },
   "submit": {
     "acceptRisk": "Capisco i rischi nell’uso di questo strumento beta",
-    "acceptFees": "Accetto le commissioni di transazione e di protocollo richieste per configurare questi pagamenti automatizzati"
+    "acceptFees": "Accetto le commissioni di transazione e di protocollo richieste per configurare questi pagamenti automatizzati",
+    "insufficientFunds": "ADA insufficiente nel wallet connesso — mancano circa {ada} ADA. Aggiungi fondi o riduci il deposito prima di inviare."
   },
   "delegate": {
     "modal": {
@@ -194,7 +195,20 @@
       "cancelError": "Errore nell’annullamento: {error}",
       "stakeAddressCopied": "Indirizzo di staking copiato"
     },
-    "showing": "Mostro {start}–{end} di {total} pagamenti"
+    "showing": "Mostro {start}–{end} di {total} pagamenti",
+    "empty": {
+      "title": "Nessun prelievo automatico ancora",
+      "body": "Configura il tuo primo prelievo HOSKY ricorrente e apparirà qui.",
+      "cta": "Configura un prelievo automatico"
+    },
+    "confirm": {
+      "title": "Annullare questo prelievo automatico?",
+      "titleBulk": "Annullare {n} prelievi automatici?",
+      "body": "Questo ferma il calendario e restituisce circa {ada} ADA al tuo wallet (al netto di una piccola commissione di rete).",
+      "bodyBulk": "Questo ferma {n} calendari e restituisce circa {ada} ADA al tuo wallet (al netto di una piccola commissione di rete).",
+      "confirm": "Sì, annulla",
+      "dismiss": "Mantienili"
+    }
   },
   "receipt": {
     "title": "Riepilogo pagamento",

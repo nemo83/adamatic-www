@@ -1,4 +1,6 @@
-import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography, Checkbox } from "@mui/material";
+import { Button, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Box, Pagination, Typography, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import NextLink from "next/link";
 import React, { useEffect, useState } from "react";
 import type { RecurringPayment } from "../../../types/RecurringPayment";
 import { useWallet } from "../../../lib/wallet/useWallet";
@@ -49,6 +51,12 @@ export default function PaymentsTable(props: { version: number }) {
 
     const [selectedPayments, setSelectedPayments] = useState<Set<string>>(new Set());
 
+    const [hasFetched, setHasFetched] = useState<boolean>(false);
+
+    // The pending-cancel set; non-null means the confirm dialog is open.
+    // null = closed; [] = (shouldn't happen); [...payments] = waiting for confirm.
+    const [pendingCancel, setPendingCancel] = useState<RecurringPayment[] | null>(null);
+
     // Trigger on `walletAddress`, not `connected` — `connected` flips true
     // a tick before the bech32 address resolves on auto-reconnect, so a
     // `connected`-only effect would fire with `walletAddress === null` and
@@ -89,6 +97,7 @@ export default function PaymentsTable(props: { version: number }) {
             paymentStatus: rp.payment_status,
         }));
         setRecurringPaymentDTOs(dtos);
+        setHasFetched(true);
     }
 
     const buildCancelCtx = (payments: RecurringPayment[]) => {
@@ -107,35 +116,47 @@ export default function PaymentsTable(props: { version: number }) {
 
     const shortHash = (h: string) => h.substring(0, 10) + "..." + h.substring(h.length - 10);
 
-    const cancelRecurringPayment = async (recurringPaymentDTO: RecurringPayment) => {
-        try {
-            const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx([recurringPaymentDTO]));
-            toast.success(t("payments.toast.txSubmitted", { hash: shortHash(txHash) }), { duration: 5000 });
-        } catch (error) {
-            toast.error(formatWalletError(error, t), { duration: 5000 });
-        }
-    }
+    const requestCancel = (recurringPaymentDTO: RecurringPayment) => {
+        setPendingCancel([recurringPaymentDTO]);
+    };
 
-    const bulkCancelRecurringPayments = async () => {
-
+    const requestBulkCancel = () => {
         const paymentsToCancel = recurringPaymentDTOs.filter(payment =>
             selectedPayments.has(payment.txHash + payment.output_index)
         );
+        if (paymentsToCancel.length === 0) return;
+        setPendingCancel(paymentsToCancel);
+    };
 
+    const runCancel = async () => {
+        if (!pendingCancel || pendingCancel.length === 0) return;
+        const isBulk = pendingCancel.length > 1;
+        const payments = pendingCancel;
+        setPendingCancel(null);
         try {
-            const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx(paymentsToCancel));
-            toast.success(t("payments.toast.paymentCancelled", { hash: shortHash(txHash) }), { duration: 3000 });
-
-            setSelectedPayments(new Set());
-            toast.success(t("payments.toast.bulkCancelled", { n: paymentsToCancel.length }), { duration: 5000 });
+            const txHash = await chainAdapter.buildAndSubmitCancelTx(buildCancelCtx(payments));
+            if (isBulk) {
+                toast.success(t("payments.toast.paymentCancelled", { hash: shortHash(txHash) }), { duration: 3000 });
+                setSelectedPayments(new Set());
+                toast.success(t("payments.toast.bulkCancelled", { n: payments.length }), { duration: 5000 });
+            } else {
+                toast.success(t("payments.toast.txSubmitted", { hash: shortHash(txHash) }), { duration: 5000 });
+            }
         } catch (error) {
             if (isUserDeclinedError(error)) {
                 toast.error(t("tx.userCancelled"), { duration: 5000 });
-            } else {
+            } else if (isBulk) {
                 toast.error(t("payments.toast.cancelError", { error: formatWalletError(error, t) }), { duration: 5000 });
+            } else {
+                toast.error(formatWalletError(error, t), { duration: 5000 });
             }
         }
-    }
+    };
+
+    const totalRefundLovelace = pendingCancel
+        ? pendingCancel.reduce((sum, p) => sum + (p.balance?.[0]?.amount ?? 0), 0)
+        : 0;
+    const totalRefundAda = (totalRefundLovelace / 1_000_000).toFixed(2);
 
     const handleSelectPayment = (paymentId: string) => {
         const newSelected = new Set(selectedPayments);
@@ -227,7 +248,44 @@ export default function PaymentsTable(props: { version: number }) {
     return (
         <>
             <PaymentDetailsDialog txHash={txHash} outputIndex={outputIndex} open={open} setOpen={setOpen} />
-            {connected ?
+            {connected && hasFetched && recurringPaymentDTOs.length === 0 ? (
+                <Box
+                    sx={{
+                        textAlign: 'center',
+                        py: 8,
+                        px: 2,
+                        border: '1px dashed',
+                        borderColor: 'divider',
+                        borderRadius: 2,
+                        bgcolor: 'background.paper',
+                    }}
+                >
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                        {t('payments.empty.title')}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 420, mx: 'auto' }}>
+                        {t('payments.empty.body')}
+                    </Typography>
+                    <NextLink href="/" passHref legacyBehavior>
+                        <Button
+                            component="a"
+                            variant="contained"
+                            startIcon={<Add />}
+                            sx={{
+                                background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                                borderRadius: '12px',
+                                fontWeight: 600,
+                                textTransform: 'none',
+                                px: 2.5,
+                                py: 1,
+                                '&, &:link, &:visited, &:hover, &:active': { color: 'white' },
+                            }}
+                        >
+                            {t('payments.empty.cta')}
+                        </Button>
+                    </NextLink>
+                </Box>
+            ) : connected ?
                 <>
                     {selectedPayments.size > 0 && (
                         <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -237,7 +295,7 @@ export default function PaymentsTable(props: { version: number }) {
                             <Button
                                 variant="contained"
                                 color="error"
-                                onClick={bulkCancelRecurringPayments}
+                                onClick={requestBulkCancel}
                                 startIcon={<DeleteIcon />}
                             >
                                 {t("payments.cancelSelected")}
@@ -307,7 +365,7 @@ export default function PaymentsTable(props: { version: number }) {
                                     <TableCell>
                                         {row.paymentStatus == 'SCHEDULED' || row.paymentStatus == 'INSUFFICIENT_FUNDS' ?
                                             <IconButton aria-label={t("payments.deleteAria")}
-                                                onClick={() => cancelRecurringPayment(row)}>
+                                                onClick={() => requestCancel(row)}>
                                                 <DeleteIcon color="error" />
                                             </IconButton> : ""}
                                         </TableCell>
@@ -350,6 +408,38 @@ export default function PaymentsTable(props: { version: number }) {
                     )}
                 </Box>
             )}
+
+            <Dialog
+                open={pendingCancel !== null}
+                onClose={() => setPendingCancel(null)}
+                aria-labelledby="cancel-confirm-title"
+            >
+                <DialogTitle id="cancel-confirm-title">
+                    {pendingCancel && pendingCancel.length > 1
+                        ? t("payments.confirm.titleBulk", { n: pendingCancel.length })
+                        : t("payments.confirm.title")}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {pendingCancel && pendingCancel.length > 1
+                            ? t("payments.confirm.bodyBulk", { n: pendingCancel.length, ada: totalRefundAda })
+                            : t("payments.confirm.body", { ada: totalRefundAda })}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setPendingCancel(null)}>
+                        {t("payments.confirm.dismiss")}
+                    </Button>
+                    <Button
+                        onClick={runCancel}
+                        variant="contained"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                    >
+                        {t("payments.confirm.confirm")}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 }

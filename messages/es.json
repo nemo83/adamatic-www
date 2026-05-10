@@ -112,7 +112,8 @@
   },
   "submit": {
     "acceptRisk": "Entiendo los riesgos de usar esta herramienta beta",
-    "acceptFees": "Acepto las comisiones de transacción y de protocolo necesarias para configurar estos pagos automatizados"
+    "acceptFees": "Acepto las comisiones de transacción y de protocolo necesarias para configurar estos pagos automatizados",
+    "insufficientFunds": "No hay suficiente ADA en la billetera conectada — faltan unos {ada} ADA. Recarga la billetera o reduce el depósito antes de enviar."
   },
   "delegate": {
     "modal": {
@@ -194,7 +195,20 @@
       "cancelError": "Error al cancelar pagos: {error}",
       "stakeAddressCopied": "Dirección de staking copiada"
     },
-    "showing": "Mostrando {start}–{end} de {total} pagos"
+    "showing": "Mostrando {start}–{end} de {total} pagos",
+    "empty": {
+      "title": "Aún no hay retiros automáticos",
+      "body": "Configura tu primer retiro recurrente de HOSKY y aparecerá aquí.",
+      "cta": "Configurar un retiro automático"
+    },
+    "confirm": {
+      "title": "¿Cancelar este retiro automático?",
+      "titleBulk": "¿Cancelar {n} retiros automáticos?",
+      "body": "Esto detiene el calendario y devuelve unos {ada} ADA a tu billetera (menos una pequeña comisión de red).",
+      "bodyBulk": "Esto detiene {n} calendarios y devuelve unos {ada} ADA a tu billetera (menos una pequeña comisión de red).",
+      "confirm": "Sí, cancelar",
+      "dismiss": "Mantenerlos"
+    }
   },
   "receipt": {
     "title": "Resumen del pago",

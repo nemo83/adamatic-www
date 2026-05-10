@@ -112,7 +112,8 @@
   },
   "submit": {
     "acceptRisk": "I understand the risks of using this beta tool",
-    "acceptFees": "I accept the transaction and protocol fees required to set up these automated payments"
+    "acceptFees": "I accept the transaction and protocol fees required to set up these automated payments",
+    "insufficientFunds": "Not enough ADA in the connected wallet — short by about {ada} ADA. Top up the wallet or reduce the deposit before submitting."
   },
   "delegate": {
     "modal": {
@@ -194,7 +195,20 @@
       "cancelError": "Error cancelling payments: {error}",
       "stakeAddressCopied": "Stake address copied"
     },
-    "showing": "Showing {start}–{end} of {total} payments"
+    "showing": "Showing {start}–{end} of {total} payments",
+    "empty": {
+      "title": "No auto-pulls yet",
+      "body": "Set up your first recurring HOSKY pull and it'll appear here.",
+      "cta": "Set up an auto-pull"
+    },
+    "confirm": {
+      "title": "Cancel this auto-pull?",
+      "titleBulk": "Cancel {n} auto-pulls?",
+      "body": "This stops the schedule and refunds about {ada} ADA back to your wallet (minus a small network fee).",
+      "bodyBulk": "This stops {n} schedules and refunds about {ada} ADA back to your wallet (minus a small network fee).",
+      "confirm": "Yes, cancel",
+      "dismiss": "Keep them"
+    }
   },
   "receipt": {
     "title": "Payment Summary",

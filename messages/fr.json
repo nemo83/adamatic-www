@@ -112,7 +112,8 @@
   },
   "submit": {
     "acceptRisk": "Je comprends les risques liés à l’utilisation de cet outil bêta",
-    "acceptFees": "J’accepte les frais de transaction et de protocole requis pour configurer ces paiements automatisés"
+    "acceptFees": "J’accepte les frais de transaction et de protocole requis pour configurer ces paiements automatisés",
+    "insufficientFunds": "Pas assez d’ADA dans le portefeuille connecté — il manque environ {ada} ADA. Rechargez le portefeuille ou réduisez le dépôt avant d’envoyer."
   },
   "delegate": {
     "modal": {
@@ -194,7 +195,20 @@
       "cancelError": "Erreur lors de l’annulation : {error}",
       "stakeAddressCopied": "Adresse de staking copiée"
     },
-    "showing": "Affichage de {start}–{end} sur {total} paiements"
+    "showing": "Affichage de {start}–{end} sur {total} paiements",
+    "empty": {
+      "title": "Aucun retrait automatique pour l’instant",
+      "body": "Configurez votre premier retrait HOSKY récurrent et il apparaîtra ici.",
+      "cta": "Configurer un retrait automatique"
+    },
+    "confirm": {
+      "title": "Annuler ce retrait automatique ?",
+      "titleBulk": "Annuler {n} retraits automatiques ?",
+      "body": "Cela arrête le calendrier et renvoie environ {ada} ADA dans votre portefeuille (moins de petits frais réseau).",
+      "bodyBulk": "Cela arrête {n} calendriers et renvoie environ {ada} ADA dans votre portefeuille (moins de petits frais réseau).",
+      "confirm": "Oui, annuler",
+      "dismiss": "Les conserver"
+    }
   },
   "receipt": {
     "title": "Récapitulatif du paiement",
