@@ -51,8 +51,6 @@ export default function SetupPage(props: {
 
     const { setIsOpen } = useTour();
 
-    const [showLimit, setShowLimit] = useState(false);
-
     const [settings, setSettings] = useState<Settings | undefined>(undefined)
 
     useEffect(() => {
@@ -117,20 +115,6 @@ export default function SetupPage(props: {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [datumDTO, connected]);
-
-    // useEffect(() => {
-    //     fetch(ADAMATIC_HOST + '/recurring_payments')
-    //         .then(response => response.json())
-    //         .then((data: []) => {
-    //             if (data.length >= 150) {
-    //                 setShowLimit(true)
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error('Error:', error);
-    //             setShowLimit(true)
-    //         })
-    // }, []);
 
     useEffect(() => {
         fetchSettings().then((data) => {
@@ -221,8 +205,6 @@ export default function SetupPage(props: {
                     }}
                 >
 
-                    {showLimit && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.limitReached")}</Alert>}
-
                     {MAINTENANCE_MODE && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.maintenance")}</Alert>}
 
                     {/* <Hero/>
@@ -310,7 +292,7 @@ export default function SetupPage(props: {
                     </Grid2>
                     <Grid2>
                         <Button
-                            disabled={!isValidNetwork || showLimit || !acceptRisk || !acceptFees || !isDelegatedToHosky || MAINTENANCE_MODE || insufficientFunds}
+                            disabled={!isValidNetwork || !acceptRisk || !acceptFees || !isDelegatedToHosky || MAINTENANCE_MODE || insufficientFunds}
                             variant="contained"
                             startIcon={<Send />}
                             onClick={() => signAndSubmit()}

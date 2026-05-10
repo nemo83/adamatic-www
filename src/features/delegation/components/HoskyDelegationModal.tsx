@@ -84,13 +84,6 @@ const FAMILY = {
     mono: '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
 };
 
-const FONT_LINK = (
-    <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400..600&display=swap"
-    />
-);
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -887,7 +880,6 @@ export default function HoskyDelegationModal({
 
     return (
         <>
-            {FONT_LINK}
             <Dialog
                 open={open}
                 onClose={onClose}

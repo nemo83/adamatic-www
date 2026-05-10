@@ -60,7 +60,6 @@
     }
   },
   "setup": {
-    "limitReached": "Limit of payments reached. Please try again later",
     "maintenance": "AdaMatic is currently in maintenance mode. Please try again later!",
     "takeTour": "Take a tour",
     "create": "Create recurring payment",

@@ -60,7 +60,6 @@
     }
   },
   "setup": {
-    "limitReached": "支払い数の上限に達しました。後ほどお試しください",
     "maintenance": "AdaMatic は現在メンテナンス中です。後ほどお試しください！",
     "takeTour": "ツアーを開始",
     "create": "定期支払いを作成",

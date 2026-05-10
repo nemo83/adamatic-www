@@ -60,7 +60,6 @@
     }
   },
   "setup": {
-    "limitReached": "Limite de paiements atteinte. Veuillez réessayer plus tard",
     "maintenance": "AdaMatic est actuellement en maintenance. Veuillez réessayer plus tard !",
     "takeTour": "Visite guidée",
     "create": "Créer le paiement récurrent",

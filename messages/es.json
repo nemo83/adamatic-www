@@ -60,7 +60,6 @@
     }
   },
   "setup": {
-    "limitReached": "Límite de pagos alcanzado. Inténtalo más tarde",
     "maintenance": "AdaMatic está en modo mantenimiento. Inténtalo más tarde.",
     "takeTour": "Hacer el tour",
     "create": "Crear pago recurrente",

@@ -20,6 +20,13 @@ export default function Document() {
                 <link rel="manifest" href="/site.webmanifest" />
                 <meta name="theme-color" content="#2196F3" />
 
+                {/* Fonts — loaded site-wide from `_document.tsx` so Next doesn't
+                     flag the per-page import in `<HoskyDelegationModal>`. */}
+                <link
+                    rel="stylesheet"
+                    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=DM+Sans:opsz,wght@9..40,300..700&family=JetBrains+Mono:wght@400..600&display=swap"
+                />
+
                 {/* Static SEO bits that don't change per page */}
                 <meta name="keywords" content="Cardano, AdaMatic, recurring payments, automation, Hosky, blockchain, smart contracts, DeFi, Web3" />
                 <meta name="author" content="Easy1Staking" />

@@ -318,7 +318,7 @@ export default function PaymentForm(props: {
     return (
         <Stack spacing={1} style={{ paddingTop: "10px" }}>
             {/* Multiple Wallet Addresses Section */}
-            <Box>
+            <Box data-tut="step-1">
                 <Tooltip title={t("form.addressesTooltip")}>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         {t("form.addressesLabel")}
@@ -414,6 +414,7 @@ export default function PaymentForm(props: {
                                     </Stack>
                                     <Button
                                         size="small"
+                                        data-tut="step-delegate"
                                         onClick={() => handleRowDelegate(address)}
                                         sx={{
                                             textTransform: 'none',

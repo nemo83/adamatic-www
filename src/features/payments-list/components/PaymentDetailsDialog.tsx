@@ -84,7 +84,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                 {shortenTxHash(transaction.tx_hash ? shortenTxHash(transaction.tx_hash) : "")}
                             </Button>
                         </TableCell>
-                        <TableCell>{transaction.balance.amount / 1_000_000} &#x20B3;</TableCell>
+                        <TableCell>{transaction.balance.amount / 1_000_000} {t("common.ada")}</TableCell>
                     </TableRow>
                 )
             case "PAYMENT_EXECUTED":
@@ -102,7 +102,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                 {shortenTxHash(transaction.tx_hash ? shortenTxHash(transaction.tx_hash) : "")}
                             </Button>
                         </TableCell>
-                        <TableCell>{transaction.balance.amount / 1_000_000} &#x20B3;</TableCell>
+                        <TableCell>{transaction.balance.amount / 1_000_000} {t("common.ada")}</TableCell>
                     </TableRow>
                 )
             case "WITHDRAWN":
@@ -120,7 +120,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                 {shortenTxHash(transaction.tx_hash ? shortenTxHash(transaction.tx_hash) : "")}
                             </Button>
                         </TableCell>
-                        <TableCell>{transaction.balance.amount / 1_000_000} &#x20B3;</TableCell>
+                        <TableCell>{transaction.balance.amount / 1_000_000} {t("common.ada")}</TableCell>
                     </TableRow>
                 )
             case "COMPLETED":
@@ -138,7 +138,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                                 {shortenTxHash(transaction.tx_hash ? shortenTxHash(transaction.tx_hash) : "")}
                             </Button>
                         </TableCell>
-                        <TableCell>{transaction.balance.amount / 1_000_000} &#x20B3;</TableCell>
+                        <TableCell>{transaction.balance.amount / 1_000_000} {t("common.ada")}</TableCell>
                     </TableRow>
                 )
             case "SCHEDULED":
@@ -151,7 +151,7 @@ const PaymentDetailsDialog = (props: { txHash: string | undefined, outputIndex: 
                         <TableCell >
                             -
                         </TableCell>
-                        <TableCell>{transaction.balance.amount / 1_000_000} &#x20B3;</TableCell>
+                        <TableCell>{transaction.balance.amount / 1_000_000} {t("common.ada")}</TableCell>
                     </TableRow>
                 )
             default:
