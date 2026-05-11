@@ -41,3 +41,14 @@ export interface Settings {
     operator_fee_lovelace: number;
     base_fee_lovelace: number;
 }
+
+export interface AdaMaticStats {
+    /** Sum of lovelace currently locked in active recurring payments.
+     *  String (not number) because lovelace totals can exceed JS's safe-int
+     *  range for big networks — parse with BigInt where exact math matters. */
+    tvl_lovelace: string;
+    /** Count of active payments (SCHEDULED | INSUFFICIENT_FUNDS). */
+    scheduled_count: number;
+    /** All-time count of executed payments. */
+    executed_count: number;
+}

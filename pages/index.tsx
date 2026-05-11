@@ -14,6 +14,7 @@
  */
 import NextLink from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Box, Button, Chip, Divider, Stack, Typography } from "@mui/material";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import PaymentsIcon from "@mui/icons-material/Payments";
@@ -22,23 +23,25 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import RocketLaunchOutlinedIcon from "@mui/icons-material/RocketLaunchOutlined";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { useTranslations } from "../src/lib/i18n/I18nProvider";
+import { fetchStats } from "../src/lib/api/adamatic";
 
-// Mock values for the live-stats strip until the BE endpoints are wired.
-// TODO(adamatic): wire to live BE — counts via /api/recurring_payments,
-// TVL via a sum across active payment balances.
-const MOCK_STATS = {
+// Initial / fallback values for the live-stats strip. Used until the BE
+// fetch resolves (or if it fails) so the section never flashes a "0 / 0 /
+// 0" placeholder for first-time visitors. Real numbers replace these on
+// mount when /stats responds.
+const FALLBACK_STATS = {
     tvlAda: 8_420,
     scheduledCount: 156,
     executedCount: 1_247,
 };
 
-// Mock community quotes until real ones surface. Placeholder content,
-// safe to swap without touching layout.
-// TODO(adamatic): replace with curated real quotes when collected.
-const MOCK_QUOTES: { quote: string; author: string }[] = [
+// Community quotes shown in the "From the community" strip. One real
+// (ghosttsohg1, via Discord); the other two are still mock placeholder.
+// TODO(adamatic): replace remaining mocks as real quotes come in.
+const COMMUNITY_QUOTES: { quote: string; author: string }[] = [
     {
-        quote: "Set my HOSKY pull schedule months ago, haven't thought about it since. Just works.",
-        author: "@cardanoMaxi",
+        quote: "Before Adamatic, I couldn't go on vacation like Vegas, without risking losing the HW wallet in the ocean or just miss the rewards.",
+        author: "@ghosttsohg1",
     },
     {
         quote: "Drop ADA in, HOSKY out, on cadence. The vending-machine analogy is spot on.",
@@ -54,6 +57,25 @@ const SECTION_MAX_WIDTH = 1000;
 
 export default function Home() {
     const t = useTranslations();
+    const [stats, setStats] = useState(FALLBACK_STATS);
+    useEffect(() => {
+        let cancelled = false;
+        fetchStats().then((s) => {
+            if (cancelled || !s) return;
+            // tvl_lovelace is a string (can exceed safe-int range). For
+            // display we want a rounded ADA number, so divide via BigInt
+            // then convert at the millionth-precision boundary.
+            const tvlAda = Number(BigInt(s.tvl_lovelace) / 1_000_000n);
+            setStats({
+                tvlAda,
+                scheduledCount: s.scheduled_count,
+                executedCount: s.executed_count,
+            });
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
     return (
         <Box
             sx={(theme) => ({
@@ -455,9 +477,9 @@ export default function Home() {
                         justifyContent="space-around"
                     >
                         {[
-                            { value: MOCK_STATS.tvlAda.toLocaleString(), suffix: " ₳", key: "tvl" },
-                            { value: MOCK_STATS.scheduledCount.toLocaleString(), suffix: "", key: "scheduled" },
-                            { value: MOCK_STATS.executedCount.toLocaleString(), suffix: "", key: "executed" },
+                            { value: stats.tvlAda.toLocaleString(), suffix: " ₳", key: "tvl" },
+                            { value: stats.scheduledCount.toLocaleString(), suffix: "", key: "scheduled" },
+                            { value: stats.executedCount.toLocaleString(), suffix: "", key: "executed" },
                         ].map(({ value, suffix, key }) => (
                             <Box key={key} sx={{ flex: 1, textAlign: { xs: "center", sm: "left" } }}>
                                 <Typography
@@ -501,7 +523,7 @@ export default function Home() {
                         sx={{ width: "100%" }}
                         alignItems="stretch"
                     >
-                        {MOCK_QUOTES.map((q) => (
+                        {COMMUNITY_QUOTES.map((q) => (
                             <Box
                                 key={q.author}
                                 sx={{

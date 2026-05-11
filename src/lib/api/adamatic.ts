@@ -5,6 +5,7 @@
  */
 import { ADAMATIC_HOST } from "../cardano/constants";
 import type {
+    AdaMaticStats,
     HoskyTemplate,
     PaymentDetails,
     Settings,
@@ -27,6 +28,10 @@ async function safeJson<T>(url: string): Promise<T | null> {
 
 export function fetchSettings(): Promise<Settings | null> {
     return safeJson<Settings>(`${ADAMATIC_HOST}/settings`);
+}
+
+export function fetchStats(): Promise<AdaMaticStats | null> {
+    return safeJson<AdaMaticStats>(`${ADAMATIC_HOST}/stats`);
 }
 
 export function fetchHoskyTemplate(
