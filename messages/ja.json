@@ -6,8 +6,7 @@
   "nav": {
     "setup": "設定",
     "myPulls": "マイ自動引き出し",
-    "faq": "よくある質問",
-    "github": "GitHub"
+    "faq": "よくある質問"
   },
   "common": {
     "cancel": "キャンセル",
@@ -67,7 +66,53 @@
     "viewMyAutoPulls": "マイ自動引き出しを表示",
     "newAutoPull": "新しい自動引き出し",
     "refreshTooltip": "支払いを更新",
-    "refreshAria": "自動引き出しをリロード"
+    "refreshAria": "自動引き出しをリロード",
+    "generic": {
+      "comingSoon": {
+        "title": "近日公開",
+        "body": "汎用の定期支払いはロードマップの次の項目です。今のところは HOSKY 自動引き出しを設定してください。",
+        "cta": "HOSKY 自動引き出しを設定",
+        "back": "ホームに戻る"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Cardano で最も安価な自動引き出し",
+      "title": "Cardano の支払いを自動化。",
+      "subtitle": "今日は HOSKY 自動引き出し。次は ADA の定期支払いと法定通貨建ての金額に対応。",
+      "primaryCta": "HOSKY で開始",
+      "secondaryCta": "仕組みを見る"
+    },
+    "chooserTitle": "支払いを設定",
+    "hosky": {
+      "title": "HOSKY 自動引き出し",
+      "body": "Rugpool への委任から HOSKY 報酬をスケジュールに沿って回収します。",
+      "cta": "始める"
+    },
+    "generic": {
+      "title": "ADA の定期支払い",
+      "body": "任意のアドレスへ ADA をスケジュールで送ります。",
+      "comingSoon": "近日公開"
+    },
+    "howItWorks": {
+      "title": "仕組み",
+      "step1Title": "ウォレットを接続",
+      "step1Body": "CIP-30 対応の Cardano ウォレットならどれでも。非カストディアル — 鍵はあなたのまま。",
+      "step2Title": "スケジュールを設定",
+      "step2Body": "回収先のウォレット、頻度、手数料上限を選ぶだけ。",
+      "step3Title": "自動引き出しが実行",
+      "step3Body": "スマートコントラクトがオンチェーンで定時に実行。マイ自動引き出しで追跡。"
+    },
+    "stats": {
+      "title": "Cardano 上で稼働中",
+      "tvl": "自動引き出しの ADA",
+      "scheduled": "予定中の自動引き出し",
+      "executed": "実行済みの支払い"
+    },
+    "community": {
+      "title": "コミュニティの声"
+    }
   },
   "form": {
     "addressesTooltip": "Hosky のラグプールに委任されたウォレット — HOSKY 報酬を得るのはこれらです",

@@ -90,7 +90,7 @@ export default function PaymentsPage() {
                                         </IconButton>
                                     </Tooltip>
                                 )}
-                                <NextLink href="/" passHref legacyBehavior>
+                                <NextLink href="/setup/hosky" passHref legacyBehavior>
                                     <Button
                                         component="a"
                                         variant="contained"

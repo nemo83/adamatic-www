@@ -6,8 +6,7 @@
   "nav": {
     "setup": "Configurar",
     "myPulls": "Mis retiros",
-    "faq": "Preguntas",
-    "github": "GitHub"
+    "faq": "Preguntas"
   },
   "common": {
     "cancel": "Cancelar",
@@ -67,7 +66,53 @@
     "viewMyAutoPulls": "Ver mis retiros automáticos",
     "newAutoPull": "Nuevo retiro",
     "refreshTooltip": "Actualizar pagos",
-    "refreshAria": "Recargar retiros automáticos"
+    "refreshAria": "Recargar retiros automáticos",
+    "generic": {
+      "comingSoon": {
+        "title": "Próximamente",
+        "body": "Los pagos recurrentes genéricos son lo siguiente en la hoja de ruta. Por ahora, configura un retiro automático de HOSKY.",
+        "cta": "Configurar un retiro de HOSKY",
+        "back": "Volver al inicio"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "El auto-pull más barato en Cardano",
+      "title": "Automatiza tus pagos en Cardano.",
+      "subtitle": "Retiros automáticos de HOSKY hoy. Pagos recurrentes en ADA y montos vinculados a fiat, próximamente.",
+      "primaryCta": "Empezar con HOSKY",
+      "secondaryCta": "Cómo funciona"
+    },
+    "chooserTitle": "Configura un pago",
+    "hosky": {
+      "title": "Retiros automáticos de HOSKY",
+      "body": "Cobra recompensas HOSKY de tu delegación a un Rugpool según un calendario.",
+      "cta": "Empezar"
+    },
+    "generic": {
+      "title": "Pagos recurrentes en ADA",
+      "body": "Envía ADA a cualquier dirección según un calendario.",
+      "comingSoon": "Próximamente"
+    },
+    "howItWorks": {
+      "title": "Cómo funciona",
+      "step1Title": "Conecta tu billetera",
+      "step1Body": "Cualquier billetera Cardano CIP-30. No custodial — tus claves son tuyas.",
+      "step2Title": "Configura el calendario",
+      "step2Body": "Elige la billetera para la que cobrar, la cadencia y tu comisión máxima.",
+      "step3Title": "Los retiros se ejecutan",
+      "step3Body": "Los contratos inteligentes se ejecutan en cadena, a tiempo. Sigue todo en Mis retiros automáticos."
+    },
+    "stats": {
+      "title": "En vivo en Cardano",
+      "tvl": "ADA en retiros automáticos",
+      "scheduled": "Retiros automáticos programados",
+      "executed": "Pagos ejecutados"
+    },
+    "community": {
+      "title": "Desde la comunidad"
+    }
   },
   "form": {
     "addressesTooltip": "Billeteras delegadas a Rugpools Hosky — son las que ganan recompensas HOSKY",

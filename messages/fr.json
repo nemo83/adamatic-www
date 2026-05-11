@@ -6,8 +6,7 @@
   "nav": {
     "setup": "Configurer",
     "myPulls": "Mes retraits",
-    "faq": "FAQ",
-    "github": "GitHub"
+    "faq": "FAQ"
   },
   "common": {
     "cancel": "Annuler",
@@ -67,7 +66,53 @@
     "viewMyAutoPulls": "Voir mes retraits automatiques",
     "newAutoPull": "Nouveau retrait",
     "refreshTooltip": "Actualiser les paiements",
-    "refreshAria": "Recharger les retraits automatiques"
+    "refreshAria": "Recharger les retraits automatiques",
+    "generic": {
+      "comingSoon": {
+        "title": "Bientôt disponible",
+        "body": "Les paiements récurrents génériques arrivent bientôt sur la roadmap. Pour l’instant, configurez un retrait automatique HOSKY à la place.",
+        "cta": "Configurer un retrait HOSKY",
+        "back": "Retour à l’accueil"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Le retrait automatique le moins cher sur Cardano",
+      "title": "Automatisez vos paiements Cardano.",
+      "subtitle": "Retraits HOSKY automatiques aujourd’hui. Paiements ADA récurrents et montants indexés sur le fiat à venir.",
+      "primaryCta": "Démarrer avec HOSKY",
+      "secondaryCta": "Comment ça marche"
+    },
+    "chooserTitle": "Configurer un paiement",
+    "hosky": {
+      "title": "Retraits automatiques HOSKY",
+      "body": "Récupérez vos récompenses HOSKY depuis votre délégation Rugpool selon un calendrier.",
+      "cta": "Commencer"
+    },
+    "generic": {
+      "title": "Paiements ADA récurrents",
+      "body": "Envoyez de l’ADA à n’importe quelle adresse selon un calendrier.",
+      "comingSoon": "Bientôt disponible"
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "step1Title": "Connectez votre portefeuille",
+      "step1Body": "Tout portefeuille Cardano CIP-30. Non-custodial — vos clés restent les vôtres.",
+      "step2Title": "Définissez le calendrier",
+      "step2Body": "Choisissez le portefeuille à collecter, la cadence et votre plafond de frais.",
+      "step3Title": "Les retraits s’exécutent",
+      "step3Body": "Les contrats intelligents s’exécutent on-chain, à l’heure. À suivre dans Mes retraits automatiques."
+    },
+    "stats": {
+      "title": "En direct sur Cardano",
+      "tvl": "ADA dans les retraits automatiques",
+      "scheduled": "Retraits automatiques planifiés",
+      "executed": "Paiements exécutés"
+    },
+    "community": {
+      "title": "Depuis la communauté"
+    }
   },
   "form": {
     "addressesTooltip": "Portefeuilles délégués à des rugpools Hosky — ceux qui gagnent des récompenses HOSKY",

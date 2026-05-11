@@ -7,7 +7,6 @@ import React, { useEffect } from "react";
 import { NETWORK, NETWORK_ID } from "../src/lib/cardano/constants";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import GitHubIcon from '@mui/icons-material/GitHub';
 import Logo from "./Logo";
 
 export default function Navbar() {
@@ -103,19 +102,6 @@ export default function Navbar() {
                                 }}
                             >
                                 {t("nav.faq")}
-                            </Button>
-                            <Button
-                                color="inherit"
-                                startIcon={<GitHubIcon />}
-                                sx={{
-                                    textTransform: 'none',
-                                    '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
-                                }}
-                                href="https://github.com/easy1staking-com/cardano-recurring-payment"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {t("nav.github")}
                             </Button>
                         </Stack>
                     </Box>

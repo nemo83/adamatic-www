@@ -6,8 +6,7 @@
   "nav": {
     "setup": "Imposta",
     "myPulls": "I miei prelievi",
-    "faq": "FAQ",
-    "github": "GitHub"
+    "faq": "FAQ"
   },
   "common": {
     "cancel": "Annulla",
@@ -67,7 +66,53 @@
     "viewMyAutoPulls": "Vedi i miei prelievi automatici",
     "newAutoPull": "Nuovo prelievo",
     "refreshTooltip": "Aggiorna pagamenti",
-    "refreshAria": "Ricarica prelievi automatici"
+    "refreshAria": "Ricarica prelievi automatici",
+    "generic": {
+      "comingSoon": {
+        "title": "In arrivo",
+        "body": "I pagamenti ricorrenti generici sono il prossimo punto della roadmap. Per ora, configura un prelievo automatico di HOSKY.",
+        "cta": "Configura un prelievo HOSKY",
+        "back": "Torna alla home"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Il prelievo automatico più economico su Cardano",
+      "title": "Automatizza i tuoi pagamenti su Cardano.",
+      "subtitle": "Prelievi HOSKY automatici oggi. Pagamenti ADA ricorrenti e importi ancorati al fiat in arrivo.",
+      "primaryCta": "Inizia con HOSKY",
+      "secondaryCta": "Come funziona"
+    },
+    "chooserTitle": "Configura un pagamento",
+    "hosky": {
+      "title": "Prelievi automatici HOSKY",
+      "body": "Raccogli le ricompense HOSKY dalla tua delega a un Rugpool secondo un calendario.",
+      "cta": "Inizia"
+    },
+    "generic": {
+      "title": "Pagamenti ADA ricorrenti",
+      "body": "Invia ADA a qualsiasi indirizzo secondo un calendario.",
+      "comingSoon": "In arrivo"
+    },
+    "howItWorks": {
+      "title": "Come funziona",
+      "step1Title": "Connetti il tuo wallet",
+      "step1Body": "Qualsiasi wallet Cardano CIP-30. Non-custodial — le chiavi restano tue.",
+      "step2Title": "Imposta il calendario",
+      "step2Body": "Scegli il wallet per cui raccogliere, la cadenza e il tetto di commissione.",
+      "step3Title": "I prelievi avvengono",
+      "step3Body": "Gli smart contract si eseguono on chain, puntuali. Seguili in I miei prelievi automatici."
+    },
+    "stats": {
+      "title": "In diretta su Cardano",
+      "tvl": "ADA nei prelievi automatici",
+      "scheduled": "Prelievi automatici programmati",
+      "executed": "Pagamenti eseguiti"
+    },
+    "community": {
+      "title": "Dalla community"
+    }
   },
   "form": {
     "addressesTooltip": "Wallet delegati a Rugpool Hosky — sono quelli che guadagnano ricompense HOSKY",

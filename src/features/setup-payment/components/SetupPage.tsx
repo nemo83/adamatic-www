@@ -40,7 +40,6 @@ import SecurityIcon from '@mui/icons-material/Security';
 import SavingsIcon from '@mui/icons-material/Savings';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import Hero from "../../../../components/Hero";
 
 export default function SetupPage(props: {
     isValidNetwork: boolean,
@@ -206,12 +205,6 @@ export default function SetupPage(props: {
                 >
 
                     {MAINTENANCE_MODE && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.maintenance")}</Alert>}
-
-                    {/* <Hero/>
-
-                    <Divider sx={{ my: 4 }}>
-                        <Chip label="Setup Your Payment" color="primary" />
-                    </Divider> */}
 
                     <LimitsStrip
                         protocolFeeAda={

@@ -6,8 +6,7 @@
   "nav": {
     "setup": "Set up",
     "myPulls": "My auto-pulls",
-    "faq": "FAQ",
-    "github": "GitHub"
+    "faq": "FAQ"
   },
   "common": {
     "cancel": "Cancel",
@@ -67,7 +66,53 @@
     "viewMyAutoPulls": "View my auto-pulls",
     "newAutoPull": "New auto-pull",
     "refreshTooltip": "Refresh payments",
-    "refreshAria": "Reload auto-pulls"
+    "refreshAria": "Reload auto-pulls",
+    "generic": {
+      "comingSoon": {
+        "title": "Coming soon",
+        "body": "Generic recurring payments are next on the roadmap. For now, set up a HOSKY auto-pull instead.",
+        "cta": "Set up a HOSKY auto-pull",
+        "back": "Back home"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "The cheapest auto-pull on Cardano",
+      "title": "Automate your Cardano payments.",
+      "subtitle": "HOSKY auto-pulls today. Recurring ADA payments and fiat-pegged schedules next.",
+      "primaryCta": "Start with HOSKY",
+      "secondaryCta": "How it works"
+    },
+    "chooserTitle": "Set up a payment",
+    "hosky": {
+      "title": "HOSKY auto-pulls",
+      "body": "Collect HOSKY rewards from your Rugpool delegation on a schedule.",
+      "cta": "Start"
+    },
+    "generic": {
+      "title": "Recurring ADA payments",
+      "body": "Send ADA to any address on a schedule.",
+      "comingSoon": "Coming soon"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "step1Title": "Connect your wallet",
+      "step1Body": "Any CIP-30 Cardano wallet. Non-custodial — your keys stay yours.",
+      "step2Title": "Set the schedule",
+      "step2Body": "Pick the wallet to collect for, the cadence, and your fee cap.",
+      "step3Title": "Auto-pulls happen",
+      "step3Body": "Smart contracts execute on chain, on time. Track in My auto-pulls."
+    },
+    "stats": {
+      "title": "Live on Cardano",
+      "tvl": "ADA in auto-pulls",
+      "scheduled": "Auto-pulls scheduled",
+      "executed": "Payments executed"
+    },
+    "community": {
+      "title": "From the community"
+    }
   },
   "form": {
     "addressesTooltip": "Wallets delegated to Hosky Rugpools — these are the ones earning HOSKY rewards",

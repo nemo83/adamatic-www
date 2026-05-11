@@ -263,7 +263,7 @@ export default function PaymentsTable(props: { version: number }) {
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 3, maxWidth: 420, mx: 'auto' }}>
                         {t('payments.empty.body')}
                     </Typography>
-                    <NextLink href="/" passHref legacyBehavior>
+                    <NextLink href="/setup/hosky" passHref legacyBehavior>
                         <Button
                             component="a"
                             variant="contained"
