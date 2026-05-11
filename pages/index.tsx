@@ -12,6 +12,8 @@
  * Tour is NOT initialised here — it fires on /setup/hosky where the form
  * fields it points at actually exist.
  */
+import type { GetServerSideProps } from "next";
+import Head from "next/head";
 import NextLink from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -25,6 +27,28 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { useTranslations } from "../src/lib/i18n/I18nProvider";
 import { fetchStats } from "../src/lib/api/adamatic";
 
+interface LandingProps {
+    baseUrl: string;
+}
+
+// Derive an absolute origin from the request so per-page `og:image` URLs
+// are absolute — X/Twitter drops cards when og:image is relative.
+// Mirrors the pattern in pages/setup/hosky.tsx.
+export const getServerSideProps: GetServerSideProps<LandingProps> = async (ctx) => {
+    const fwdProto = ctx.req.headers["x-forwarded-proto"];
+    const proto =
+        typeof fwdProto === "string"
+            ? fwdProto.split(",")[0].trim()
+            : Array.isArray(fwdProto)
+                ? fwdProto[0]
+                : ctx.req.headers.host?.startsWith("localhost")
+                    ? "http"
+                    : "https";
+    const host = ctx.req.headers.host ?? "";
+    const baseUrl = host ? `${proto}://${host}` : "";
+    return { props: { baseUrl } };
+};
+
 // Initial / fallback values for the live-stats strip. Used until the BE
 // fetch resolves (or if it fails) so the section never flashes a "0 / 0 /
 // 0" placeholder for first-time visitors. Real numbers replace these on
@@ -35,29 +59,24 @@ const FALLBACK_STATS = {
     executedCount: 1_247,
 };
 
-// Community quotes shown in the "From the community" strip. One real
-// (ghosttsohg1, via Discord); the other two are still mock placeholder.
-// TODO(adamatic): replace remaining mocks as real quotes come in.
+// Community quotes shown in the "From the community" strip. Real quotes
+// only — add new entries as they come in (Discord, X, etc.).
 const COMMUNITY_QUOTES: { quote: string; author: string }[] = [
     {
         quote: "Before Adamatic, I couldn't go on vacation like Vegas, without risking losing the HW wallet in the ocean or just miss the rewards.",
         author: "@ghosttsohg1",
     },
-    {
-        quote: "Drop ADA in, HOSKY out, on cadence. The vending-machine analogy is spot on.",
-        author: "@hoskyhoarder",
-    },
-    {
-        quote: "Took 30 seconds to set up. My delegated cold wallet is now an income engine.",
-        author: "@stakeOrDie",
-    },
 ];
 
 const SECTION_MAX_WIDTH = 1000;
 
-export default function Home() {
+export default function Home({ baseUrl }: LandingProps) {
     const t = useTranslations();
     const [stats, setStats] = useState(FALLBACK_STATS);
+    const ogUrl = `${baseUrl}/api/og/landing`;
+    const pageUrl = `${baseUrl}/`;
+    const title = `AdaMatic — ${t("landing.hero.title")}`;
+    const description = t("landing.hero.subtitle");
     useEffect(() => {
         let cancelled = false;
         fetchStats().then((s) => {
@@ -77,7 +96,27 @@ export default function Home() {
         };
     }, []);
     return (
-        <Box
+        <>
+            <Head>
+                <title key="title">{title}</title>
+                <meta name="description" content={description} key="description" />
+                <meta property="og:title" content={title} key="og:title" />
+                <meta property="og:description" content={description} key="og:description" />
+                <meta property="og:type" content="website" key="og:type" />
+                <meta property="og:url" content={pageUrl} key="og:url" />
+                <meta property="og:image" content={ogUrl} key="og:image" />
+                <meta property="og:image:secure_url" content={ogUrl} key="og:image:secure_url" />
+                <meta property="og:image:alt" content="AdaMatic — Automate your Cardano payments" key="og:image:alt" />
+                <meta property="og:image:width" content="1200" key="og:image:width" />
+                <meta property="og:image:height" content="630" key="og:image:height" />
+                <meta property="og:image:type" content="image/png" key="og:image:type" />
+                <meta name="twitter:card" content="summary_large_image" key="twitter:card" />
+                <meta name="twitter:title" content={title} key="twitter:title" />
+                <meta name="twitter:description" content={description} key="twitter:description" />
+                <meta name="twitter:image" content={ogUrl} key="twitter:image" />
+                <meta name="twitter:image:alt" content="AdaMatic — Automate your Cardano payments" key="twitter:image:alt" />
+            </Head>
+            <Box
             sx={(theme) => ({
                 width: "100%",
                 backgroundRepeat: "no-repeat",
@@ -522,12 +561,17 @@ export default function Home() {
                         spacing={{ xs: 2.5, md: 3 }}
                         sx={{ width: "100%" }}
                         alignItems="stretch"
+                        justifyContent="center"
                     >
                         {COMMUNITY_QUOTES.map((q) => (
                             <Box
                                 key={q.author}
                                 sx={{
+                                    // Cap width so a single quote doesn't
+                                    // sprawl across the section. Grows up
+                                    // to ~560px then centres in its track.
                                     flex: 1,
+                                    maxWidth: 560,
                                     display: "flex",
                                     flexDirection: "column",
                                     gap: 2,
@@ -559,5 +603,6 @@ export default function Home() {
                 </Stack>
             </Stack>
         </Box>
+        </>
     );
 }

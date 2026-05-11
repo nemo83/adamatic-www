@@ -6,7 +6,9 @@
   "nav": {
     "setup": "Configurar",
     "myPulls": "Mis retiros",
-    "faq": "Preguntas"
+    "faq": "Preguntas",
+    "menu": "Menú",
+    "language": "Idioma"
   },
   "common": {
     "cancel": "Cancelar",
@@ -88,7 +90,25 @@
     "hosky": {
       "title": "Retiros automáticos de HOSKY",
       "body": "Cobra recompensas HOSKY de tu delegación a un Rugpool según un calendario.",
-      "cta": "Empezar"
+      "cta": "Empezar",
+      "features": {
+        "schedule": {
+          "title": "Según tu calendario",
+          "body": "Elige la cadencia; AdaMatic se encarga del resto."
+        },
+        "security": {
+          "title": "No custodial",
+          "body": "Tus llaves nunca salen del wallet."
+        },
+        "fees": {
+          "title": "Comisiones bajas",
+          "body": "El auto-pull más barato en Cardano — comisión mostrada arriba."
+        },
+        "renew": {
+          "title": "Hasta que canceles",
+          "body": "Se renueva con tu depósito; cancela cuando quieras."
+        }
+      }
     },
     "generic": {
       "title": "Pagos recurrentes en ADA",

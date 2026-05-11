@@ -6,7 +6,9 @@
   "nav": {
     "setup": "設定",
     "myPulls": "マイ自動引き出し",
-    "faq": "よくある質問"
+    "faq": "よくある質問",
+    "menu": "メニュー",
+    "language": "言語"
   },
   "common": {
     "cancel": "キャンセル",
@@ -88,7 +90,25 @@
     "hosky": {
       "title": "HOSKY 自動引き出し",
       "body": "Rugpool への委任から HOSKY 報酬をスケジュールに沿って回収します。",
-      "cta": "始める"
+      "cta": "始める",
+      "features": {
+        "schedule": {
+          "title": "あなたのスケジュールで",
+          "body": "頻度を選ぶだけ。あとは AdaMatic が処理します。"
+        },
+        "security": {
+          "title": "ノンカストディアル",
+          "body": "鍵はウォレットから出ません。"
+        },
+        "fees": {
+          "title": "低コスト",
+          "body": "Cardano で最も安価な自動引き出し — 手数料は上に表示されています。"
+        },
+        "renew": {
+          "title": "解約まで継続",
+          "body": "デポジットから自動更新。いつでも解約できます。"
+        }
+      }
     },
     "generic": {
       "title": "ADA の定期支払い",

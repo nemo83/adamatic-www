@@ -6,7 +6,9 @@
   "nav": {
     "setup": "Set up",
     "myPulls": "My auto-pulls",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "menu": "Menu",
+    "language": "Language"
   },
   "common": {
     "cancel": "Cancel",
@@ -88,7 +90,25 @@
     "hosky": {
       "title": "HOSKY auto-pulls",
       "body": "Collect HOSKY rewards from your Rugpool delegation on a schedule.",
-      "cta": "Start"
+      "cta": "Start",
+      "features": {
+        "schedule": {
+          "title": "On your schedule",
+          "body": "Pick the cadence; AdaMatic handles the rest."
+        },
+        "security": {
+          "title": "Non-custodial",
+          "body": "Your keys never leave the wallet."
+        },
+        "fees": {
+          "title": "Low fees",
+          "body": "Cardano's cheapest auto-pull — operator fee shown above."
+        },
+        "renew": {
+          "title": "Until you cancel",
+          "body": "Auto-renews from your deposit; cancel any time."
+        }
+      }
     },
     "generic": {
       "title": "Recurring ADA payments",

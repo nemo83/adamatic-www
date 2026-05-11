@@ -3,6 +3,7 @@
  */
 import React, { useState } from "react";
 import {
+    Box,
     Button,
     Menu,
     MenuItem,
@@ -38,14 +39,25 @@ export function LocaleSwitcher() {
             <Button
                 color="inherit"
                 onClick={open}
-                startIcon={<LanguageIcon fontSize="small" />}
+                aria-label={LOCALE_LABELS[locale]}
+                // On xs the toolbar is tight — show the globe icon only so
+                // the wallet button keeps its room. Label returns on sm+.
+                startIcon={
+                    <LanguageIcon
+                        fontSize="small"
+                        sx={{ mr: { xs: "-4px", sm: 0 } }}
+                    />
+                }
                 sx={{
                     textTransform: "none",
                     fontWeight: 500,
                     minWidth: 0,
+                    px: { xs: 1, sm: 1.5 },
                 }}
             >
-                {LOCALE_LABELS[locale]}
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                    {LOCALE_LABELS[locale]}
+                </Box>
             </Button>
             <Menu anchorEl={anchor} open={Boolean(anchor)} onClose={close}>
                 {SUPPORTED_LOCALES.map((l) => (

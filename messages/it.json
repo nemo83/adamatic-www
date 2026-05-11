@@ -6,7 +6,9 @@
   "nav": {
     "setup": "Imposta",
     "myPulls": "I miei prelievi",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "menu": "Menu",
+    "language": "Lingua"
   },
   "common": {
     "cancel": "Annulla",
@@ -88,7 +90,25 @@
     "hosky": {
       "title": "Prelievi automatici HOSKY",
       "body": "Raccogli le ricompense HOSKY dalla tua delega a un Rugpool secondo un calendario.",
-      "cta": "Inizia"
+      "cta": "Inizia",
+      "features": {
+        "schedule": {
+          "title": "Sul tuo calendario",
+          "body": "Scegli la cadenza; AdaMatic fa il resto."
+        },
+        "security": {
+          "title": "Non custodial",
+          "body": "Le tue chiavi non lasciano mai il wallet."
+        },
+        "fees": {
+          "title": "Commissioni basse",
+          "body": "Il prelievo automatico più economico su Cardano — commissione mostrata sopra."
+        },
+        "renew": {
+          "title": "Finché non annulli",
+          "body": "Si rinnova dal tuo deposito; annulla quando vuoi."
+        }
+      }
     },
     "generic": {
       "title": "Pagamenti ADA ricorrenti",

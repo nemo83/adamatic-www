@@ -5,6 +5,7 @@
 import React, { useState } from "react";
 import {
     Avatar,
+    Box,
     Button,
     CircularProgress,
     Dialog,
@@ -66,11 +67,14 @@ export function WalletButton() {
         <>
             <Button
                 variant="contained"
+                aria-label={t("wallet.connect")}
                 startIcon={
                     connecting ? (
                         <CircularProgress size={16} color="inherit" />
                     ) : (
-                        <AccountBalanceWalletIcon />
+                        // Collapse the label-icon gap on xs since the
+                        // label itself is hidden there.
+                        <AccountBalanceWalletIcon sx={{ mr: { xs: "-4px", sm: 0 } }} />
                     )
                 }
                 onClick={() => setOpen(true)}
@@ -79,9 +83,13 @@ export function WalletButton() {
                     borderRadius: "12px",
                     background:
                         "linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)",
+                    minWidth: 0,
+                    px: { xs: 1.25, sm: 2 },
                 }}
             >
-                {t("wallet.connect")}
+                <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                    {t("wallet.connect")}
+                </Box>
             </Button>
             <Dialog open={open} onClose={() => setOpen(false)} maxWidth="xs" fullWidth>
                 <DialogTitle>{t("wallet.pickerTitle")}</DialogTitle>

@@ -32,14 +32,12 @@ import {
     Card,
     CardContent,
     Chip,
-    Container,
-    Divider
+    Divider,
 } from "@mui/material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SecurityIcon from '@mui/icons-material/Security';
 import SavingsIcon from '@mui/icons-material/Savings';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 export default function SetupPage(props: {
     isValidNetwork: boolean,
@@ -205,6 +203,62 @@ export default function SetupPage(props: {
                 >
 
                     {MAINTENANCE_MODE && <Alert severity="warning" sx={{ my: 2 }}>{t("setup.maintenance")}</Alert>}
+
+                    {mode === "hosky" && (
+                        <Card
+                            elevation={0}
+                            sx={{
+                                mb: 2.5,
+                                borderRadius: 3,
+                                border: "1px solid",
+                                borderColor: "rgba(33,150,243,0.25)",
+                                background:
+                                    "linear-gradient(135deg, rgba(0,51,173,0.04) 0%, rgba(33,150,243,0.06) 55%, rgba(33,203,243,0.06) 100%)",
+                            }}
+                        >
+                            <CardContent sx={{ p: { xs: 2.5, sm: 3 }, "&:last-child": { pb: { xs: 2.5, sm: 3 } } }}>
+                                <Chip
+                                    label={t("landing.hosky.title")}
+                                    size="small"
+                                    sx={{
+                                        fontWeight: 700,
+                                        letterSpacing: "0.04em",
+                                        color: "#0033AD",
+                                        bgcolor: "rgba(33,150,243,0.10)",
+                                        border: "1px solid rgba(33,150,243,0.25)",
+                                    }}
+                                />
+                                <Divider sx={{ mt: 2, mb: 2.25 }} />
+                                <Box
+                                    sx={{
+                                        display: "grid",
+                                        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                                        rowGap: 2,
+                                        columnGap: 3,
+                                    }}
+                                >
+                                    {[
+                                        { Icon: AccessTimeIcon, key: "schedule" },
+                                        { Icon: SecurityIcon, key: "security" },
+                                        { Icon: SavingsIcon, key: "fees" },
+                                        { Icon: AutorenewIcon, key: "renew" },
+                                    ].map(({ Icon, key }) => (
+                                        <Stack key={key} direction="row" spacing={1.5} alignItems="flex-start">
+                                            <Icon sx={{ color: "primary.main", fontSize: 22, mt: "2px", flexShrink: 0 }} />
+                                            <Box sx={{ minWidth: 0 }}>
+                                                <Typography sx={{ fontWeight: 700, fontSize: "0.95rem", letterSpacing: "-0.01em" }}>
+                                                    {t(`landing.hosky.features.${key}.title`)}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25, lineHeight: 1.4 }}>
+                                                    {t(`landing.hosky.features.${key}.body`)}
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                    ))}
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     <LimitsStrip
                         protocolFeeAda={

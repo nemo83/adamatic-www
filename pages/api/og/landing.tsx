@@ -1,16 +1,13 @@
 /**
- * Static Open Graph image for /setup/hosky.
+ * Static Open Graph image for the landing page (`/`).
  *
- * 1200×630 PNG advertising the HOSKY auto-pull flow. The HOSKY doggo
- * (public/img/hosky-doggo.png) is the visual hero; the AdaMatic badge is
- * the secondary mark in the top-left.
- *
- * Satori (the engine behind next/og) only renders glyphs present in its
- * default font fallback, so this route avoids decorative Unicode (◆ ☞ ⟲)
- * and uses plain ASCII + the basic `→` arrow.
+ * 1200×630 PNG advertising the product as a whole rather than the HOSKY
+ * surface specifically. Used by the per-page `<Head>` in `pages/index.tsx`
+ * so the most-shared URL (the bare domain) gets a pitch card instead of
+ * falling back to the generic `og-image-1200x630.png`.
  *
  * Hits this route directly to debug:
- *   /api/og/setup/hosky
+ *   /api/og/landing
  */
 import { ImageResponse } from "next/og";
 
@@ -18,7 +15,6 @@ export const config = {
     runtime: "edge",
 };
 
-// Palette — pulled from components/Logo.tsx for visual continuity.
 const NAVY_DEEP = "#061226";
 const CARDANO_BLUE = "#0033AD";
 const SKY_BLUE = "#2196F3";
@@ -30,8 +26,6 @@ const HAIRLINE = "rgba(255,255,255,0.18)";
 export default async function handler(req: Request) {
     const url = new URL(req.url);
     const displayHost = url.host;
-    // Absolute URL for the doggo asset — Satori fetches it at render time.
-    const doggoUrl = `${url.protocol}//${url.host}/img/hosky-doggo.png`;
 
     return new ImageResponse(
         (
@@ -53,7 +47,7 @@ export default async function handler(req: Request) {
                     position: "relative",
                 }}
             >
-                {/* Top rule — AdaMatic wordmark left */}
+                {/* Top rule — Adamatic wordmark left */}
                 <div
                     style={{
                         display: "flex",
@@ -63,10 +57,6 @@ export default async function handler(req: Request) {
                     }}
                 >
                     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                        {/* Brand badge — gradient circle with the MUI
-                             Autorenew double-arrow mark (filled path, since
-                             Satori handles solid-fill SVG reliably whereas
-                             stroked SVG renders inconsistently). */}
                         <div
                             style={{
                                 width: 56,
@@ -100,98 +90,57 @@ export default async function handler(req: Request) {
                     </div>
                 </div>
 
-                {/* Body: text on the left, doggo on the right */}
+                {/* Body */}
                 <div
                     style={{
                         display: "flex",
+                        flexDirection: "column",
                         flex: 1,
                         marginTop: 36,
-                        gap: 48,
-                        alignItems: "center",
+                        justifyContent: "center",
+                        maxWidth: 1000,
                     }}
                 >
-                    {/* Text column */}
                     <div
                         style={{
                             display: "flex",
-                            flexDirection: "column",
-                            flex: 1,
-                            maxWidth: 720,
+                            fontSize: 22,
+                            fontWeight: 700,
+                            letterSpacing: "0.24em",
+                            textTransform: "uppercase",
+                            color: CYAN,
                         }}
                     >
-                        <div
-                            style={{
-                                display: "flex",
-                                fontSize: 22,
-                                fontWeight: 700,
-                                letterSpacing: "0.24em",
-                                textTransform: "uppercase",
-                                color: CYAN,
-                            }}
-                        >
-                            HOSKY · auto-pull
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                marginTop: 16,
-                                fontSize: 80,
-                                fontWeight: 800,
-                                letterSpacing: "-0.035em",
-                                lineHeight: 1.04,
-                            }}
-                        >
-                            Collect your HOSKY on a schedule.
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                marginTop: 24,
-                                fontSize: 26,
-                                fontWeight: 400,
-                                lineHeight: 1.4,
-                                color: TEXT_MUTED,
-                            }}
-                        >
-                            Delegate to a Hosky Rugpool, set the cadence, and AdaMatic auto-pulls your rewards each epoch — like a vending machine for HOSKY.
-                        </div>
+                        The cheapest auto-pull on Cardano
                     </div>
-
-                    {/* Doggo column — HOSKY icon as the visual hero. Sits in a
-                         soft white halo so the colourful icon pops against the
-                         deep-navy background. */}
                     <div
                         style={{
                             display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: 260,
-                            height: 260,
-                            borderRadius: 999,
-                            background: "rgba(255,255,255,0.10)",
-                            border: `1px solid ${HAIRLINE}`,
-                            boxShadow: `0 16px 40px -16px rgba(255,209,102,0.45)`,
-                            flexShrink: 0,
+                            marginTop: 18,
+                            fontSize: 84,
+                            fontWeight: 800,
+                            letterSpacing: "-0.035em",
+                            lineHeight: 1.04,
                         }}
                     >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                            src={doggoUrl}
-                            alt="HOSKY"
-                            width={200}
-                            height={200}
-                            style={{
-                                width: 200,
-                                height: 200,
-                                borderRadius: 999,
-                                // Smooth the 64x64 source upscale.
-                                imageRendering: "auto",
-                            }}
-                        />
+                        Automate your Cardano payments.
+                    </div>
+                    <div
+                        style={{
+                            display: "flex",
+                            marginTop: 24,
+                            fontSize: 28,
+                            fontWeight: 400,
+                            lineHeight: 1.4,
+                            color: TEXT_MUTED,
+                            maxWidth: 900,
+                        }}
+                    >
+                        HOSKY auto-pulls today. Recurring ADA and fiat-pegged schedules next.
                     </div>
                 </div>
 
-                {/* Bottom rule — CTA URL + tagline */}
+                {/* Bottom rule — host + CTA */}
                 <div
                     style={{
                         display: "flex",
@@ -205,18 +154,15 @@ export default async function handler(req: Request) {
                     }}
                 >
                     <span style={{ display: "flex", color: TEXT_PRIMARY, fontWeight: 700 }}>
-                        {displayHost}/setup/hosky
+                        {displayHost}
                     </span>
-                    <span style={{ display: "flex" }}>Start in 30 seconds →</span>
+                    <span style={{ display: "flex" }}>Start with HOSKY →</span>
                 </div>
             </div>
         ),
         {
             width: 1200,
             height: 630,
-            // Shorten the default next/og 1y immutable cache so card design
-            // edits propagate without needing ?v=N busts. CDN holds for 10
-            // min; serves stale up to 24h while revalidating.
             headers: {
                 "Cache-Control":
                     "public, max-age=0, s-maxage=600, stale-while-revalidate=86400",
