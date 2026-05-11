@@ -66,6 +66,10 @@ const COMMUNITY_QUOTES: { quote: string; author: string }[] = [
         quote: "Before Adamatic, I couldn't go on vacation like Vegas, without risking losing the HW wallet in the ocean or just miss the rewards.",
         author: "@ghosttsohg1",
     },
+    {
+        quote: "Adamatic is a quick and convenient way to pull hosky rewards for multiple wallets. You don't have to pay attention to epoch changeover schedule and the Hosky rewards roll in every 5 days. Perfect for lazy idjiots.",
+        author: "@cerfcerf",
+    },
 ];
 
 const SECTION_MAX_WIDTH = 1000;
