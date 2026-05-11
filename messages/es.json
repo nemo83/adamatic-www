@@ -1,0 +1,422 @@
+{
+  "app": {
+    "title": "AdaMatic",
+    "tagline": "Pagos recurrentes automatizados en Cardano"
+  },
+  "nav": {
+    "setup": "Configurar",
+    "myPulls": "Mis retiros",
+    "faq": "Preguntas",
+    "menu": "Menú",
+    "language": "Idioma"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "add": "Añadir",
+    "gotIt": "Entendido",
+    "close": "Cerrar",
+    "delete": "Eliminar",
+    "ada": "ADA",
+    "lovelace": "Lovelace"
+  },
+  "wallet": {
+    "connect": "Conectar billetera",
+    "connected": "Billetera conectada",
+    "networkMismatch": "Red equivocada — conéctate a {network}",
+    "noExtensions": "No se detectaron billeteras CIP-30. Instala Eternl, Lace, Nami, Typhon u otra extensión de billetera de Cardano y recarga la página.",
+    "pickerTitle": "Conectar una billetera de Cardano",
+    "connectFirst": "Conecta una billetera primero."
+  },
+  "tx": {
+    "submitted": "Transacción enviada: {hash}",
+    "failed": "Falló la transacción",
+    "userCancelled": "Firma de la transacción rechazada.",
+    "scriptsNotLoaded": "El manifiesto de scripts aún no se ha cargado. Por favor, inténtalo de nuevo en un momento.",
+    "buildFailed": "No se pudo construir la transacción. Contacta con soporte si esto sigue ocurriendo."
+  },
+  "locale": {
+    "switcher": "Idioma",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "ja": "日本語"
+  },
+  "tour": {
+    "welcome": "Te damos la bienvenida a AdaMatic. Configura retiros automáticos de HOSKY en unos pocos pasos. Te guiamos.",
+    "wallet": "Conecta una billetera. Sirve cualquier billetera Cardano CIP-30. Recomendamos una pequeña hot wallet aparte para AdaMatic — tus fondos principales quedan a salvo.",
+    "addresses": "Elige la(s) billetera(s) para las que quieres recolectar HOSKY. Por defecto es tu billetera conectada — el caso común. Puedes añadir más direcciones si quieres retirar para otras billeteras que controles.",
+    "delegate": "Si tu billetera aún no está delegada a un rugpool de Hosky, verás esta llamada a la acción. Haz clic para elegir un pool y delegar — necesario para empezar a ganar HOSKY.",
+    "maxFees": "Comisión máxima por retiro. Limita cuánto puede gastar cada retiro en comisiones de AdaMatic + de red. El sobrante vuelve a tu billetera.",
+    "firstEpoch": "Primera época de retiro. Cuándo ocurre el primer retiro. Por defecto la próxima época.",
+    "lastEpoch": "Última época de retiro. Cuándo termina el calendario. Opcional — déjalo vacío y se ejecutará hasta agotar el depósito.",
+    "numPulls": "Número de retiros. Cada retiro cuesta la comisión del protocolo + comisiones de transacción.",
+    "frequency": "Cada cuánto. Número de épocas entre retiros. Las recompensas HOSKY se acumulan — las billeteras pequeñas deberían retirar con menos frecuencia (cada 2–3 épocas) para ahorrar en comisiones. Las grandes pueden retirar cada época."
+  },
+  "limits": {
+    "protocolFee": "Comisión de protocolo: {ada} ADA",
+    "protocolFeeLoading": "Comisión de protocolo: —",
+    "tooltips": {
+      "protocolFee": "Comisión del operador por retiro, pagada a la infraestructura de AdaMatic."
+    }
+  },
+  "setup": {
+    "maintenance": "AdaMatic está en modo mantenimiento. Inténtalo más tarde.",
+    "takeTour": "Hacer el tour",
+    "create": "Crear pago recurrente",
+    "myAutoPulls": "Mis retiros automáticos",
+    "viewMyAutoPulls": "Ver mis retiros automáticos",
+    "newAutoPull": "Nuevo retiro",
+    "refreshTooltip": "Actualizar pagos",
+    "refreshAria": "Recargar retiros automáticos",
+    "generic": {
+      "comingSoon": {
+        "title": "Próximamente",
+        "body": "Los pagos recurrentes genéricos son lo siguiente en la hoja de ruta. Por ahora, configura un retiro automático de HOSKY.",
+        "cta": "Configurar un retiro de HOSKY",
+        "back": "Volver al inicio"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "El auto-pull más barato en Cardano",
+      "title": "Automatiza tus pagos en Cardano.",
+      "subtitle": "Retiros automáticos de HOSKY hoy. Pagos recurrentes en ADA y montos vinculados a fiat, próximamente.",
+      "primaryCta": "Empezar con HOSKY",
+      "secondaryCta": "Cómo funciona"
+    },
+    "chooserTitle": "Configura un pago",
+    "hosky": {
+      "title": "Retiros automáticos de HOSKY",
+      "body": "Cobra recompensas HOSKY de tu delegación a un Rugpool según un calendario.",
+      "cta": "Empezar",
+      "features": {
+        "schedule": {
+          "title": "Según tu calendario",
+          "body": "Elige la cadencia; AdaMatic se encarga del resto."
+        },
+        "security": {
+          "title": "No custodial",
+          "body": "Tus llaves nunca salen del wallet."
+        },
+        "fees": {
+          "title": "Comisiones bajas",
+          "body": "El auto-pull más barato en Cardano — comisión mostrada arriba."
+        },
+        "renew": {
+          "title": "Hasta que canceles",
+          "body": "Se renueva con tu depósito; cancela cuando quieras."
+        }
+      }
+    },
+    "generic": {
+      "title": "Pagos recurrentes en ADA",
+      "body": "Envía ADA a cualquier dirección según un calendario.",
+      "comingSoon": "Próximamente"
+    },
+    "howItWorks": {
+      "title": "Cómo funciona",
+      "step1Title": "Conecta tu billetera",
+      "step1Body": "Cualquier billetera Cardano CIP-30. No custodial — tus claves son tuyas.",
+      "step2Title": "Configura el calendario",
+      "step2Body": "Elige la billetera para la que cobrar, la cadencia y tu comisión máxima.",
+      "step3Title": "Los retiros se ejecutan",
+      "step3Body": "Los contratos inteligentes se ejecutan en cadena, a tiempo. Sigue todo en Mis retiros automáticos."
+    },
+    "stats": {
+      "title": "En vivo en Cardano",
+      "tvl": "ADA en retiros automáticos",
+      "scheduled": "Retiros automáticos programados",
+      "executed": "Pagos ejecutados"
+    },
+    "community": {
+      "title": "Desde la comunidad"
+    }
+  },
+  "form": {
+    "addressesTooltip": "Billeteras delegadas a Rugpools Hosky — son las que ganan recompensas HOSKY",
+    "addressesLabel": "Direcciones de pago o de staking delegadas a pools Hosky",
+    "addressLabel": "Dirección {n}",
+    "addressInvalid": "Formato de dirección Cardano inválido",
+    "addressUnsupported": "Tipo de dirección no admitido",
+    "addressNotDelegated": "Dirección no delegada a ningún pool Hosky",
+    "removeAddress": "Quitar esta dirección",
+    "addAddress": "Añadir dirección",
+    "addAddressTooltip": "Añadir otra dirección",
+    "rowDelegateMessage": "No delegada a un pool Hosky — delega para empezar a ganar HOSKY cada época.",
+    "rowDelegateCta": "Delegar esta billetera →",
+    "maxFeesLabel": "Comisión máxima",
+    "maxFeesTooltip": "Comisión máxima por retiro — cubre la comisión del operador AdaMatic + las comisiones de red de Cardano",
+    "firstEpochLabel": "Primera época",
+    "firstEpochTooltip": "Época del primer retiro de recompensas",
+    "startTimeLabel": "Hora de inicio",
+    "startTimeTooltip": "Cuándo se realiza el primer pago",
+    "lastEpochLabel": "Última época (opcional)",
+    "lastEpochTooltip": "Época del último retiro de recompensas",
+    "endTimeLabel": "Hora de fin (opcional)",
+    "endTimeTooltip": "Cuándo se realiza el último pago. Déjalo vacío para ejecutar hasta agotar el depósito.",
+    "numPullsLabel": "Número de retiros",
+    "numPullsTooltip": "Número total de retiros HOSKY a programar",
+    "maxDelayLabel": "Retraso máximo de pago (horas)",
+    "maxDelayTooltip": "Retraso máximo (en horas) antes de que un retiro fallido se considere fallido",
+    "intervalLabel": "Intervalo de pago (épocas)",
+    "intervalTooltip": "Número de épocas entre pagos",
+    "addAsset": "Añadir activo",
+    "addAssetTooltip": "Activos a enviar en cada pago",
+    "asset": {
+      "title": "Añadir activos",
+      "body": "Añade el ID de policy, el nombre del activo y la cantidad a pagar en cada pago.",
+      "policyId": "ID de policy",
+      "assetName": "Nombre del activo",
+      "amount": "Cantidad",
+      "unitToggleAda": "Ada",
+      "unitToggleLovelace": "Lovelace"
+    }
+  },
+  "submit": {
+    "acceptRisk": "Entiendo los riesgos de usar esta herramienta beta",
+    "acceptFees": "Acepto las comisiones de transacción y de protocolo necesarias para configurar estos pagos automatizados",
+    "insufficientFunds": "No hay suficiente ADA en la billetera conectada — faltan unos {ada} ADA. Recarga la billetera o reduce el depósito antes de enviar."
+  },
+  "delegate": {
+    "modal": {
+      "epoch": "Época {n}",
+      "channel": "Rugpools Hosky",
+      "eyebrow": "◇ Pools de pedigrí, seleccionados",
+      "titleA": "Stake.",
+      "titleItalic": "Gana HOSKY.",
+      "titleC": "Repite.",
+      "deckPart1": "Delega tu ADA a un rugpool Hosky y empieza a ganar ",
+      "deckHosky": "HOSKY cada época",
+      "deckPart2": " además de las recompensas normales por staking de ADA — el mismo ADA, dos rendimientos, y de paso ayudas a ",
+      "deckDecentralise": "descentralizar Cardano",
+      "deckPart3": ". Una vez delegado, configura un retiro automático de AdaMatic: funciona como una máquina expendedora — entran pequeños pagos de ADA, salen recompensas HOSKY.",
+      "featuredHosky": "Best in Show",
+      "featuredEasy1": "Compañero de pedigrí",
+      "taglineHosky": "Stake con el doggo en persona.",
+      "taglineEasy1": "El equipo que construyó esto — es lo justo.",
+      "rateUnit": "HOSKY · por ADA · por época",
+      "rateShortPerAda": "/ADA",
+      "otherPools": "❀ Otros pools de pedigrí ❀",
+      "saturationChip": "{pct} sat.",
+      "feeChip": "{pct} comisión",
+      "delegatorsChip": "{n} delegadores",
+      "nearSaturation": "⚠ Cerca de la saturación",
+      "step1": "① Delegar",
+      "step2": "② Configurar retiro auto.",
+      "step3": "③ Recoger HOSKY",
+      "fineprint": "Tu ADA nunca sale de tu billetera. Las recompensas de staking continúan con normalidad.",
+      "delegateButton": "Delegar",
+      "rosetteBest": "BEST",
+      "rosetteBuilt": "BUILT"
+    },
+    "differentWallet": {
+      "title": "Billetera distinta",
+      "body": "La dirección que quieres delegar no la controla tu billetera actualmente conectada.",
+      "addressToDelegate": "Dirección a delegar",
+      "currentlyConnected": "Conectada actualmente",
+      "instructions": "Abre tu extensión de billetera y cambia a la cuenta dueña de esta dirección. AdaMatic detectará el cambio automáticamente — luego pulsa <strong>Delegar</strong> de nuevo."
+    },
+    "couldntReadAddress": "No se pudo leer la dirección — inténtalo de nuevo.",
+    "walletSwitched": "Billetera cambiada — pulsa Delegar de nuevo para continuar.",
+    "building": "Construyendo la transacción de delegación…",
+    "submitted": "Delegación enviada ({hash}) — esperando confirmación…",
+    "txTimeout": "La transacción de delegación no se confirmó en 5 minutos. Comprueba Cardanoscan y recarga la página.",
+    "confirmedChecking": "Delegación confirmada on-chain — comprobando el registro del pool…",
+    "activated": "🎉 Estás delegado a un pool Hosky — ¡retiros automáticos desbloqueados!",
+    "notYetActive": "Delegación confirmada, pero aún no activa en un pool Hosky. Cardano aplica el stake en los límites de época (normalmente 1–2 épocas). Vuelve entonces para configurar los retiros automáticos.",
+    "failed": "Falló la delegación: {error}"
+  },
+  "payments": {
+    "connectHint": "Conecta una billetera para ver tus retiros automáticos.",
+    "networkHint": "Cambia tu billetera a la red configurada para ver tus retiros automáticos.",
+    "noneSelected": "Sin pagos seleccionados",
+    "selectedCount": "{n} pago(s) seleccionado(s)",
+    "cancelSelected": "Cancelar pagos seleccionados",
+    "headers": {
+      "view": "Ver",
+      "stakingAddress": "Dirección de staking",
+      "nextRun": "Siguiente retiro",
+      "balance": "Saldo",
+      "status": "Estado",
+      "cancel": "Cancelar"
+    },
+    "showDetails": "Mostrar detalles del pago",
+    "deleteAria": "Eliminar",
+    "tableAria": "Tabla de pagos",
+    "status": {
+      "scheduled": "Programado",
+      "completed": "Completado",
+      "withdrawn": "Retirado",
+      "cancelled": "Cancelado",
+      "insufficientFunds": "Fondos insuficientes"
+    },
+    "toast": {
+      "txSubmitted": "Transacción enviada: {hash}",
+      "paymentCancelled": "Pago cancelado: {hash}",
+      "bulkCancelled": "{n} pago(s) cancelado(s)",
+      "cancelError": "Error al cancelar pagos: {error}",
+      "stakeAddressCopied": "Dirección de staking copiada"
+    },
+    "showing": "Mostrando {start}–{end} de {total} pagos",
+    "empty": {
+      "title": "Aún no hay retiros automáticos",
+      "body": "Configura tu primer retiro recurrente de HOSKY y aparecerá aquí.",
+      "cta": "Configurar un retiro automático"
+    },
+    "confirm": {
+      "title": "¿Cancelar este retiro automático?",
+      "titleBulk": "¿Cancelar {n} retiros automáticos?",
+      "body": "Esto detiene el calendario y devuelve unos {ada} ADA a tu billetera (menos una pequeña comisión de red).",
+      "bodyBulk": "Esto detiene {n} calendarios y devuelve unos {ada} ADA a tu billetera (menos una pequeña comisión de red).",
+      "confirm": "Sí, cancelar",
+      "dismiss": "Mantenerlos"
+    }
+  },
+  "receipt": {
+    "title": "Resumen del pago",
+    "payeeAddress": "Dirección del beneficiario",
+    "walletAddresses": "Direcciones de billetera ({n})",
+    "amountPerPayment": "Importe por pago",
+    "numPayments": "Número de pagos",
+    "protocolFeesMax": "Comisiones de protocolo + red (máx.)",
+    "totalPaymentAmount": "Importe total de pagos",
+    "totalProtocolFeesMax": "Comisiones totales de protocolo + red (máx.)",
+    "totalToDeposit": "Importe total a depositar",
+    "addressCopied": "Dirección copiada al portapapeles",
+    "copyFailed": "Error al copiar",
+    "copyAddress": "Copiar dirección"
+  },
+  "paymentDetails": {
+    "title": "Detalles del retiro automático Hosky",
+    "closeAria": "cerrar",
+    "from": "Desde (dirección de staking)",
+    "to": "Para",
+    "amount": "Importe",
+    "initialDeposit": "Depósito inicial",
+    "maxFee": "Comisión máxima",
+    "epochStart": "Época inicial",
+    "epochEnd": "Época final",
+    "numPulls": "Número de retiros",
+    "epochInterval": "Intervalo de épocas",
+    "na": "N/D",
+    "historyTitle": "Historial de pagos",
+    "tableAria": "Tabla de pagos",
+    "table": {
+      "dateTime": "Fecha y hora",
+      "event": "Evento de pago",
+      "txHash": "Hash de tx",
+      "balance": "Saldo"
+    },
+    "event": {
+      "created": "Pago creado",
+      "executed": "Pago ejecutado",
+      "withdrawn": "Pago retirado",
+      "completed": "Pago completado",
+      "scheduled": "Pago programado"
+    },
+    "close": "Cerrar"
+  },
+  "footer": {
+    "tagline": "Pagos recurrentes automatizados en la blockchain Cardano. Perfecto para transacciones regulares como la recolección de tokens Hosky y otros pagos programados.",
+    "navigation": "Navegación",
+    "automaticPayments": "Pagos automáticos",
+    "githubRepository": "Repositorio GitHub",
+    "resources": "Recursos",
+    "cardanoExplorer": "Explorador Cardano",
+    "cardanoOrg": "Cardano.org",
+    "copyright": "© {year} AdaMatic. Construido en Cardano.",
+    "sponsoredWith": "Patrocinado con",
+    "sponsoredBy": "por"
+  },
+  "invite": {
+    "eyebrow": "Invitación al pool",
+    "statsTitle": "Este pool ahora mismo",
+    "hoskyPerAdaPerEpoch": "HOSKY por ADA · por época",
+    "saturationChip": "{pct}% saturado",
+    "feeChip": "{pct}% de comisión",
+    "delegatorsChip": "{n} delegadores",
+    "nearSaturation": "Atención: este pool se acerca a la saturación. Los rendimientos disminuyen por encima del ~85 %.",
+    "earningsTitle": "¿Cuánto HOSKY podrías ganar?",
+    "connectPrompt": "Conecta tu billetera para estimar tus ganancias potenciales de HOSKY en {ticker}.",
+    "calculating": "Calculando tus ganancias potenciales…",
+    "zeroBalance": "Aún no hay ADA en esta cuenta. Envíale algo y recarga la página.",
+    "youHold": "Tienes",
+    "perEpoch": "Por época",
+    "perMonth": "Por mes",
+    "perYear": "Por año",
+    "estimateLine": "Cerca de {usd} al año en recompensas HOSKY gratis — solo por delegar.",
+    "delegateCta": "Delegar a {ticker}",
+    "setupCta": "Configurar retiros automáticos",
+    "disclaimer": "Estimaciones según las tasas de la época actual · HOSKY/USD = {price} (CoinGecko) · las comisiones de retiros automáticos no están incluidas",
+    "notFoundTitle": "Pool no encontrado",
+    "notFoundBody": "No encontramos un pool Hosky curado para «{id}». Revisa el enlace o explora todos los pools desde la página de configuración.",
+    "backHome": "Volver a AdaMatic"
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "subtitle": "Encuentra respuestas a las preguntas más comunes sobre AdaMatic y los pagos automatizados en Cardano",
+    "general": {
+      "title": "Preguntas generales",
+      "q1": {
+        "question": "¿Qué es AdaMatic?",
+        "answer": "AdaMatic es una aplicación descentralizada construida sobre Cardano que permite pagos recurrentes automatizados. Usa contratos inteligentes para ejecutar transacciones programadas sin intervención manual — ideal para pagos regulares como recolección de tokens, suscripciones o cualquier transferencia recurrente."
+      },
+      "q2": {
+        "question": "¿Cómo funciona AdaMatic?",
+        "answer": "AdaMatic usa contratos inteligentes Plutus en la blockchain de Cardano. Depositas fondos en un contrato inteligente con parámetros de pago específicos (importe, frecuencia, destinatario). El sistema ejecuta entonces estos pagos automáticamente según tu calendario sin necesidad de que tu billetera esté conectada."
+      },
+      "q3": {
+        "question": "¿AdaMatic es seguro?",
+        "answer": "Sí, AdaMatic está construido sobre la infraestructura blockchain segura de Cardano usando contratos inteligentes Plutus. Tus fondos están en contratos inteligentes, no en manos de ninguna entidad centralizada. Mantienes el control total y puedes cancelar los pagos en cualquier momento."
+      },
+      "q4": {
+        "question": "¿Cuáles son las comisiones?",
+        "answer": "AdaMatic cobra una pequeña comisión de operador por transacción más las comisiones de red estándar de Cardano. Las comisiones exactas se muestran al configurar un pago. Todas las comisiones son transparentes y se muestran de antemano."
+      }
+    },
+    "hosky": {
+      "title": "Preguntas sobre el token Hosky",
+      "q1": {
+        "question": "¿Necesito usar obligatoriamente la billetera delegada a una Rugpool de Hosky?",
+        "answer": "¡No! Puedes usar cualquier billetera para configurar los pagos. De hecho, la recomendación es usar una billetera caliente pequeña e indicar en «Dirección de pago o staking» la dirección de la billetera para la que quieres cobrar las recompensas."
+      },
+      "q2": {
+        "question": "¿Dónde recibiré mis recompensas Hosky?",
+        "answer": "Recibirás las recompensas Hosky en la billetera para la que las reclamaste. Independientemente de si usaste la billetera delegada o una billetera caliente distinta, las recompensas se envían a la dirección de la billetera delegada."
+      },
+      "q3": {
+        "question": "¿Cuántos retiros automáticos puedo configurar?",
+        "answer": "Puedes configurar tantos retiros automáticos como quieras. Lo recomendable es configurarlos todos desde la misma billetera caliente pequeña, así aparecerán juntos en la página de pagos de AdaMatic."
+      },
+      "q4": {
+        "question": "Tengo una billetera pequeña — ¿cómo hago que valga la pena retirar las recompensas?",
+        "answer": "Las recompensas Hosky se acumulan hasta cierta cantidad. AdaMatic te permite establecer la frecuencia de retiro en términos de épocas. ¡Te recomendamos hacer tus propios cálculos para dar con la frecuencia ideal!"
+      },
+      "q5": {
+        "question": "¿A qué hora se reclaman las recompensas Hosky?",
+        "answer": "Por defecto, AdaMatic está configurado para enviar los pagos de 2 ADA unas 48 horas tras el inicio de la época. Esto da tiempo al mecanismo de recompensas para asentarse y a los usuarios para reclamar manualmente en caso de problemas."
+      }
+    },
+    "tech": {
+      "title": "Preguntas técnicas",
+      "q1": {
+        "question": "¿Qué billeteras son compatibles?",
+        "answer": "AdaMatic es compatible con todas las principales billeteras de Cardano, incluidas Lace, Eternl, Flint, Typhon y cualquier otra billetera compatible con CIP-30. La integración se basa directamente en el estándar CIP-30."
+      },
+      "q2": {
+        "question": "¿Puedo cancelar un pago recurrente?",
+        "answer": "Sí, puedes cancelar cualquier pago recurrente en cualquier momento. Solo ve a tu lista de pagos, encuentra el pago que quieres cancelar y haz clic en cancelar. Cualquier fondo restante se devolverá a tu billetera."
+      },
+      "q3": {
+        "question": "¿Qué pasa si mi pago falla?",
+        "answer": "Si un pago falla (por ejemplo, por fondos insuficientes), el sistema lo marcará como fallido y no reintentará automáticamente. Puedes añadir más fondos al contrato o cancelar y crear un nuevo pago con financiación adecuada."
+      },
+      "q4": {
+        "question": "¿Qué redes admite AdaMatic?",
+        "answer": "AdaMatic actualmente admite la testnet Preprod de Cardano para desarrollo y pruebas. El soporte para mainnet está disponible para uso en producción. Asegúrate de que tu billetera esté conectada a la red correcta."
+      }
+    }
+  }
+}

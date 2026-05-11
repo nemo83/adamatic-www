@@ -1,0 +1,422 @@
+{
+  "app": {
+    "title": "AdaMatic",
+    "tagline": "Paiements récurrents automatisés sur Cardano"
+  },
+  "nav": {
+    "setup": "Configurer",
+    "myPulls": "Mes retraits",
+    "faq": "FAQ",
+    "menu": "Menu",
+    "language": "Langue"
+  },
+  "common": {
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "gotIt": "Compris",
+    "close": "Fermer",
+    "delete": "Supprimer",
+    "ada": "ADA",
+    "lovelace": "Lovelace"
+  },
+  "wallet": {
+    "connect": "Connecter le portefeuille",
+    "connected": "Portefeuille connecté",
+    "networkMismatch": "Mauvais réseau — veuillez vous connecter à {network}",
+    "noExtensions": "Aucun portefeuille CIP-30 détecté. Installez Eternl, Lace, Nami, Typhon, ou une autre extension de portefeuille Cardano puis rechargez la page.",
+    "pickerTitle": "Connecter un portefeuille Cardano",
+    "connectFirst": "Connectez d’abord un portefeuille."
+  },
+  "tx": {
+    "submitted": "Transaction soumise : {hash}",
+    "failed": "Échec de la transaction",
+    "userCancelled": "Signature de la transaction refusée.",
+    "scriptsNotLoaded": "Le manifeste des scripts n’est pas encore chargé. Veuillez réessayer dans un instant.",
+    "buildFailed": "Impossible de construire la transaction. Contactez le support si le problème persiste."
+  },
+  "locale": {
+    "switcher": "Langue",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "ja": "日本語"
+  },
+  "tour": {
+    "welcome": "Bienvenue sur AdaMatic. Configurez vos retraits HOSKY automatisés en quelques étapes — on vous guide.",
+    "wallet": "Connectez un portefeuille. N’importe quel portefeuille Cardano CIP-30 fonctionne. Nous recommandons un petit hot wallet réservé à AdaMatic — vos fonds principaux restent à l’abri.",
+    "addresses": "Choisissez le(s) portefeuille(s) pour lesquels vous voulez collecter des HOSKY. Par défaut c’est votre portefeuille connecté — c’est le cas courant. Vous pouvez ajouter d’autres adresses si vous voulez retirer pour d’autres portefeuilles que vous contrôlez.",
+    "delegate": "Si votre portefeuille n’est pas encore délégué à un rugpool Hosky, ce bouton apparaît. Cliquez pour choisir un pool et déléguer — étape requise pour gagner des HOSKY.",
+    "maxFees": "Frais maximum par retrait. Plafonne ce que chaque retrait peut dépenser en frais AdaMatic + frais réseau. Le surplus revient à votre portefeuille.",
+    "firstEpoch": "Époque du premier retrait. Quand a lieu le premier retrait. Par défaut à l’époque suivante.",
+    "lastEpoch": "Époque du dernier retrait. Quand le programme s’arrête. Optionnel — laissez vide et il tournera jusqu’à épuisement du dépôt.",
+    "numPulls": "Nombre de retraits. Chaque retrait coûte les frais de protocole + frais de transaction.",
+    "frequency": "À quelle fréquence. Nombre d’époques entre les retraits. Les récompenses HOSKY s’accumulent — les petits portefeuilles devraient retirer moins souvent (toutes les 2–3 époques) pour économiser sur les frais. Les gros portefeuilles peuvent retirer à chaque époque."
+  },
+  "limits": {
+    "protocolFee": "Frais de protocole : {ada} ADA",
+    "protocolFeeLoading": "Frais de protocole : —",
+    "tooltips": {
+      "protocolFee": "Frais d’opérateur par retrait, versés à l’infrastructure AdaMatic."
+    }
+  },
+  "setup": {
+    "maintenance": "AdaMatic est actuellement en maintenance. Veuillez réessayer plus tard !",
+    "takeTour": "Visite guidée",
+    "create": "Créer le paiement récurrent",
+    "myAutoPulls": "Mes retraits automatiques",
+    "viewMyAutoPulls": "Voir mes retraits automatiques",
+    "newAutoPull": "Nouveau retrait",
+    "refreshTooltip": "Actualiser les paiements",
+    "refreshAria": "Recharger les retraits automatiques",
+    "generic": {
+      "comingSoon": {
+        "title": "Bientôt disponible",
+        "body": "Les paiements récurrents génériques arrivent bientôt sur la roadmap. Pour l’instant, configurez un retrait automatique HOSKY à la place.",
+        "cta": "Configurer un retrait HOSKY",
+        "back": "Retour à l’accueil"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Le retrait automatique le moins cher sur Cardano",
+      "title": "Automatisez vos paiements Cardano.",
+      "subtitle": "Retraits HOSKY automatiques aujourd’hui. Paiements ADA récurrents et montants indexés sur le fiat à venir.",
+      "primaryCta": "Démarrer avec HOSKY",
+      "secondaryCta": "Comment ça marche"
+    },
+    "chooserTitle": "Configurer un paiement",
+    "hosky": {
+      "title": "Retraits automatiques HOSKY",
+      "body": "Récupérez vos récompenses HOSKY depuis votre délégation Rugpool selon un calendrier.",
+      "cta": "Commencer",
+      "features": {
+        "schedule": {
+          "title": "À ton rythme",
+          "body": "Choisis la cadence ; AdaMatic gère le reste."
+        },
+        "security": {
+          "title": "Non-custodial",
+          "body": "Tes clés ne quittent jamais le wallet."
+        },
+        "fees": {
+          "title": "Frais réduits",
+          "body": "Le retrait automatique le moins cher sur Cardano — frais affichés ci-dessus."
+        },
+        "renew": {
+          "title": "Jusqu'à annulation",
+          "body": "Renouvelé depuis ton dépôt ; annule quand tu veux."
+        }
+      }
+    },
+    "generic": {
+      "title": "Paiements ADA récurrents",
+      "body": "Envoyez de l’ADA à n’importe quelle adresse selon un calendrier.",
+      "comingSoon": "Bientôt disponible"
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "step1Title": "Connectez votre portefeuille",
+      "step1Body": "Tout portefeuille Cardano CIP-30. Non-custodial — vos clés restent les vôtres.",
+      "step2Title": "Définissez le calendrier",
+      "step2Body": "Choisissez le portefeuille à collecter, la cadence et votre plafond de frais.",
+      "step3Title": "Les retraits s’exécutent",
+      "step3Body": "Les contrats intelligents s’exécutent on-chain, à l’heure. À suivre dans Mes retraits automatiques."
+    },
+    "stats": {
+      "title": "En direct sur Cardano",
+      "tvl": "ADA dans les retraits automatiques",
+      "scheduled": "Retraits automatiques planifiés",
+      "executed": "Paiements exécutés"
+    },
+    "community": {
+      "title": "Depuis la communauté"
+    }
+  },
+  "form": {
+    "addressesTooltip": "Portefeuilles délégués à des rugpools Hosky — ceux qui gagnent des récompenses HOSKY",
+    "addressesLabel": "Adresses de paiement ou de staking déléguées à des pools Hosky",
+    "addressLabel": "Adresse {n}",
+    "addressInvalid": "Format d’adresse Cardano invalide",
+    "addressUnsupported": "Type d’adresse non supporté",
+    "addressNotDelegated": "Adresse non déléguée à un pool Hosky",
+    "removeAddress": "Supprimer cette adresse",
+    "addAddress": "Ajouter une adresse",
+    "addAddressTooltip": "Ajouter une autre adresse",
+    "rowDelegateMessage": "Non délégué à un pool Hosky — déléguez pour commencer à gagner des HOSKY à chaque époque.",
+    "rowDelegateCta": "Déléguer ce portefeuille →",
+    "maxFeesLabel": "Frais max",
+    "maxFeesTooltip": "Frais max par retrait — couvre les frais d’opérateur AdaMatic + les frais réseau Cardano",
+    "firstEpochLabel": "Première époque",
+    "firstEpochTooltip": "Époque du premier retrait de récompenses",
+    "startTimeLabel": "Heure de début",
+    "startTimeTooltip": "Quand le premier paiement est effectué",
+    "lastEpochLabel": "Dernière époque (optionnel)",
+    "lastEpochTooltip": "Époque du dernier retrait de récompenses",
+    "endTimeLabel": "Heure de fin (optionnel)",
+    "endTimeTooltip": "Quand le dernier paiement est effectué. Laissez vide pour fonctionner jusqu’à épuisement du dépôt.",
+    "numPullsLabel": "Nombre de retraits",
+    "numPullsTooltip": "Nombre total de retraits HOSKY à programmer",
+    "maxDelayLabel": "Délai max de paiement (heures)",
+    "maxDelayTooltip": "Délai maximum (en heures) avant qu’un retrait manqué soit considéré comme échoué",
+    "intervalLabel": "Intervalle de paiement (époques)",
+    "intervalTooltip": "Nombre d’époques entre les paiements",
+    "addAsset": "Ajouter un actif",
+    "addAssetTooltip": "Actifs à envoyer à chaque paiement",
+    "asset": {
+      "title": "Ajouter des actifs",
+      "body": "Ajoutez l’ID de policy, le nom de l’actif et le montant à payer à chaque paiement.",
+      "policyId": "ID de policy",
+      "assetName": "Nom de l’actif",
+      "amount": "Montant",
+      "unitToggleAda": "Ada",
+      "unitToggleLovelace": "Lovelace"
+    }
+  },
+  "submit": {
+    "acceptRisk": "Je comprends les risques liés à l’utilisation de cet outil bêta",
+    "acceptFees": "J’accepte les frais de transaction et de protocole requis pour configurer ces paiements automatisés",
+    "insufficientFunds": "Pas assez d’ADA dans le portefeuille connecté — il manque environ {ada} ADA. Rechargez le portefeuille ou réduisez le dépôt avant d’envoyer."
+  },
+  "delegate": {
+    "modal": {
+      "epoch": "Époque {n}",
+      "channel": "Rugpools Hosky",
+      "eyebrow": "◇ Pools de race, sélectionnés",
+      "titleA": "Stake.",
+      "titleItalic": "Gagne du HOSKY.",
+      "titleC": "On répète.",
+      "deckPart1": "Déléguez votre ADA à un rugpool Hosky et commencez à gagner ",
+      "deckHosky": "du HOSKY à chaque époque",
+      "deckPart2": " en plus des récompenses de staking ADA habituelles — même ADA, deux rendements, et en plus vous aidez à ",
+      "deckDecentralise": "décentraliser Cardano",
+      "deckPart3": " en chemin. Une fois délégué, configurez un retrait automatique AdaMatic : ça fonctionne comme un distributeur — vous y mettez de petits paiements ADA, vous récupérez des récompenses HOSKY.",
+      "featuredHosky": "Best in Show",
+      "featuredEasy1": "Partenaire de race",
+      "taglineHosky": "Stakez avec le doggo lui-même.",
+      "taglineEasy1": "L’équipe qui a construit ce truc — c’est de bonne guerre.",
+      "rateUnit": "HOSKY · par ADA · par époque",
+      "rateShortPerAda": "/ADA",
+      "otherPools": "❀ Autres pools de race ❀",
+      "saturationChip": "{pct} sat.",
+      "feeChip": "{pct} de frais",
+      "delegatorsChip": "{n} délégateurs",
+      "nearSaturation": "⚠ Proche de la saturation",
+      "step1": "① Déléguer",
+      "step2": "② Configurer le retrait auto",
+      "step3": "③ Récupérer du HOSKY",
+      "fineprint": "Votre ADA ne quitte jamais votre portefeuille. Les récompenses de staking continuent normalement.",
+      "delegateButton": "Déléguer",
+      "rosetteBest": "BEST",
+      "rosetteBuilt": "BUILT"
+    },
+    "differentWallet": {
+      "title": "Portefeuille différent",
+      "body": "L’adresse que vous voulez déléguer n’est pas contrôlée par votre portefeuille actuellement connecté.",
+      "addressToDelegate": "Adresse à déléguer",
+      "currentlyConnected": "Actuellement connecté",
+      "instructions": "Ouvrez votre extension de portefeuille et basculez sur le compte qui possède cette adresse. AdaMatic détectera le changement automatiquement — puis cliquez à nouveau sur <strong>Déléguer</strong>."
+    },
+    "couldntReadAddress": "Impossible de lire l’adresse — réessayez.",
+    "walletSwitched": "Portefeuille basculé — cliquez à nouveau sur Déléguer pour continuer.",
+    "building": "Construction de la transaction de délégation…",
+    "submitted": "Délégation soumise ({hash}) — en attente de confirmation…",
+    "txTimeout": "La transaction de délégation n’a pas été confirmée en 5 minutes. Vérifiez sur Cardanoscan et rechargez la page.",
+    "confirmedChecking": "Délégation confirmée on-chain — vérification de l’enregistrement du pool…",
+    "activated": "🎉 Vous êtes délégué à un pool Hosky — retraits automatiques débloqués !",
+    "notYetActive": "Délégation confirmée, mais pas encore active dans un pool Hosky. Cardano applique le stake aux frontières d’époque (typiquement 1–2 époques). Revenez à ce moment-là pour configurer les retraits automatiques.",
+    "failed": "Échec de la délégation : {error}"
+  },
+  "payments": {
+    "connectHint": "Connectez un portefeuille pour voir vos retraits automatiques.",
+    "networkHint": "Basculez votre portefeuille sur le réseau configuré pour voir vos retraits automatiques.",
+    "noneSelected": "Aucun paiement sélectionné",
+    "selectedCount": "{n} paiement(s) sélectionné(s)",
+    "cancelSelected": "Annuler les paiements sélectionnés",
+    "headers": {
+      "view": "Voir",
+      "stakingAddress": "Adresse de staking",
+      "nextRun": "Prochain retrait",
+      "balance": "Solde",
+      "status": "Statut",
+      "cancel": "Annuler"
+    },
+    "showDetails": "Voir les détails du paiement",
+    "deleteAria": "Supprimer",
+    "tableAria": "Tableau des paiements",
+    "status": {
+      "scheduled": "Programmé",
+      "completed": "Terminé",
+      "withdrawn": "Retiré",
+      "cancelled": "Annulé",
+      "insufficientFunds": "Fonds insuffisants"
+    },
+    "toast": {
+      "txSubmitted": "Transaction soumise : {hash}",
+      "paymentCancelled": "Paiement annulé : {hash}",
+      "bulkCancelled": "{n} paiement(s) annulé(s)",
+      "cancelError": "Erreur lors de l’annulation : {error}",
+      "stakeAddressCopied": "Adresse de staking copiée"
+    },
+    "showing": "Affichage de {start}–{end} sur {total} paiements",
+    "empty": {
+      "title": "Aucun retrait automatique pour l’instant",
+      "body": "Configurez votre premier retrait HOSKY récurrent et il apparaîtra ici.",
+      "cta": "Configurer un retrait automatique"
+    },
+    "confirm": {
+      "title": "Annuler ce retrait automatique ?",
+      "titleBulk": "Annuler {n} retraits automatiques ?",
+      "body": "Cela arrête le calendrier et renvoie environ {ada} ADA dans votre portefeuille (moins de petits frais réseau).",
+      "bodyBulk": "Cela arrête {n} calendriers et renvoie environ {ada} ADA dans votre portefeuille (moins de petits frais réseau).",
+      "confirm": "Oui, annuler",
+      "dismiss": "Les conserver"
+    }
+  },
+  "receipt": {
+    "title": "Récapitulatif du paiement",
+    "payeeAddress": "Adresse du bénéficiaire",
+    "walletAddresses": "Adresses de portefeuille ({n})",
+    "amountPerPayment": "Montant par paiement",
+    "numPayments": "Nombre de paiements",
+    "protocolFeesMax": "Frais de protocole + réseau (max)",
+    "totalPaymentAmount": "Montant total des paiements",
+    "totalProtocolFeesMax": "Total des frais de protocole + réseau (max)",
+    "totalToDeposit": "Montant total à déposer",
+    "addressCopied": "Adresse copiée dans le presse-papiers",
+    "copyFailed": "Échec de la copie",
+    "copyAddress": "Copier l’adresse"
+  },
+  "paymentDetails": {
+    "title": "Détails du retrait automatique Hosky",
+    "closeAria": "fermer",
+    "from": "De (adresse de staking)",
+    "to": "Vers",
+    "amount": "Montant",
+    "initialDeposit": "Dépôt initial",
+    "maxFee": "Frais max",
+    "epochStart": "Époque de début",
+    "epochEnd": "Époque de fin",
+    "numPulls": "Nombre de retraits",
+    "epochInterval": "Intervalle d’époques",
+    "na": "N/D",
+    "historyTitle": "Historique des paiements",
+    "tableAria": "Tableau des paiements",
+    "table": {
+      "dateTime": "Date et heure",
+      "event": "Événement de paiement",
+      "txHash": "Hash de tx",
+      "balance": "Solde"
+    },
+    "event": {
+      "created": "Paiement créé",
+      "executed": "Paiement exécuté",
+      "withdrawn": "Paiement retiré",
+      "completed": "Paiement terminé",
+      "scheduled": "Paiement programmé"
+    },
+    "close": "Fermer"
+  },
+  "footer": {
+    "tagline": "Paiements récurrents automatisés sur la blockchain Cardano. Idéal pour les transactions régulières comme la collecte de tokens Hosky et autres paiements programmés.",
+    "navigation": "Navigation",
+    "automaticPayments": "Paiements automatiques",
+    "githubRepository": "Dépôt GitHub",
+    "resources": "Ressources",
+    "cardanoExplorer": "Explorateur Cardano",
+    "cardanoOrg": "Cardano.org",
+    "copyright": "© {year} AdaMatic. Construit sur Cardano.",
+    "sponsoredWith": "Soutenu avec",
+    "sponsoredBy": "par"
+  },
+  "invite": {
+    "eyebrow": "Invitation au pool",
+    "statsTitle": "Ce pool en ce moment",
+    "hoskyPerAdaPerEpoch": "HOSKY par ADA · par époque",
+    "saturationChip": "{pct}% saturé",
+    "feeChip": "{pct}% de frais",
+    "delegatorsChip": "{n} délégateurs",
+    "nearSaturation": "Attention — ce pool approche de la saturation. Les rendements diminuent au-dessus d’environ 85 %.",
+    "earningsTitle": "Combien de HOSKY pourriez-vous gagner ?",
+    "connectPrompt": "Connectez votre portefeuille pour estimer vos gains potentiels en HOSKY depuis {ticker}.",
+    "calculating": "Calcul de vos gains potentiels…",
+    "zeroBalance": "Aucun ADA sur ce compte pour le moment. Approvisionnez-le et rechargez la page.",
+    "youHold": "Vous détenez",
+    "perEpoch": "Par époque",
+    "perMonth": "Par mois",
+    "perYear": "Par an",
+    "estimateLine": "Environ {usd} par an en récompenses HOSKY gratuites — rien qu’en déléguant.",
+    "delegateCta": "Déléguer à {ticker}",
+    "setupCta": "Configurer les retraits auto",
+    "disclaimer": "Estimations basées sur les taux de l’époque actuelle · HOSKY/USD = {price} (CoinGecko) · les frais des retraits auto ne sont pas inclus",
+    "notFoundTitle": "Pool introuvable",
+    "notFoundBody": "Aucun pool Hosky sélectionné ne correspond à « {id} ». Vérifiez le lien ou parcourez tous les pools depuis la page de configuration.",
+    "backHome": "Retour à AdaMatic"
+  },
+  "faq": {
+    "title": "Foire aux questions",
+    "subtitle": "Retrouvez les réponses aux questions les plus fréquentes sur AdaMatic et les paiements automatisés sur Cardano",
+    "general": {
+      "title": "Questions générales",
+      "q1": {
+        "question": "Qu’est-ce qu’AdaMatic ?",
+        "answer": "AdaMatic est une application décentralisée construite sur Cardano qui permet des paiements récurrents automatisés. Elle utilise des contrats intelligents pour exécuter des transactions programmées sans intervention manuelle — idéal pour les paiements réguliers comme la collecte de tokens, les abonnements ou tout transfert récurrent."
+      },
+      "q2": {
+        "question": "Comment fonctionne AdaMatic ?",
+        "answer": "AdaMatic utilise des contrats intelligents Plutus sur la blockchain Cardano. Vous déposez des fonds dans un contrat intelligent avec des paramètres de paiement précis (montant, fréquence, destinataire). Le système exécute ensuite ces paiements automatiquement selon votre calendrier sans nécessiter la connexion de votre portefeuille."
+      },
+      "q3": {
+        "question": "AdaMatic est-il sécurisé ?",
+        "answer": "Oui, AdaMatic est construit sur l’infrastructure blockchain sécurisée de Cardano grâce aux contrats intelligents Plutus. Vos fonds sont conservés dans des contrats intelligents, et non par une entité centralisée. Vous gardez le contrôle total et pouvez annuler les paiements à tout moment."
+      },
+      "q4": {
+        "question": "Quels sont les frais ?",
+        "answer": "AdaMatic facture de petits frais d’opérateur par transaction plus les frais réseau Cardano standard. Les frais exacts sont affichés lors de la configuration d’un paiement. Tous les frais sont transparents et indiqués à l’avance."
+      }
+    },
+    "hosky": {
+      "title": "Questions sur le token Hosky",
+      "q1": {
+        "question": "Dois-je obligatoirement utiliser le portefeuille délégué à une Rugpool Hosky ?",
+        "answer": "Non ! Vous pouvez utiliser n’importe quel portefeuille pour configurer les paiements. La recommandation est d’utiliser un petit portefeuille « chaud » et de renseigner dans le champ « Adresse de paiement ou de staking » l’adresse du portefeuille pour lequel vous souhaitez collecter les récompenses."
+      },
+      "q2": {
+        "question": "Où recevrai-je mes récompenses Hosky ?",
+        "answer": "Vous recevrez les récompenses Hosky sur le portefeuille pour lequel vous les avez réclamées. Que vous ayez utilisé le portefeuille délégué ou un autre petit portefeuille chaud, les récompenses sont envoyées à l’adresse du portefeuille délégué."
+      },
+      "q3": {
+        "question": "Combien de retraits automatiques puis-je configurer ?",
+        "answer": "Vous pouvez configurer autant de retraits automatiques que vous le souhaitez. Il est recommandé de tous les configurer depuis le même petit portefeuille chaud — ainsi ils apparaîtront ensemble dans la page des paiements AdaMatic."
+      },
+      "q4": {
+        "question": "J’ai un petit portefeuille — comment rendre les retraits rentables ?",
+        "answer": "Les récompenses Hosky s’accumulent jusqu’à un certain montant. AdaMatic vous permet de définir la fréquence des retraits en nombre d’époques. Nous vous recommandons de faire vos propres calculs pour trouver la fréquence idéale !"
+      },
+      "q5": {
+        "question": "À quel moment les récompenses Hosky sont-elles réclamées ?",
+        "answer": "Par défaut, AdaMatic envoie les paiements de 2 ADA environ 48 heures après le début de l’époque. Cela laisse au mécanisme de récompense le temps de se stabiliser et aux utilisateurs la possibilité de réclamer manuellement en cas de problème."
+      }
+    },
+    "tech": {
+      "title": "Questions techniques",
+      "q1": {
+        "question": "Quels portefeuilles sont pris en charge ?",
+        "answer": "AdaMatic prend en charge tous les principaux portefeuilles Cardano dont Lace, Eternl, Flint, Typhon et tout autre portefeuille compatible CIP-30. L’intégration s’appuie directement sur le standard CIP-30."
+      },
+      "q2": {
+        "question": "Puis-je annuler un paiement récurrent ?",
+        "answer": "Oui, vous pouvez annuler n’importe quel paiement récurrent à tout moment. Allez simplement dans votre liste de paiements, trouvez celui que vous souhaitez annuler et cliquez sur Annuler. Les fonds restants seront renvoyés à votre portefeuille."
+      },
+      "q3": {
+        "question": "Que se passe-t-il si mon paiement échoue ?",
+        "answer": "Si un paiement échoue (par exemple en raison de fonds insuffisants), le système le marquera comme échoué et ne réessaiera pas automatiquement. Vous pouvez ajouter des fonds au contrat ou l’annuler et créer un nouveau paiement avec un financement adéquat."
+      },
+      "q4": {
+        "question": "Quels réseaux AdaMatic prend-il en charge ?",
+        "answer": "AdaMatic prend actuellement en charge le testnet Preprod de Cardano pour le développement et les tests. Le support du mainnet est disponible pour la production. Assurez-vous que votre portefeuille est connecté au bon réseau."
+      }
+    }
+  }
+}

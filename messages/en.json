@@ -1,0 +1,422 @@
+{
+  "app": {
+    "title": "AdaMatic",
+    "tagline": "Automated recurring payments on Cardano"
+  },
+  "nav": {
+    "setup": "Set up",
+    "myPulls": "My auto-pulls",
+    "faq": "FAQ",
+    "menu": "Menu",
+    "language": "Language"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "add": "Add",
+    "gotIt": "Got it",
+    "close": "Close",
+    "delete": "Delete",
+    "ada": "ADA",
+    "lovelace": "Lovelace"
+  },
+  "wallet": {
+    "connect": "Connect Wallet",
+    "connected": "Wallet connected",
+    "networkMismatch": "Wrong network — please connect to {network}",
+    "noExtensions": "No CIP-30 wallets detected. Install Eternl, Lace, Nami, Typhon, or another Cardano wallet extension and reload the page.",
+    "pickerTitle": "Connect a Cardano Wallet",
+    "connectFirst": "Connect a wallet first."
+  },
+  "tx": {
+    "submitted": "Transaction submitted: {hash}",
+    "failed": "Transaction failed",
+    "userCancelled": "Transaction signing declined.",
+    "scriptsNotLoaded": "Scripts manifest not loaded yet. Please retry shortly.",
+    "buildFailed": "Couldn't build the transaction. Please contact support if this keeps happening."
+  },
+  "locale": {
+    "switcher": "Language",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "ja": "日本語"
+  },
+  "tour": {
+    "welcome": "Welcome to AdaMatic. Set up automated HOSKY rewards pulls in a few steps. We'll walk you through it.",
+    "wallet": "Connect a wallet. Any CIP-30 Cardano wallet works. We recommend a small hot wallet you keep separately for AdaMatic — your main funds stay safe.",
+    "addresses": "Pick the wallet(s) you want to collect HOSKY for. Default is your connected wallet — that's the common case. You can add more addresses if you want to pull for other wallets you control.",
+    "delegate": "If your wallet isn't delegated to a Hosky rugpool yet, you'll see this CTA. Click it to pick a pool and delegate — required to start earning HOSKY.",
+    "maxFees": "Max fee per pull. Caps how much each pull can spend on AdaMatic + network fees. Excess is returned to your wallet.",
+    "firstEpoch": "First pull epoch. When the first pull happens. Defaults to next epoch.",
+    "lastEpoch": "Last pull epoch. When the schedule stops. Optional — leave empty and it runs until the deposit is exhausted.",
+    "numPulls": "Number of pulls. Each pull costs the protocol fee + tx fees.",
+    "frequency": "How often. Number of epochs between pulls. HOSKY rewards stack — small wallets should pull less frequently (every 2–3 epochs) to save on fees. Big wallets can pull every epoch."
+  },
+  "limits": {
+    "protocolFee": "Protocol fee: {ada} ADA",
+    "protocolFeeLoading": "Protocol fee: —",
+    "tooltips": {
+      "protocolFee": "Operator fee per pull, paid to the AdaMatic infrastructure."
+    }
+  },
+  "setup": {
+    "maintenance": "AdaMatic is currently in maintenance mode. Please try again later!",
+    "takeTour": "Take a tour",
+    "create": "Create recurring payment",
+    "myAutoPulls": "My auto-pulls",
+    "viewMyAutoPulls": "View my auto-pulls",
+    "newAutoPull": "New auto-pull",
+    "refreshTooltip": "Refresh payments",
+    "refreshAria": "Reload auto-pulls",
+    "generic": {
+      "comingSoon": {
+        "title": "Coming soon",
+        "body": "Generic recurring payments are next on the roadmap. For now, set up a HOSKY auto-pull instead.",
+        "cta": "Set up a HOSKY auto-pull",
+        "back": "Back home"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "The cheapest auto-pull on Cardano",
+      "title": "Automate your Cardano payments.",
+      "subtitle": "HOSKY auto-pulls today. Recurring ADA payments and fiat-pegged schedules next.",
+      "primaryCta": "Start with HOSKY",
+      "secondaryCta": "How it works"
+    },
+    "chooserTitle": "Set up a payment",
+    "hosky": {
+      "title": "HOSKY auto-pulls",
+      "body": "Collect HOSKY rewards from your Rugpool delegation on a schedule.",
+      "cta": "Start",
+      "features": {
+        "schedule": {
+          "title": "On your schedule",
+          "body": "Pick the cadence; AdaMatic handles the rest."
+        },
+        "security": {
+          "title": "Non-custodial",
+          "body": "Your keys never leave the wallet."
+        },
+        "fees": {
+          "title": "Low fees",
+          "body": "Cardano's cheapest auto-pull — operator fee shown above."
+        },
+        "renew": {
+          "title": "Until you cancel",
+          "body": "Auto-renews from your deposit; cancel any time."
+        }
+      }
+    },
+    "generic": {
+      "title": "Recurring ADA payments",
+      "body": "Send ADA to any address on a schedule.",
+      "comingSoon": "Coming soon"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "step1Title": "Connect your wallet",
+      "step1Body": "Any CIP-30 Cardano wallet. Non-custodial — your keys stay yours.",
+      "step2Title": "Set the schedule",
+      "step2Body": "Pick the wallet to collect for, the cadence, and your fee cap.",
+      "step3Title": "Auto-pulls happen",
+      "step3Body": "Smart contracts execute on chain, on time. Track in My auto-pulls."
+    },
+    "stats": {
+      "title": "Live on Cardano",
+      "tvl": "ADA in auto-pulls",
+      "scheduled": "Auto-pulls scheduled",
+      "executed": "Payments executed"
+    },
+    "community": {
+      "title": "From the community"
+    }
+  },
+  "form": {
+    "addressesTooltip": "Wallets delegated to Hosky Rugpools — these are the ones earning HOSKY rewards",
+    "addressesLabel": "Payment or Staking addresses delegated to Hosky Pools",
+    "addressLabel": "Address {n}",
+    "addressInvalid": "Invalid Cardano address format",
+    "addressUnsupported": "Unsupported address type",
+    "addressNotDelegated": "Address not delegated to any Hosky Pool",
+    "removeAddress": "Remove this address",
+    "addAddress": "Add Address",
+    "addAddressTooltip": "Add another address",
+    "rowDelegateMessage": "Not delegated to a Hosky pool — delegate to start earning HOSKY each epoch.",
+    "rowDelegateCta": "Delegate this wallet →",
+    "maxFeesLabel": "Max fees",
+    "maxFeesTooltip": "Max fees per pull — covers AdaMatic operator fee + Cardano network fees",
+    "firstEpochLabel": "First epoch",
+    "firstEpochTooltip": "Epoch of the first rewards pull",
+    "startTimeLabel": "Start time",
+    "startTimeTooltip": "When the first payment is made",
+    "lastEpochLabel": "Last epoch (optional)",
+    "lastEpochTooltip": "Epoch of the last rewards pull",
+    "endTimeLabel": "End time (optional)",
+    "endTimeTooltip": "When the last payment is made. Leave empty to run until the deposit is exhausted.",
+    "numPullsLabel": "Number of pulls",
+    "numPullsTooltip": "Total number of HOSKY pulls to schedule",
+    "maxDelayLabel": "Max payment delay (hours)",
+    "maxDelayTooltip": "Maximum delay (in hours) before a missed pull is considered failed",
+    "intervalLabel": "Payment interval (epochs)",
+    "intervalTooltip": "Number of epochs between payments",
+    "addAsset": "Add asset",
+    "addAssetTooltip": "Assets to send each payment",
+    "asset": {
+      "title": "Add assets",
+      "body": "Add the policy ID, asset name, and amount of the asset to pay each payment.",
+      "policyId": "Policy ID",
+      "assetName": "Asset name",
+      "amount": "Amount",
+      "unitToggleAda": "Ada",
+      "unitToggleLovelace": "Lovelace"
+    }
+  },
+  "submit": {
+    "acceptRisk": "I understand the risks of using this beta tool",
+    "acceptFees": "I accept the transaction and protocol fees required to set up these automated payments",
+    "insufficientFunds": "Not enough ADA in the connected wallet — short by about {ada} ADA. Top up the wallet or reduce the deposit before submitting."
+  },
+  "delegate": {
+    "modal": {
+      "epoch": "Epoch {n}",
+      "channel": "Hosky Rugpools",
+      "eyebrow": "◇ Pedigree Pools, Curated",
+      "titleA": "Stake.",
+      "titleItalic": "Earn HOSKY.",
+      "titleC": "Repeat.",
+      "deckPart1": "Delegate your ADA to a Hosky rugpool and start earning ",
+      "deckHosky": "HOSKY each epoch",
+      "deckPart2": " on top of normal ADA staking rewards — same ADA, two yields, plus you help ",
+      "deckDecentralise": "decentralise Cardano",
+      "deckPart3": " along the way. Once delegated, set up an AdaMatic auto-pull: it works like a vending machine — small ADA payments go in, HOSKY rewards come out.",
+      "featuredHosky": "Best in Show",
+      "featuredEasy1": "Pedigree Partner",
+      "taglineHosky": "Stake with the doggo himself.",
+      "taglineEasy1": "The crew who built this thing — fair's fair.",
+      "rateUnit": "HOSKY · per ADA · per epoch",
+      "rateShortPerAda": "/ADA",
+      "otherPools": "❀ Other Pedigree Pools ❀",
+      "saturationChip": "{pct} sat.",
+      "feeChip": "{pct} fee",
+      "delegatorsChip": "{n} delegators",
+      "nearSaturation": "⚠ Near saturation",
+      "step1": "① Delegate",
+      "step2": "② Set up auto-pull",
+      "step3": "③ Collect HOSKY",
+      "fineprint": "Your ADA never leaves your wallet. Staking rewards continue as normal.",
+      "delegateButton": "Delegate",
+      "rosetteBest": "BEST",
+      "rosetteBuilt": "BUILT"
+    },
+    "differentWallet": {
+      "title": "Different wallet",
+      "body": "The address you want to delegate isn't controlled by your currently connected wallet.",
+      "addressToDelegate": "Address to delegate",
+      "currentlyConnected": "Currently connected",
+      "instructions": "Open your wallet extension and switch to the account that owns this address. AdaMatic will detect the change automatically — then click <strong>Delegate</strong> again."
+    },
+    "couldntReadAddress": "Couldn't read the address — try again.",
+    "walletSwitched": "Wallet switched — click Delegate again to continue.",
+    "building": "Building delegation transaction…",
+    "submitted": "Delegation submitted ({hash}) — waiting for confirmation…",
+    "txTimeout": "Delegation tx didn't confirm within 5 minutes. Check Cardanoscan and reload the page.",
+    "confirmedChecking": "Delegation confirmed on-chain — checking pool registration…",
+    "activated": "🎉 You're delegated to a Hosky pool — auto-pulls unlocked!",
+    "notYetActive": "Delegation confirmed, but not yet active in a Hosky pool. Cardano applies stake at epoch boundaries (typically 1–2 epochs). Come back then to set up auto-pulls.",
+    "failed": "Delegation failed: {error}"
+  },
+  "payments": {
+    "connectHint": "Connect a wallet to see your auto-pulls.",
+    "networkHint": "Switch your wallet to the configured network to see your auto-pulls.",
+    "noneSelected": "No payments selected",
+    "selectedCount": "{n} payment(s) selected",
+    "cancelSelected": "Cancel selected payments",
+    "headers": {
+      "view": "View",
+      "stakingAddress": "Staking address",
+      "nextRun": "Next run",
+      "balance": "Balance",
+      "status": "Status",
+      "cancel": "Cancel"
+    },
+    "showDetails": "Show payment details",
+    "deleteAria": "Delete",
+    "tableAria": "Payments table",
+    "status": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "withdrawn": "Withdrawn",
+      "cancelled": "Cancelled",
+      "insufficientFunds": "Insufficient funds"
+    },
+    "toast": {
+      "txSubmitted": "Transaction submitted: {hash}",
+      "paymentCancelled": "Payment cancelled: {hash}",
+      "bulkCancelled": "Cancelled {n} payment(s)",
+      "cancelError": "Error cancelling payments: {error}",
+      "stakeAddressCopied": "Stake address copied"
+    },
+    "showing": "Showing {start}–{end} of {total} payments",
+    "empty": {
+      "title": "No auto-pulls yet",
+      "body": "Set up your first recurring HOSKY pull and it'll appear here.",
+      "cta": "Set up an auto-pull"
+    },
+    "confirm": {
+      "title": "Cancel this auto-pull?",
+      "titleBulk": "Cancel {n} auto-pulls?",
+      "body": "This stops the schedule and refunds about {ada} ADA back to your wallet (minus a small network fee).",
+      "bodyBulk": "This stops {n} schedules and refunds about {ada} ADA back to your wallet (minus a small network fee).",
+      "confirm": "Yes, cancel",
+      "dismiss": "Keep them"
+    }
+  },
+  "receipt": {
+    "title": "Payment Summary",
+    "payeeAddress": "Payee Address",
+    "walletAddresses": "Wallet Addresses ({n})",
+    "amountPerPayment": "Amount per payment",
+    "numPayments": "Number of payments",
+    "protocolFeesMax": "Protocol + Network Fees (max)",
+    "totalPaymentAmount": "Total payment amount",
+    "totalProtocolFeesMax": "Total Protocol + Network Fees (max)",
+    "totalToDeposit": "Total Amount to Deposit",
+    "addressCopied": "Address copied to clipboard",
+    "copyFailed": "Failed to copy to clipboard",
+    "copyAddress": "Copy address"
+  },
+  "paymentDetails": {
+    "title": "Hosky Auto Pull Details",
+    "closeAria": "close",
+    "from": "From (Stake Address)",
+    "to": "To",
+    "amount": "Amount",
+    "initialDeposit": "Initial deposit",
+    "maxFee": "Max Fee",
+    "epochStart": "Epoch Start",
+    "epochEnd": "Epoch End",
+    "numPulls": "Num Pulls",
+    "epochInterval": "Epoch Interval",
+    "na": "N/A",
+    "historyTitle": "Payments History",
+    "tableAria": "Payments Table",
+    "table": {
+      "dateTime": "Date and Time",
+      "event": "Payment Event",
+      "txHash": "Tx Hash",
+      "balance": "Balance"
+    },
+    "event": {
+      "created": "Payment Created",
+      "executed": "Payment Executed",
+      "withdrawn": "Payment Withdrawn",
+      "completed": "Payment Completed",
+      "scheduled": "Payment Scheduled"
+    },
+    "close": "Close"
+  },
+  "footer": {
+    "tagline": "Automated recurring payments on the Cardano blockchain. Perfect for regular transactions like Hosky token collection and other scheduled payments.",
+    "navigation": "Navigation",
+    "automaticPayments": "Automatic Payments",
+    "githubRepository": "GitHub Repository",
+    "resources": "Resources",
+    "cardanoExplorer": "Cardano Explorer",
+    "cardanoOrg": "Cardano.org",
+    "copyright": "© {year} AdaMatic. Built on Cardano.",
+    "sponsoredWith": "Sponsored with",
+    "sponsoredBy": "by"
+  },
+  "invite": {
+    "eyebrow": "Pool invitation",
+    "statsTitle": "This pool right now",
+    "hoskyPerAdaPerEpoch": "HOSKY per ADA · per epoch",
+    "saturationChip": "{pct}% saturated",
+    "feeChip": "{pct}% fee",
+    "delegatorsChip": "{n} delegators",
+    "nearSaturation": "Heads up — this pool is near saturation. Returns diminish above ~85%.",
+    "earningsTitle": "How much HOSKY could you earn?",
+    "connectPrompt": "Connect your wallet to estimate your potential HOSKY earnings from {ticker}.",
+    "calculating": "Calculating your potential earnings…",
+    "zeroBalance": "Looks like there's no ADA on this account yet. Send some over and refresh.",
+    "youHold": "You hold",
+    "perEpoch": "Per epoch",
+    "perMonth": "Per month",
+    "perYear": "Per year",
+    "estimateLine": "Roughly {usd} a year in free HOSKY rewards — just for delegating.",
+    "delegateCta": "Delegate to {ticker}",
+    "setupCta": "Set up auto-pulls",
+    "disclaimer": "Estimates from current epoch rates · HOSKY/USD = {price} (CoinGecko) · auto-pull fees not included",
+    "notFoundTitle": "Pool not found",
+    "notFoundBody": "We couldn't find a curated Hosky rugpool for \"{id}\". Check the link or browse all pools from the setup page.",
+    "backHome": "Back to AdaMatic"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions about AdaMatic and automated Cardano payments",
+    "general": {
+      "title": "General Questions",
+      "q1": {
+        "question": "What is AdaMatic?",
+        "answer": "AdaMatic is a decentralized application built on Cardano that enables automated recurring payments. It uses smart contracts to execute scheduled transactions without manual intervention, perfect for regular payments like token collection, subscriptions, or any recurring transfers."
+      },
+      "q2": {
+        "question": "How does AdaMatic work?",
+        "answer": "AdaMatic uses Plutus smart contracts on the Cardano blockchain. You deposit funds into a smart contract with specific payment parameters (amount, frequency, recipient). The system then automatically executes these payments according to your schedule without requiring your wallet to be connected."
+      },
+      "q3": {
+        "question": "Is AdaMatic secure?",
+        "answer": "Yes, AdaMatic is built on Cardano's secure blockchain infrastructure using Plutus smart contracts. Your funds are held in smart contracts, not by any centralized entity. You maintain full control and can cancel payments at any time."
+      },
+      "q4": {
+        "question": "What are the fees?",
+        "answer": "AdaMatic charges a small operator fee per transaction plus standard Cardano network fees. The exact fees are displayed when you set up a payment. All fees are transparent and shown upfront."
+      }
+    },
+    "hosky": {
+      "title": "Hosky Token Questions",
+      "q1": {
+        "question": "Do I need to necessarily use the wallet delegated to a Hosky Rugpool?",
+        "answer": "No! You can use any wallet to setup payments. In fact the recommendation is to use a small hot wallet, and to set up in the 'Payment or Staking reward address' the address of the wallet you want to collect the rewards for."
+      },
+      "q2": {
+        "question": "Where will I receive my Hosky rewards?",
+        "answer": "You will receive the Hosky rewards in the wallet you claimed them for. Regardless of whether you used the delegated wallet or a different small hot wallet, rewards are sent to the address of the delegated wallet."
+      },
+      "q3": {
+        "question": "How many automatic pulls can I setup?",
+        "answer": "You can setup as many auto-pulls as you want. Recommendation would be to set them up all from the same small hot wallet, so they will appear to you all together in the adamatic payment page."
+      },
+      "q4": {
+        "question": "I have a small wallet, how can I still make it worth pulling rewards?",
+        "answer": "Hosky rewards stack up to a certain amount. AdaMatic lets you set the pull frequency in terms of epochs. We recommend running your own calculations to find the ideal epoch frequency!"
+      },
+      "q5": {
+        "question": "At what time are the Hosky rewards claimed?",
+        "answer": "By default, and for the time being, AdaMatic is configured to send the 2 ADA pulls about 48 hours from the beginning of the epoch. This gives enough time for the rewards mechanism to settle and for users to manually claim rewards in case of issues."
+      }
+    },
+    "tech": {
+      "title": "Technical Questions",
+      "q1": {
+        "question": "Which wallets are supported?",
+        "answer": "AdaMatic supports all major Cardano wallets including Lace, Eternl, Flint, Typhon, and any other CIP-30 compatible wallet. The integration is built directly on the CIP-30 standard."
+      },
+      "q2": {
+        "question": "Can I cancel a recurring payment?",
+        "answer": "Yes, you can cancel any recurring payment at any time. Simply go to your payments list, find the payment you want to cancel, and click the cancel button. Any remaining funds will be returned to your wallet."
+      },
+      "q3": {
+        "question": "What happens if my payment fails?",
+        "answer": "If a payment fails (e.g., due to insufficient funds), the system will mark it as failed and won't retry automatically. You can add more funds to the contract or cancel and create a new payment with adequate funding."
+      },
+      "q4": {
+        "question": "Which networks does AdaMatic support?",
+        "answer": "AdaMatic currently supports Cardano Preprod testnet for development and testing. Mainnet support is available for production use. Make sure your wallet is connected to the correct network."
+      }
+    }
+  }
+}

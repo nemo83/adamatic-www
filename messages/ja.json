@@ -1,0 +1,422 @@
+{
+  "app": {
+    "title": "AdaMatic",
+    "tagline": "Cardano 上の自動定期支払い"
+  },
+  "nav": {
+    "setup": "設定",
+    "myPulls": "マイ自動引き出し",
+    "faq": "よくある質問",
+    "menu": "メニュー",
+    "language": "言語"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "add": "追加",
+    "gotIt": "了解",
+    "close": "閉じる",
+    "delete": "削除",
+    "ada": "ADA",
+    "lovelace": "Lovelace"
+  },
+  "wallet": {
+    "connect": "ウォレットを接続",
+    "connected": "ウォレットを接続しました",
+    "networkMismatch": "ネットワークが違います。{network} に接続してください。",
+    "noExtensions": "CIP-30 ウォレットが検出されませんでした。Eternl、Lace、Nami、Typhon などの Cardano ウォレット拡張機能をインストールしてページを再読み込みしてください。",
+    "pickerTitle": "Cardano ウォレットを接続",
+    "connectFirst": "まずウォレットを接続してください。"
+  },
+  "tx": {
+    "submitted": "トランザクションを送信しました: {hash}",
+    "failed": "トランザクションに失敗しました",
+    "userCancelled": "トランザクションの署名が拒否されました。",
+    "scriptsNotLoaded": "スクリプトマニフェストがまだ読み込まれていません。少し待ってから再試行してください。",
+    "buildFailed": "トランザクションを構築できませんでした。問題が続く場合はサポートにお問い合わせください。"
+  },
+  "locale": {
+    "switcher": "言語",
+    "en": "English",
+    "fr": "Français",
+    "es": "Español",
+    "it": "Italiano",
+    "ja": "日本語"
+  },
+  "tour": {
+    "welcome": "AdaMatic へようこそ。数ステップで HOSKY 報酬の自動引き出しを設定できます。順を追ってご案内します。",
+    "wallet": "ウォレットを接続してください。CIP-30 対応の Cardano ウォレットなら何でも使えます。AdaMatic 専用に小さなホットウォレットを用意することをおすすめします — メインの資金は安全に保てます。",
+    "addresses": "HOSKY を回収したいウォレットを選びます。デフォルトは接続中のウォレットで、これが一般的なケースです。自分が管理する別のウォレット分も引き出したい場合は、追加のアドレスを登録できます。",
+    "delegate": "ウォレットがまだ Hosky のラグプールに委任されていない場合、この CTA が表示されます。クリックしてプールを選び委任してください — HOSKY を獲得し始めるために必要です。",
+    "maxFees": "1 回の引き出しあたりの最大手数料。AdaMatic + ネットワーク手数料に使える上限を決めます。余剰はウォレットに戻ります。",
+    "firstEpoch": "最初の引き出しエポック。最初の引き出しが行われるタイミングです。デフォルトは次のエポックです。",
+    "lastEpoch": "最後の引き出しエポック。スケジュールが停止するタイミングです。任意 — 空欄のままにすると入金がなくなるまで実行されます。",
+    "numPulls": "引き出し回数。各引き出しにはプロトコル手数料 + トランザクション手数料がかかります。",
+    "frequency": "頻度。引き出しの間隔（エポック数）です。HOSKY 報酬は累積されます — 小さなウォレットは手数料を抑えるため引き出し頻度を下げるのがよく（2〜3 エポックごと）、大きなウォレットは毎エポック引き出して構いません。"
+  },
+  "limits": {
+    "protocolFee": "プロトコル手数料: {ada} ADA",
+    "protocolFeeLoading": "プロトコル手数料: —",
+    "tooltips": {
+      "protocolFee": "1 回の引き出しごとに AdaMatic インフラへ支払う運営手数料です。"
+    }
+  },
+  "setup": {
+    "maintenance": "AdaMatic は現在メンテナンス中です。後ほどお試しください！",
+    "takeTour": "ツアーを開始",
+    "create": "定期支払いを作成",
+    "myAutoPulls": "マイ自動引き出し",
+    "viewMyAutoPulls": "マイ自動引き出しを表示",
+    "newAutoPull": "新しい自動引き出し",
+    "refreshTooltip": "支払いを更新",
+    "refreshAria": "自動引き出しをリロード",
+    "generic": {
+      "comingSoon": {
+        "title": "近日公開",
+        "body": "汎用の定期支払いはロードマップの次の項目です。今のところは HOSKY 自動引き出しを設定してください。",
+        "cta": "HOSKY 自動引き出しを設定",
+        "back": "ホームに戻る"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "eyebrow": "Cardano で最も安価な自動引き出し",
+      "title": "Cardano の支払いを自動化。",
+      "subtitle": "今日は HOSKY 自動引き出し。次は ADA の定期支払いと法定通貨建ての金額に対応。",
+      "primaryCta": "HOSKY で開始",
+      "secondaryCta": "仕組みを見る"
+    },
+    "chooserTitle": "支払いを設定",
+    "hosky": {
+      "title": "HOSKY 自動引き出し",
+      "body": "Rugpool への委任から HOSKY 報酬をスケジュールに沿って回収します。",
+      "cta": "始める",
+      "features": {
+        "schedule": {
+          "title": "あなたのスケジュールで",
+          "body": "頻度を選ぶだけ。あとは AdaMatic が処理します。"
+        },
+        "security": {
+          "title": "ノンカストディアル",
+          "body": "鍵はウォレットから出ません。"
+        },
+        "fees": {
+          "title": "低コスト",
+          "body": "Cardano で最も安価な自動引き出し — 手数料は上に表示されています。"
+        },
+        "renew": {
+          "title": "解約まで継続",
+          "body": "デポジットから自動更新。いつでも解約できます。"
+        }
+      }
+    },
+    "generic": {
+      "title": "ADA の定期支払い",
+      "body": "任意のアドレスへ ADA をスケジュールで送ります。",
+      "comingSoon": "近日公開"
+    },
+    "howItWorks": {
+      "title": "仕組み",
+      "step1Title": "ウォレットを接続",
+      "step1Body": "CIP-30 対応の Cardano ウォレットならどれでも。非カストディアル — 鍵はあなたのまま。",
+      "step2Title": "スケジュールを設定",
+      "step2Body": "回収先のウォレット、頻度、手数料上限を選ぶだけ。",
+      "step3Title": "自動引き出しが実行",
+      "step3Body": "スマートコントラクトがオンチェーンで定時に実行。マイ自動引き出しで追跡。"
+    },
+    "stats": {
+      "title": "Cardano 上で稼働中",
+      "tvl": "自動引き出しの ADA",
+      "scheduled": "予定中の自動引き出し",
+      "executed": "実行済みの支払い"
+    },
+    "community": {
+      "title": "コミュニティの声"
+    }
+  },
+  "form": {
+    "addressesTooltip": "Hosky のラグプールに委任されたウォレット — HOSKY 報酬を得るのはこれらです",
+    "addressesLabel": "Hosky プールに委任された支払い／ステーキングアドレス",
+    "addressLabel": "アドレス {n}",
+    "addressInvalid": "Cardano アドレスの形式が無効です",
+    "addressUnsupported": "サポートされていないアドレス種別です",
+    "addressNotDelegated": "このアドレスは Hosky プールに委任されていません",
+    "removeAddress": "このアドレスを削除",
+    "addAddress": "アドレスを追加",
+    "addAddressTooltip": "もう一つアドレスを追加",
+    "rowDelegateMessage": "Hosky プールに委任されていません — 委任してエポックごとに HOSKY を獲得しましょう。",
+    "rowDelegateCta": "このウォレットを委任 →",
+    "maxFeesLabel": "最大手数料",
+    "maxFeesTooltip": "1 回の引き出しあたりの最大手数料 — AdaMatic 運営手数料 + Cardano ネットワーク手数料を含みます",
+    "firstEpochLabel": "最初のエポック",
+    "firstEpochTooltip": "最初の報酬引き出しのエポック",
+    "startTimeLabel": "開始時刻",
+    "startTimeTooltip": "最初の支払いが行われるタイミング",
+    "lastEpochLabel": "最後のエポック（任意）",
+    "lastEpochTooltip": "最後の報酬引き出しのエポック",
+    "endTimeLabel": "終了時刻（任意）",
+    "endTimeTooltip": "最後の支払いが行われるタイミング。空欄にすると入金が尽きるまで実行されます。",
+    "numPullsLabel": "引き出し回数",
+    "numPullsTooltip": "予定する HOSKY 引き出しの総回数",
+    "maxDelayLabel": "支払いの最大遅延（時間）",
+    "maxDelayTooltip": "見送られた引き出しが失敗とみなされるまでの最大遅延（時間）",
+    "intervalLabel": "支払い間隔（エポック）",
+    "intervalTooltip": "支払いの間のエポック数",
+    "addAsset": "アセットを追加",
+    "addAssetTooltip": "各支払いで送るアセット",
+    "asset": {
+      "title": "アセットを追加",
+      "body": "各支払いで送るポリシー ID、アセット名、数量を追加します。",
+      "policyId": "ポリシー ID",
+      "assetName": "アセット名",
+      "amount": "数量",
+      "unitToggleAda": "Ada",
+      "unitToggleLovelace": "Lovelace"
+    }
+  },
+  "submit": {
+    "acceptRisk": "このベータ版ツールを使うリスクを理解しています",
+    "acceptFees": "これらの自動支払いの設定に必要なトランザクション手数料およびプロトコル手数料に同意します",
+    "insufficientFunds": "接続中のウォレットの ADA が不足しています — 約 {ada} ADA 足りません。ウォレットに入金するか、預け入れ額を減らしてから送信してください。"
+  },
+  "delegate": {
+    "modal": {
+      "epoch": "エポック {n}",
+      "channel": "Hosky ラグプール",
+      "eyebrow": "◇ 厳選された血統プール",
+      "titleA": "ステーク。",
+      "titleItalic": "HOSKY を獲得。",
+      "titleC": "繰り返す。",
+      "deckPart1": "Hosky のラグプールに ADA を委任すると、通常の ADA ステーキング報酬に加えて ",
+      "deckHosky": "毎エポック HOSKY",
+      "deckPart2": " を獲得できます。同じ ADA で 2 つの利回り、しかも ",
+      "deckDecentralise": "Cardano の分散化",
+      "deckPart3": " にも貢献できます。委任が完了したら AdaMatic の自動引き出しを設定しましょう。仕組みは自動販売機のようなもの — 小さな ADA を入れると、HOSKY の報酬が出てきます。",
+      "featuredHosky": "ベスト・イン・ショー",
+      "featuredEasy1": "血統パートナー",
+      "taglineHosky": "ドギー本人と一緒にステーキング。",
+      "taglineEasy1": "これを作ったチーム — そりゃフェアでしょ。",
+      "rateUnit": "HOSKY · ADA あたり · エポックあたり",
+      "rateShortPerAda": "/ADA",
+      "otherPools": "❀ その他の血統プール ❀",
+      "saturationChip": "{pct} 飽和",
+      "feeChip": "手数料 {pct}",
+      "delegatorsChip": "{n} 名の委任者",
+      "nearSaturation": "⚠ 飽和間近",
+      "step1": "① 委任",
+      "step2": "② 自動引き出し設定",
+      "step3": "③ HOSKY 受け取り",
+      "fineprint": "ADA がウォレットを離れることはありません。ステーキング報酬も通常どおり継続します。",
+      "delegateButton": "委任する",
+      "rosetteBest": "BEST",
+      "rosetteBuilt": "BUILT"
+    },
+    "differentWallet": {
+      "title": "別のウォレットです",
+      "body": "委任しようとしているアドレスは、現在接続中のウォレットでは管理されていません。",
+      "addressToDelegate": "委任するアドレス",
+      "currentlyConnected": "現在接続中",
+      "instructions": "ウォレット拡張機能を開き、このアドレスを保有するアカウントに切り替えてください。AdaMatic は変化を自動で検出します — その後もう一度 <strong>委任する</strong> をクリックしてください。"
+    },
+    "couldntReadAddress": "アドレスを読み取れませんでした — もう一度お試しください。",
+    "walletSwitched": "ウォレットを切り替えました — 続けるにはもう一度委任をクリックしてください。",
+    "building": "委任トランザクションを構築中…",
+    "submitted": "委任を送信しました（{hash}） — 確定を待っています…",
+    "txTimeout": "委任トランザクションが 5 分以内に確定しませんでした。Cardanoscan を確認し、ページを再読み込みしてください。",
+    "confirmedChecking": "オンチェーンで委任を確定 — プール登録を確認中…",
+    "activated": "🎉 Hosky プールに委任しました — 自動引き出しが解放されました！",
+    "notYetActive": "委任は確定しましたが、Hosky プールでまだアクティブではありません。Cardano はエポックの境界でステークを反映します（通常 1〜2 エポック）。その頃に戻って自動引き出しを設定してください。",
+    "failed": "委任に失敗しました: {error}"
+  },
+  "payments": {
+    "connectHint": "ウォレットを接続するとマイ自動引き出しが表示されます。",
+    "networkHint": "設定済みのネットワークにウォレットを切り替えると、マイ自動引き出しが表示されます。",
+    "noneSelected": "選択中の支払いはありません",
+    "selectedCount": "{n} 件の支払いを選択中",
+    "cancelSelected": "選択した支払いをキャンセル",
+    "headers": {
+      "view": "表示",
+      "stakingAddress": "ステーキングアドレス",
+      "nextRun": "次回実行",
+      "balance": "残高",
+      "status": "ステータス",
+      "cancel": "キャンセル"
+    },
+    "showDetails": "支払いの詳細を表示",
+    "deleteAria": "削除",
+    "tableAria": "支払い一覧表",
+    "status": {
+      "scheduled": "予定済み",
+      "completed": "完了",
+      "withdrawn": "引き出し済み",
+      "cancelled": "キャンセル済み",
+      "insufficientFunds": "残高不足"
+    },
+    "toast": {
+      "txSubmitted": "トランザクションを送信しました: {hash}",
+      "paymentCancelled": "支払いをキャンセルしました: {hash}",
+      "bulkCancelled": "{n} 件の支払いをキャンセルしました",
+      "cancelError": "支払いのキャンセル中にエラー: {error}",
+      "stakeAddressCopied": "ステーキングアドレスをコピーしました"
+    },
+    "showing": "{total} 件中 {start}〜{end} を表示中",
+    "empty": {
+      "title": "まだ自動引き出しはありません",
+      "body": "最初の HOSKY 自動引き出しを設定すると、ここに表示されます。",
+      "cta": "自動引き出しを設定"
+    },
+    "confirm": {
+      "title": "この自動引き出しをキャンセルしますか？",
+      "titleBulk": "{n} 件の自動引き出しをキャンセルしますか？",
+      "body": "スケジュールが停止し、ウォレットに約 {ada} ADA が返金されます（少額のネットワーク手数料を差し引いた額）。",
+      "bodyBulk": "{n} 件のスケジュールが停止し、ウォレットに約 {ada} ADA が返金されます（少額のネットワーク手数料を差し引いた額）。",
+      "confirm": "はい、キャンセルします",
+      "dismiss": "そのままにする"
+    }
+  },
+  "receipt": {
+    "title": "支払いの概要",
+    "payeeAddress": "受取人アドレス",
+    "walletAddresses": "ウォレットアドレス（{n}）",
+    "amountPerPayment": "1 回あたりの支払額",
+    "numPayments": "支払い回数",
+    "protocolFeesMax": "プロトコル＋ネットワーク手数料（最大）",
+    "totalPaymentAmount": "支払い総額",
+    "totalProtocolFeesMax": "プロトコル＋ネットワーク手数料の合計（最大）",
+    "totalToDeposit": "預け入れ総額",
+    "addressCopied": "アドレスをクリップボードにコピーしました",
+    "copyFailed": "コピーに失敗しました",
+    "copyAddress": "アドレスをコピー"
+  },
+  "paymentDetails": {
+    "title": "Hosky 自動引き出しの詳細",
+    "closeAria": "閉じる",
+    "from": "送信元（ステーキングアドレス）",
+    "to": "送信先",
+    "amount": "金額",
+    "initialDeposit": "初期預け入れ",
+    "maxFee": "最大手数料",
+    "epochStart": "開始エポック",
+    "epochEnd": "終了エポック",
+    "numPulls": "引き出し回数",
+    "epochInterval": "エポック間隔",
+    "na": "該当なし",
+    "historyTitle": "支払い履歴",
+    "tableAria": "支払い一覧表",
+    "table": {
+      "dateTime": "日時",
+      "event": "支払いイベント",
+      "txHash": "トランザクションハッシュ",
+      "balance": "残高"
+    },
+    "event": {
+      "created": "支払いを作成",
+      "executed": "支払いを実行",
+      "withdrawn": "支払いを引き出し",
+      "completed": "支払いが完了",
+      "scheduled": "支払いを予定"
+    },
+    "close": "閉じる"
+  },
+  "footer": {
+    "tagline": "Cardano ブロックチェーン上の自動定期支払い。Hosky トークンの回収など、定期的なトランザクションに最適です。",
+    "navigation": "ナビゲーション",
+    "automaticPayments": "自動支払い",
+    "githubRepository": "GitHub リポジトリ",
+    "resources": "リソース",
+    "cardanoExplorer": "Cardano エクスプローラー",
+    "cardanoOrg": "Cardano.org",
+    "copyright": "© {year} AdaMatic. Cardano 上で構築。",
+    "sponsoredWith": "心を込めて、",
+    "sponsoredBy": "提供:"
+  },
+  "invite": {
+    "eyebrow": "プールへの招待",
+    "statsTitle": "このプールの現在",
+    "hoskyPerAdaPerEpoch": "HOSKY / ADA / エポック",
+    "saturationChip": "飽和率 {pct}%",
+    "feeChip": "手数料 {pct}%",
+    "delegatorsChip": "{n} 名の委任者",
+    "nearSaturation": "注意 — このプールは飽和に近づいています。約 85% を超えるとリターンが減少します。",
+    "earningsTitle": "どのくらい HOSKY を獲得できますか？",
+    "connectPrompt": "ウォレットを接続すると、{ticker} で得られそうな HOSKY 報酬を試算できます。",
+    "calculating": "見込み報酬を計算中…",
+    "zeroBalance": "このアカウントにはまだ ADA がないようです。送金してからページを再読み込みしてください。",
+    "youHold": "保有中の ADA",
+    "perEpoch": "エポックあたり",
+    "perMonth": "月あたり",
+    "perYear": "年あたり",
+    "estimateLine": "委任するだけで、年間で約 {usd} 相当の HOSKY を無料で獲得できます。",
+    "delegateCta": "{ticker} に委任する",
+    "setupCta": "自動引き出しを設定",
+    "disclaimer": "現在のエポックレートに基づく試算 · HOSKY/USD = {price}（CoinGecko）· 自動引き出しの手数料は含まれていません",
+    "notFoundTitle": "プールが見つかりません",
+    "notFoundBody": "「{id}」に該当する厳選 Hosky プールが見つかりませんでした。リンクをご確認いただくか、設定ページから全プールをご覧ください。",
+    "backHome": "AdaMatic に戻る"
+  },
+  "faq": {
+    "title": "よくある質問",
+    "subtitle": "AdaMatic と Cardano の自動定期支払いに関するよくある質問への回答",
+    "general": {
+      "title": "一般的な質問",
+      "q1": {
+        "question": "AdaMatic とは何ですか？",
+        "answer": "AdaMatic は Cardano 上に構築された分散型アプリケーションで、自動的な定期支払いを実現します。スマートコントラクトを利用して、手動操作なしで予定どおりにトランザクションを実行します。トークンの回収、サブスクリプション、その他あらゆる定期送金に最適です。"
+      },
+      "q2": {
+        "question": "AdaMatic はどのように動作しますか？",
+        "answer": "AdaMatic は Cardano ブロックチェーン上で Plutus スマートコントラクトを使用します。金額・頻度・受取人といった支払いパラメータを指定して、スマートコントラクトに資金を預け入れます。あとはウォレットを接続していなくても、設定したスケジュールに従って自動的に支払いが実行されます。"
+      },
+      "q3": {
+        "question": "AdaMatic は安全ですか？",
+        "answer": "はい。AdaMatic は Cardano の安全なブロックチェーン基盤上で Plutus スマートコントラクトを使って構築されています。資金は中央集権的な事業者ではなくスマートコントラクトが保管しており、いつでも完全に自分でコントロールでき、支払いをキャンセルできます。"
+      },
+      "q4": {
+        "question": "手数料はいくらですか？",
+        "answer": "AdaMatic はトランザクションごとに少額のオペレーター手数料と Cardano の標準的なネットワーク手数料を徴収します。正確な手数料は支払いを設定するときに表示されます。すべての手数料は事前に明示され、透明です。"
+      }
+    },
+    "hosky": {
+      "title": "Hosky トークンに関する質問",
+      "q1": {
+        "question": "Hosky Rugpool に委任したウォレットを必ず使う必要がありますか？",
+        "answer": "いいえ！どのウォレットでも支払いを設定できます。推奨は、小さなホットウォレットを使い、「支払い／ステーキング報酬アドレス」に報酬を受け取りたいウォレットのアドレスを設定することです。"
+      },
+      "q2": {
+        "question": "Hosky 報酬はどこに届きますか？",
+        "answer": "報酬を請求したウォレット宛に Hosky 報酬を受け取れます。委任したウォレットを使った場合でも、別の小さなホットウォレットを使った場合でも、報酬は委任ウォレットのアドレスへ送られます。"
+      },
+      "q3": {
+        "question": "自動引き出しはいくつ設定できますか？",
+        "answer": "自動引き出しはいくつでも設定できます。同じ小さなホットウォレットからまとめて設定することをおすすめします。そうすれば AdaMatic の支払いページにすべてが並んで表示されます。"
+      },
+      "q4": {
+        "question": "ウォレットの残高が少ないのですが、どうすれば報酬の引き出しを採算ラインに乗せられますか？",
+        "answer": "Hosky 報酬は一定額まで蓄積されます。AdaMatic ではエポック単位で引き出し頻度を設定できます。理想的な頻度を見つけるためにご自身で計算することをおすすめします！"
+      },
+      "q5": {
+        "question": "Hosky 報酬は何時に請求されますか？",
+        "answer": "現状 AdaMatic は、エポック開始から約 48 時間後に 2 ADA の引き出しを送るように設定されています。これにより報酬機構に準備の余裕ができ、問題が発生した際にユーザーが手動で請求する時間も確保できます。"
+      }
+    },
+    "tech": {
+      "title": "技術的な質問",
+      "q1": {
+        "question": "対応しているウォレットはどれですか？",
+        "answer": "AdaMatic は Lace、Eternl、Flint、Typhon を含む主要な Cardano ウォレットや、その他の CIP-30 対応ウォレットすべてをサポートします。連携は CIP-30 標準に基づいて直接行われます。"
+      },
+      "q2": {
+        "question": "定期支払いはキャンセルできますか？",
+        "answer": "はい、いつでも定期支払いをキャンセルできます。支払い一覧を開き、キャンセルしたい支払いを見つけて、キャンセルボタンをクリックするだけです。残った資金はウォレットに戻ります。"
+      },
+      "q3": {
+        "question": "支払いが失敗したらどうなりますか？",
+        "answer": "（残高不足などで）支払いが失敗した場合、システムは失敗としてマークし、自動的には再試行しません。コントラクトに資金を追加するか、いったんキャンセルして十分な資金で新たな支払いを作成してください。"
+      },
+      "q4": {
+        "question": "AdaMatic はどのネットワークに対応していますか？",
+        "answer": "現在 AdaMatic は開発・テスト用に Cardano の Preprod テストネットに対応しています。本番利用にはメインネットも利用できます。お使いのウォレットが正しいネットワークに接続されていることを確認してください。"
+      }
+    }
+  }
+}

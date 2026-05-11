@@ -1,8 +1,16 @@
 import { Box, Container, Typography, Link, Stack, Divider } from "@mui/material";
-import GitHubIcon from '@mui/icons-material/GitHub';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useTranslations } from "../src/lib/i18n/I18nProvider";
+import { explorerUrl } from "../src/lib/cardano/explorer";
+
+// Pin link color across :link/:visited/:hover/:active so the user-agent
+// purple visited color never leaks through.
+const pinInherit = {
+    '&, &:link, &:visited, &:hover, &:active': { color: 'inherit' },
+};
 
 export default function Footer() {
+    const t = useTranslations();
     return (
         <Box
             component="footer"
@@ -24,35 +32,37 @@ export default function Footer() {
                         {/* About Section */}
                         <Box sx={{ flex: 1 }}>
                             <Typography variant="h6" gutterBottom>
-                                AdaMatic
+                                {t("app.title")}
                             </Typography>
                             <Typography variant="body2" sx={{ mb: 2, maxWidth: 300 }}>
-                                Automated recurring payments on the Cardano blockchain. 
-                                Perfect for regular transactions like Hosky token collection 
-                                and other scheduled payments.
+                                {t("footer.tagline")}
                             </Typography>
                         </Box>
 
                         {/* Navigation Links */}
                         <Box sx={{ flex: 1 }}>
                             <Typography variant="h6" gutterBottom>
-                                Navigation
+                                {t("footer.navigation")}
                             </Typography>
                             <Stack spacing={1}>
-                                <Link href="/" color="inherit" underline="hover">
-                                    Automatic Payments
+                                <Link href="/" color="inherit" underline="hover" sx={pinInherit}>
+                                    {t("nav.setup")}
                                 </Link>
-                                <Link href="/faq" color="inherit" underline="hover">
-                                    FAQ
+                                <Link href="/payments" color="inherit" underline="hover" sx={pinInherit}>
+                                    {t("nav.myPulls")}
                                 </Link>
-                                <Link 
-                                    href="https://github.com/easy1staking-com/cardano-recurring-payment" 
-                                    color="inherit" 
+                                <Link href="/faq" color="inherit" underline="hover" sx={pinInherit}>
+                                    {t("nav.faq")}
+                                </Link>
+                                <Link
+                                    href="https://github.com/easy1staking-com/cardano-recurring-payment"
+                                    color="inherit"
                                     underline="hover"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    sx={pinInherit}
                                 >
-                                    GitHub Repository
+                                    {t("footer.githubRepository")}
                                 </Link>
                             </Stack>
                         </Box>
@@ -60,35 +70,28 @@ export default function Footer() {
                         {/* Resources */}
                         <Box sx={{ flex: 1 }}>
                             <Typography variant="h6" gutterBottom>
-                                Resources
+                                {t("footer.resources")}
                             </Typography>
                             <Stack spacing={1}>
-                                <Link 
-                                    href="https://cardanoscan.io" 
-                                    color="inherit" 
+                                <Link
+                                    href={explorerUrl.home()}
+                                    color="inherit"
                                     underline="hover"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    sx={pinInherit}
                                 >
-                                    Cardano Explorer
+                                    {t("footer.cardanoExplorer")}
                                 </Link>
-                                <Link 
-                                    href="https://cardano.org" 
-                                    color="inherit" 
+                                <Link
+                                    href="https://cardano.org"
+                                    color="inherit"
                                     underline="hover"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    sx={pinInherit}
                                 >
-                                    Cardano.org
-                                </Link>
-                                <Link 
-                                    href="https://meshjs.dev" 
-                                    color="inherit" 
-                                    underline="hover"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    MeshJS
+                                    {t("footer.cardanoOrg")}
                                 </Link>
                             </Stack>
                         </Box>
@@ -104,9 +107,9 @@ export default function Footer() {
                         justifyContent="space-between"
                     >
                         <Typography variant="body2" sx={{ opacity: 0.8 }}>
-                            © {new Date().getFullYear()} AdaMatic. Built on Cardano.
+                            {t("footer.copyright", { year: new Date().getFullYear() })}
                         </Typography>
-                        
+
                         <Stack
                             direction="row"
                             spacing={1}
@@ -114,21 +117,29 @@ export default function Footer() {
                             sx={{ opacity: 0.8 }}
                         >
                             <Typography variant="body2">
-                                Sponsored with
+                                {t("footer.sponsoredWith")}
                             </Typography>
                             <FavoriteIcon sx={{ fontSize: 16, color: 'error.main' }} />
                             <Typography variant="body2">
-                                by
+                                {t("footer.sponsoredBy")}
                             </Typography>
                             <Link
                                 href="https://easy1staking.com"
-                                color="secondary.light"
                                 underline="hover"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                sx={{ fontWeight: 'bold' }}
+                                sx={{
+                                    fontWeight: 700,
+                                    // Warm amber — readable on the blue footer,
+                                    // ties to the BetaRibbon / HOSKY accent palette.
+                                    // Pinned across :link/:visited/:hover/:active so
+                                    // the user-agent purple-after-click never appears.
+                                    '&, &:link, &:visited': { color: '#FCD34D' },
+                                    '&:hover, &:active': { color: '#FDE68A' },
+                                    transition: 'color 160ms ease',
+                                }}
                             >
-                                Easy1Staking
+                                easy1staking
                             </Link>
                         </Stack>
                     </Stack>

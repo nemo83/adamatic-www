@@ -11,10 +11,10 @@ type DashboardLayoutProps = {
 
 const Layout = ({ children }: DashboardLayoutProps) => {
     return (
-        <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            minHeight: '50vh' 
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '50vh'
         }}>
             <Toaster />
             <Navbar />
