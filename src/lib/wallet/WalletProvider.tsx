@@ -20,6 +20,7 @@ import React, {
     useState,
 } from "react";
 import { Address } from "@evolution-sdk/evolution";
+import { initCardanoDAppConnectorBridge } from "@eternl/cardano-dapp-connector-bridge";
 import type { Cip30Api, UseWalletResult, WalletInfo } from "./types";
 import { getExtension, listInstalledWallets } from "./cip30";
 
@@ -121,11 +122,21 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     }, []);
 
     /**
-     * Wallet extensions inject `window.cardano.<id>` asynchronously — often
-     * a few hundred ms after our component mounts. A single check at mount
-     * misses them. Poll for ~4s, refreshing the installed list on each tick,
-     * and auto-reconnect as soon as the previously-stored extension shows
-     * up + reports enabled. Stops on first successful detection.
+     * Auto-connect across all three Eternl surfaces (and any CIP-30 wallet):
+     *
+     *  1. Eternl **dApp browser** (eternl.io website + the iOS/Android app) loads
+     *     us in an iframe/webview and delivers the wallet over a postMessage
+     *     bridge — it does NOT inject `window.cardano.eternl`. We must init the
+     *     bridge; on its handshake it populates `window.cardano.eternl` and fires
+     *     our callback, at which point we list + auto-connect (the user already
+     *     chose Eternl by opening us inside it). The bridge no-ops when
+     *     `window.cardano.eternl` is already present, so it's harmless elsewhere.
+     *  2. Browser **extensions** inject `window.cardano.<id>` asynchronously —
+     *     often a few hundred ms after mount. Poll ~4s and reconnect the
+     *     previously-stored wallet once it reports `isEnabled`.
+     *
+     * A single `connected` guard makes whichever path fires first win, so the
+     * bridge and the stored-reconnect can't double-enable.
      */
     useEffect(() => {
         const stored =
@@ -134,26 +145,39 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
                 : null;
 
         let cancelled = false;
+        const connected = { current: false };
+
+        const autoConnect = (id: string, silent: boolean) => {
+            if (cancelled || connected.current) return;
+            connected.current = true;
+            void doConnect(id, silent);
+        };
+
+        // 1. Eternl dApp browser / mobile app — bridge handshake.
+        initCardanoDAppConnectorBridge(() => {
+            if (cancelled) return;
+            refreshInstalled();
+            autoConnect("eternl", false);
+        });
+
+        // 2. Extensions (+ webviews that inject directly) — poll & reconnect.
         let attempts = 0;
         const MAX_ATTEMPTS = 20; // 20 × 200ms = 4s
-        const reconnected = { current: false };
-
         const tick = async () => {
-            if (cancelled) return;
+            if (cancelled || connected.current) return;
             // Always refresh the installed list — fills the wallet picker
             // even if we have nothing stored to reconnect to.
             refreshInstalled();
 
-            if (stored && !reconnected.current) {
+            if (stored) {
                 const ext = getExtension(stored);
                 if (ext) {
                     try {
                         const enabled = await (ext.isEnabled
                             ? ext.isEnabled()
                             : Promise.resolve(false));
-                        if (enabled && !cancelled) {
-                            reconnected.current = true;
-                            doConnect(stored, true);
+                        if (enabled) {
+                            autoConnect(stored, true);
                             return;
                         }
                     } catch {
